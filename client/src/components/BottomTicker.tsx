@@ -19,8 +19,8 @@ export const BottomTicker: React.FC<BottomTickerProps> = ({
 }) => {
   const latestEvent = events[0] || {
     title: 'Europa im Frieden',
-    text: 'Die europäischen Höfe beobachten die politischen Entwicklungen aufmerksam.',
-    date: { year: 1770, month: 1, day: 1 }
+    text: 'Die europäischen Höfe beobachten die politischen Spannungen des Jahres 1618 aufmerksam.',
+    date: { year: 1618, month: 5, day: 23 }
   };
 
   return (

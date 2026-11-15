@@ -21,10 +21,10 @@ export default function App() {
   const [events, setEvents] = useState<GameEvent[]>([]);
 
   // Simulation controls
-  const [date, setDate] = useState<DateState>({ year: 1770, month: 1, day: 1 });
+  const [date, setDate] = useState<DateState>({ year: 1618, month: 5, day: 23 });
   const [isPaused, setIsPaused] = useState<boolean>(true);
   const [speed, setSpeed] = useState<number>(1);
-  const [playerNationTag, setPlayerNationTag] = useState<string>('prus_m');
+  const [playerNationTag, setPlayerNationTag] = useState<string>('swe2_m');
 
   // UI state
   const [mapMode, setMapMode] = useState<MapMode>('political');
@@ -57,7 +57,7 @@ export default function App() {
           setDate(stateData.date);
           setIsPaused(stateData.isPaused);
           setSpeed(stateData.speed);
-          setPlayerNationTag(stateData.playerNation || 'prus_m');
+          setPlayerNationTag(stateData.playerNation || 'swe2_m');
           setNations(stateData.nations || {});
           setRegions(stateData.regions || {});
           setStraits(stateData.straits || {});

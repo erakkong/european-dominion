@@ -78,7 +78,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   // Camera State (Pan & Zoom)
-  const [camera, setCamera] = useState({ x: -1400, y: -700, zoom: 0.75 });
+  const [camera, setCamera] = useState({ x: -450, y: -300, zoom: 0.55 });
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [hoveredProvince, setHoveredProvince] = useState<Province | null>(null);
@@ -300,10 +300,15 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
           fillColor = '#475569';
         }
       } else if (mapMode === 'diplomacy') {
+        const pNation = nations[playerNation];
+        const isRival = pNation?.rivals?.includes(p.owner);
+        const isAlly = pNation?.allies?.includes(p.owner);
         if (p.owner === playerNation) {
-          fillColor = '#1e3a8a'; // Blue (self)
-        } else if (p.owner === 'fra_p' && playerNation === 'prus_m') {
-          fillColor = '#7f1d1d'; // Red (rival)
+          fillColor = '#1d4ed8'; // Blue (Eigene Nation)
+        } else if (isAlly) {
+          fillColor = '#15803d'; // Green (Verbündeter)
+        } else if (isRival) {
+          fillColor = '#b91c1c'; // Red (Rivale / Feind)
         } else if (p.owner && nations[p.owner]) {
           fillColor = '#334155'; // Neutral
         }

@@ -115,8 +115,8 @@ class SimulationEngine {
     this.speed = 1; // 1: normal, 2: fast, 3: very fast, 4: ultra
     this.tickInterval = null;
     
-    // Calendar: starts in 1770
-    this.date = { year: 1770, month: 1, day: 1 };
+    // Calendar: starts in 1618 (Thirty Years' War)
+    this.date = { year: 1618, month: 5, day: 23 };
     this.tickCount = 0;
 
     // Simulation Data Collections
@@ -130,7 +130,7 @@ class SimulationEngine {
     this.constructionQueue = [];
     this.armies = [];
     this.events = [];
-    this.playerNation = 'prus_m'; // Default: Kingdom of Prussia
+    this.playerNation = 'swe2_m'; // Default: Swedish Empire (Gustav II. Adolf)
   }
 
   init() {
@@ -186,13 +186,13 @@ class SimulationEngine {
     // Initial armies for major nations
     this.spawnInitialArmies();
 
-    // Add starting welcome event
+    // Add starting welcome event (1618)
     this.addEvent({
-      id: `evt_welcome_${Date.now()}`,
-      title: 'Europa am Vorabend einer neuen Epoche (1770)',
-      text: 'Die europäischen Höfe wetteifern um Macht, Handelswege und dynastisches Prestige. Als Herrscher liegt das Schicksal eures Reiches in euren Händen!',
+      id: `evt_prague_${Date.now()}`,
+      title: 'Der Prager Fenstersturz (23. Mai 1618)',
+      text: 'Die protestantischen Stände Böhmens werfen die kaiserlichen Statthalter aus den Fenstern der Prager Burg! Der Dreißigjährige Krieg bricht über Europa herein. Das Schicksal der Christenheit liegt in euren Händen!',
       date: { ...this.date },
-      type: 'diplomatic'
+      type: 'historic'
     });
 
     this.isInitialized = true;
@@ -200,14 +200,18 @@ class SimulationEngine {
   }
 
   spawnInitialArmies() {
-    // Spawns historical armies in capitals
+    // Spawns historical armies in 1618 (Thirty Years' War Era)
     const majors = [
-      { tag: 'prus_m', pid: 592, name: 'Königlich Preußische Hauptarmee', inf: 25000, cav: 8000, art: 60, general: 'Herzog von Braunschweig' },
-      { tag: 'fra_p', pid: 260, name: 'Armée Royale de France', inf: 35000, cav: 10000, art: 80, general: 'Maréchal de Rochambeau' },
-      { tag: 'atr_m', pid: 688, name: 'Kaiserliche Armee Österreichs', inf: 32000, cav: 9000, art: 75, general: 'Feldmarschall Daun' },
-      { tag: 'uni_n', pid: 825, name: 'British Expeditionary Army', inf: 20000, cav: 5000, art: 50, general: 'General Amherst' },
-      { tag: 'rus2_m', pid: 3726, name: 'Kaiserlich Russische Armee', inf: 40000, cav: 12000, art: 90, general: 'Feldmarschall Rumjanzew' },
-      { tag: 'tur_m', pid: 1116, name: 'Osmanische Hocharmee', inf: 45000, cav: 15000, art: 70, general: 'Großwesir Muhsinzade' }
+      { tag: 'swe2_m', pid: 1049, name: 'Königlich Schwedische Feldarmee', inf: 28000, cav: 9000, art: 60, general: 'König Gustav II. Adolf' },
+      { tag: 'atr_m2', pid: 688, name: 'Kaiserliche Armee (Habsburg)', inf: 35000, cav: 10000, art: 80, general: 'Feldmarschall Graf von Bucquoy' },
+      { tag: 'bohe_m', pid: 656, name: 'Böhmisches Ständeheer', inf: 22000, cav: 6000, art: 45, general: 'Graf Heinrich Matthias von Thurn' },
+      { tag: 'bava_m', pid: 716, name: 'Armee der Katholischen Liga', inf: 25000, cav: 8000, art: 50, general: 'Feldherr Johann T’Serclaes von Tilly' },
+      { tag: 'fra_m', pid: 260, name: 'Armée Royale de France', inf: 32000, cav: 8000, art: 70, general: 'Marschall François de Bassompierre' },
+      { tag: 'spa3_m', pid: 6561, name: 'Spanische Tercios von Flandern & Kastilien', inf: 40000, cav: 12000, art: 85, general: 'Ambrosio Spinola' },
+      { tag: 'pol2_m', pid: 1276, name: 'Kroneheer der Flügelhusaren', inf: 30000, cav: 15000, art: 60, general: 'Großhetman Jan Karol Chodkiewicz' },
+      { tag: 'baa_m', pid: 592, name: 'Brandenburgische Leibgarde', inf: 16000, cav: 4500, art: 30, general: 'Kurfürst Johann Sigismund' },
+      { tag: 'net_m2', pid: 6502, name: 'Staatische Armee der Niederlande', inf: 26000, cav: 7000, art: 55, general: 'Moritz von Oranien' },
+      { tag: 'tur_m', pid: 1116, name: 'Osmanische Hocharmee (Janitscharen)', inf: 50000, cav: 18000, art: 90, general: 'Sultan Osman II.' }
     ];
 
     let armyId = 1;

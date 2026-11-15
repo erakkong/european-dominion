@@ -129,7 +129,7 @@ export const RightPanel: React.FC<RightPanelProps> = ({
 
             <div className="space-y-2.5">
               <span className="text-[11px] text-slate-400 font-bold uppercase tracking-wider block">
-                Epochengerechter Forschungsbaum (ab 1770)
+                Epochengerechter Forschungsbaum (ab 1618)
               </span>
 
               {TECH_TREE.map(t => (

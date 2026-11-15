@@ -76,7 +76,7 @@ export const SaveLoadModal: React.FC<SaveLoadModalProps> = ({
             <div className="flex gap-2">
               <input
                 type="text"
-                placeholder="Name des Spielstands (z.B. Preussen_1770_Blüte)"
+                placeholder="Name des Spielstands (z.B. Schweden_1618_Kriegsausbruch)"
                 value={saveName}
                 onChange={e => setSaveName(e.target.value)}
                 className="flex-1 px-3 py-1.5 rounded bg-slate-950 border border-slate-700 text-slate-100 placeholder-slate-500 text-xs focus:outline-none focus:border-amber-400"

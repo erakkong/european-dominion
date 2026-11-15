@@ -36,7 +36,7 @@ export const NationSelectModal: React.FC<NationSelectModalProps> = ({
             <Crown size={20} className="text-amber-400" />
             <div>
               <h2 className="font-royal font-bold text-amber-300 text-base">Wähle dein Europäisches Herrscherhaus</h2>
-              <span className="text-[11px] text-slate-400">72 spielbare Staaten & Dynastien im Europa von 1770</span>
+              <span className="text-[11px] text-slate-400">189 historische Staaten & Dynastien im Europa von 1618</span>
             </div>
           </div>
           <button onClick={onClose} className="p-1.5 rounded text-slate-400 hover:text-white hover:bg-slate-800 transition">

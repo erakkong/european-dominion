@@ -39,6 +39,8 @@ export interface Nation {
   researchPoints?: number;
   currentTech?: string;
   techProgress?: number;
+  allies?: string[];
+  rivals?: string[];
 }
 
 export interface Province {
