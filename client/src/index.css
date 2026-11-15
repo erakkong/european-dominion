@@ -8,7 +8,7 @@
   --panel-highlight: rgba(243, 207, 85, 0.15);
 }
 
-body {
+html, body {
   margin: 0;
   padding: 0;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
@@ -17,6 +17,18 @@ body {
   overflow: hidden;
   user-select: none;
   -webkit-user-select: none;
+  touch-action: none;
+  -webkit-touch-callout: none;
+  overscroll-behavior: none;
+}
+
+canvas {
+  touch-action: none;
+}
+
+.overflow-y-auto {
+  touch-action: pan-y;
+  -webkit-overflow-scrolling: touch;
 }
 
 h1, h2, h3, .font-royal {

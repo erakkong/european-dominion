@@ -79,10 +79,40 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
 
   // Camera State (Pan & Zoom)
   const [camera, setCamera] = useState({ x: -450, y: -300, zoom: 0.55 });
+  const cameraRef = useRef(camera);
+  cameraRef.current = camera;
+
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [hoveredProvince, setHoveredProvince] = useState<Province | null>(null);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+
+  // Touch & Gesture state for iPad / mobile touchscreens
+  const touchStateRef = useRef<{
+    startX: number;
+    startY: number;
+    startTime: number;
+    initialCamX: number;
+    initialCamY: number;
+    moved: boolean;
+    isPinch: boolean;
+    initialPinchDist: number;
+    initialPinchZoom: number;
+    wMidX: number;
+    wMidY: number;
+  }>({
+    startX: 0,
+    startY: 0,
+    startTime: 0,
+    initialCamX: 0,
+    initialCamY: 0,
+    moved: false,
+    isPinch: false,
+    initialPinchDist: 0,
+    initialPinchZoom: 1,
+    wMidX: 0,
+    wMidY: 0
+  });
 
   // Selected Army for movement orders
   const [selectedArmyId, setSelectedArmyId] = useState<string | null>(null);
@@ -139,22 +169,90 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
   // Transform screen to world coordinates
   const screenToWorld = useCallback((screenX: number, screenY: number): [number, number] => {
     return [
-      (screenX - camera.x) / camera.zoom,
-      (screenY - camera.y) / camera.zoom
+      (screenX - cameraRef.current.x) / cameraRef.current.zoom,
+      (screenY - cameraRef.current.y) / cameraRef.current.zoom
     ];
-  }, [camera]);
+  }, []);
+
+  // Unified Interaction / Click / Tap Handler (Desktop Mouse & iPad Touch)
+  const handleInteractionAt = useCallback((screenX: number, screenY: number, isRightClick = false) => {
+    const [wx, wy] = screenToWorld(screenX, screenY);
+
+    // 1. Check Strait Badges Click
+    for (const strait of Object.values(straits)) {
+      if (strait.provinces && strait.provinces.length > 0) {
+        const p0 = provinces.find(p => p.id === strait.provinces[0]);
+        if (p0) {
+          const dist = Math.hypot(wx - p0.cx, wy - p0.cy);
+          if (dist < 35 / cameraRef.current.zoom) {
+            onSelectStrait(strait);
+            return;
+          }
+        }
+      }
+    }
+
+    // 2. Check Army Click
+    for (const army of armies) {
+      const p = provinceMap.get(army.pid);
+      if (p) {
+        const dist = Math.hypot(wx - p.cx, wy - p.cy);
+        if (dist < 25 / cameraRef.current.zoom) {
+          setSelectedArmyId(army.id);
+          onSelectArmy(army);
+          return;
+        }
+      }
+    }
+
+    // 3. Find Clicked Province (Land first, then Sea)
+    let found: Province | null = null;
+    for (let i = provinces.length - 1; i >= 0; i--) {
+      const p = provinces[i];
+      if (p.isSea) continue;
+      const [bx1, by1, bx2, by2] = p.bbox;
+      if (wx >= bx1 && wx <= bx2 && wy >= by1 && wy <= by2) {
+        if (pointInPoly([wx, wy], p.points)) {
+          found = p;
+          break;
+        }
+      }
+    }
+
+    if (!found) {
+      for (let i = provinces.length - 1; i >= 0; i--) {
+        const p = provinces[i];
+        if (!p.isSea) continue;
+        const [bx1, by1, bx2, by2] = p.bbox;
+        if (wx >= bx1 && wx <= bx2 && wy >= by1 && wy <= by2) {
+          if (pointInPoly([wx, wy], p.points)) {
+            found = p;
+            break;
+          }
+        }
+      }
+    }
+
+    // Move command if army selected and right click
+    if (isRightClick && selectedArmyId && onIssueMoveCommand && found) {
+      onIssueMoveCommand(selectedArmyId, found.id);
+      setSelectedArmyId(null);
+      return;
+    }
+
+    onSelectProvince(found);
+  }, [screenToWorld, straits, provinces, armies, provinceMap, selectedArmyId, onIssueMoveCommand, onSelectProvince, onSelectStrait, onSelectArmy]);
 
   // Handle Mouse Wheel Zoom
   const handleWheel = (e: React.WheelEvent) => {
     e.preventDefault();
     const zoomFactor = e.deltaY < 0 ? 1.15 : 0.85;
-    const newZoom = Math.max(0.25, Math.min(3.5, camera.zoom * zoomFactor));
+    const newZoom = Math.max(0.25, Math.min(3.5, cameraRef.current.zoom * zoomFactor));
 
-    // Zoom centered at mouse cursor
     const mouseX = e.clientX;
     const mouseY = e.clientY;
-    const worldX = (mouseX - camera.x) / camera.zoom;
-    const worldY = (mouseY - camera.y) / camera.zoom;
+    const worldX = (mouseX - cameraRef.current.x) / cameraRef.current.zoom;
+    const worldY = (mouseY - cameraRef.current.y) / cameraRef.current.zoom;
 
     setCamera({
       zoom: newZoom,
@@ -167,7 +265,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
   const handleMouseDown = (e: React.MouseEvent) => {
     if (e.button === 0 || e.button === 1 || e.button === 2) {
       setIsDragging(true);
-      setDragStart({ x: e.clientX - camera.x, y: e.clientY - camera.y });
+      setDragStart({ x: e.clientX - cameraRef.current.x, y: e.clientY - cameraRef.current.y });
     }
   };
 
@@ -188,10 +286,9 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     const [wx, wy] = screenToWorld(e.clientX, e.clientY);
     let found: Province | null = null;
 
-    // Fast Bounding Box check first
     for (let i = provinces.length - 1; i >= 0; i--) {
       const p = provinces[i];
-      if (p.isSea) continue; // Prioritize land provinces for hover
+      if (p.isSea) continue;
       const [bx1, by1, bx2, by2] = p.bbox;
       if (wx >= bx1 && wx <= bx2 && wy >= by1 && wy <= by2) {
         if (pointInPoly([wx, wy], p.points)) {
@@ -209,71 +306,160 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
   // Mouse Up
   const handleMouseUp = (e: React.MouseEvent) => {
     if (isDragging) {
-      // If barely moved, treat as click
-      const dist = Math.hypot((e.clientX - dragStart.x) - camera.x, (e.clientY - dragStart.y) - camera.y);
+      const dist = Math.hypot((e.clientX - dragStart.x) - cameraRef.current.x, (e.clientY - dragStart.y) - cameraRef.current.y);
       setIsDragging(false);
 
-      if (dist < 5) {
-        handleMapClick(e);
+      if (dist < 6) {
+        handleInteractionAt(e.clientX, e.clientY, e.button === 2);
       }
     }
   };
 
-  // Map Click
-  const handleMapClick = (e: React.MouseEvent) => {
-    const [wx, wy] = screenToWorld(e.clientX, e.clientY);
+  // iPad & Tablet Native Touch Event Listeners (passive: false for full WebKit gesture prevention)
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
 
-    // 1. Check Strait Badges Click
-    for (const strait of Object.values(straits)) {
-      if (strait.provinces && strait.provinces.length > 0) {
-        const p0 = provinces.find(p => p.id === strait.provinces[0]);
-        if (p0) {
-          const dist = Math.hypot(wx - p0.cx, wy - p0.cy);
-          if (dist < 35 / camera.zoom) {
-            onSelectStrait(strait);
-            return;
+    const onTouchStart = (e: TouchEvent) => {
+      e.preventDefault();
+
+      if (e.touches.length === 1) {
+        const t = e.touches[0];
+        touchStateRef.current = {
+          startX: t.clientX,
+          startY: t.clientY,
+          startTime: Date.now(),
+          initialCamX: cameraRef.current.x,
+          initialCamY: cameraRef.current.y,
+          moved: false,
+          isPinch: false,
+          initialPinchDist: 0,
+          initialPinchZoom: cameraRef.current.zoom,
+          wMidX: 0,
+          wMidY: 0
+        };
+      } else if (e.touches.length === 2) {
+        const t1 = e.touches[0];
+        const t2 = e.touches[1];
+        const dist = Math.hypot(t1.clientX - t2.clientX, t1.clientY - t2.clientY);
+        const midX = (t1.clientX + t2.clientX) / 2;
+        const midY = (t1.clientY + t2.clientY) / 2;
+        const [wMidX, wMidY] = screenToWorld(midX, midY);
+
+        touchStateRef.current = {
+          startX: midX,
+          startY: midY,
+          startTime: Date.now(),
+          initialCamX: cameraRef.current.x,
+          initialCamY: cameraRef.current.y,
+          moved: true,
+          isPinch: true,
+          initialPinchDist: Math.max(10, dist),
+          initialPinchZoom: cameraRef.current.zoom,
+          wMidX,
+          wMidY
+        };
+        setHoveredProvince(null);
+      }
+    };
+
+    const onTouchMove = (e: TouchEvent) => {
+      e.preventDefault();
+
+      if (e.touches.length === 1 && !touchStateRef.current.isPinch) {
+        const t = e.touches[0];
+        const dx = t.clientX - touchStateRef.current.startX;
+        const dy = t.clientY - touchStateRef.current.startY;
+
+        if (Math.hypot(dx, dy) > 5) {
+          touchStateRef.current.moved = true;
+          setHoveredProvince(null);
+          setCamera({
+            zoom: cameraRef.current.zoom,
+            x: touchStateRef.current.initialCamX + dx,
+            y: touchStateRef.current.initialCamY + dy
+          });
+        }
+      } else if (e.touches.length === 2) {
+        const t1 = e.touches[0];
+        const t2 = e.touches[1];
+        const dist = Math.hypot(t1.clientX - t2.clientX, t1.clientY - t2.clientY);
+        const midX = (t1.clientX + t2.clientX) / 2;
+        const midY = (t1.clientY + t2.clientY) / 2;
+
+        const ts = touchStateRef.current;
+        if (ts.initialPinchDist > 5) {
+          const scale = dist / ts.initialPinchDist;
+          const newZoom = Math.max(0.25, Math.min(3.5, ts.initialPinchZoom * scale));
+
+          setCamera({
+            zoom: newZoom,
+            x: midX - ts.wMidX * newZoom,
+            y: midY - ts.wMidY * newZoom
+          });
+        }
+      }
+    };
+
+    const onTouchEnd = (e: TouchEvent) => {
+      e.preventDefault();
+
+      if (e.touches.length === 0) {
+        const ts = touchStateRef.current;
+        if (!ts.moved && !ts.isPinch) {
+          const duration = Date.now() - ts.startTime;
+          if (duration < 500) {
+            handleInteractionAt(ts.startX, ts.startY, false);
           }
         }
+        ts.isPinch = false;
+        ts.moved = false;
+      } else if (e.touches.length === 1) {
+        const t = e.touches[0];
+        touchStateRef.current.startX = t.clientX;
+        touchStateRef.current.startY = t.clientY;
+        touchStateRef.current.initialCamX = cameraRef.current.x;
+        touchStateRef.current.initialCamY = cameraRef.current.y;
+        touchStateRef.current.isPinch = false;
+        touchStateRef.current.moved = true;
       }
-    }
+    };
 
-    // 2. Check Army Click
-    for (const army of armies) {
-      const p = provinceMap.get(army.pid);
-      if (p) {
-        const dist = Math.hypot(wx - p.cx, wy - p.cy);
-        if (dist < 25 / camera.zoom) {
-          setSelectedArmyId(army.id);
-          onSelectArmy(army);
-          return;
-        }
-      }
-    }
+    canvas.addEventListener('touchstart', onTouchStart, { passive: false });
+    canvas.addEventListener('touchmove', onTouchMove, { passive: false });
+    canvas.addEventListener('touchend', onTouchEnd, { passive: false });
+    canvas.addEventListener('touchcancel', onTouchEnd, { passive: false });
 
-    // 3. If an army is selected and right-clicked or clicked on another province, issue move order
-    if (e.button === 2 && selectedArmyId && onIssueMoveCommand && hoveredProvince) {
-      onIssueMoveCommand(selectedArmyId, hoveredProvince.id);
-      setSelectedArmyId(null);
-      return;
-    }
+    return () => {
+      canvas.removeEventListener('touchstart', onTouchStart);
+      canvas.removeEventListener('touchmove', onTouchMove);
+      canvas.removeEventListener('touchend', onTouchEnd);
+      canvas.removeEventListener('touchcancel', onTouchEnd);
+    };
+  }, [screenToWorld, handleInteractionAt]);
 
-    // 4. Select Province
-    if (hoveredProvince) {
-      onSelectProvince(hoveredProvince);
-    } else {
-      // Find sea province if land wasn't clicked
-      for (let i = provinces.length - 1; i >= 0; i--) {
-        const p = provinces[i];
-        const [bx1, by1, bx2, by2] = p.bbox;
-        if (wx >= bx1 && wx <= bx2 && wy >= by1 && wy <= by2) {
-          if (pointInPoly([wx, wy], p.points)) {
-            onSelectProvince(p);
-            return;
-          }
-        }
-      }
-      onSelectProvince(null);
-    }
+  // Touch & UI Zoom Buttons
+  const handleZoomBy = (factor: number) => {
+    setCamera(prev => {
+      const newZoom = Math.max(0.25, Math.min(3.5, prev.zoom * factor));
+      const cx = window.innerWidth / 2;
+      const cy = window.innerHeight / 2;
+      const wx = (cx - prev.x) / prev.zoom;
+      const wy = (cy - prev.y) / prev.zoom;
+      return {
+        zoom: newZoom,
+        x: cx - wx * newZoom,
+        y: cy - wy * newZoom
+      };
+    });
+  };
+
+  const handleResetCamera = () => {
+    setCamera({
+      x: window.innerWidth / 2 - 2400 * 0.55,
+      y: window.innerHeight / 2 - 2400 * 0.55,
+      zoom: 0.55
+    });
   };
 
   // Main Canvas Render Loop (RAF synchronized)
@@ -501,15 +687,46 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
   }, [provinces, nations, regions, straits, armies, camera, mapMode, hoveredProvince, selectedProvince, playerNation, regionLabels, capitalMarkers, provinceMap]);
 
   return (
-    <div className="relative w-full h-full overflow-hidden" onContextMenu={e => e.preventDefault()}>
+    <div className="relative w-full h-full overflow-hidden touch-none select-none" onContextMenu={e => e.preventDefault()}>
       <canvas
         ref={canvasRef}
-        className="w-full h-full cursor-grab active:cursor-grabbing"
+        className="w-full h-full cursor-grab active:cursor-grabbing touch-none select-none"
         onWheel={handleWheel}
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
       />
+
+      {/* Floating On-Screen Touch / Zoom Controls for iPad & Desktop */}
+      <div className="fixed bottom-6 right-6 z-40 flex flex-col gap-2.5 select-none pointer-events-auto">
+        <button
+          type="button"
+          onClick={() => handleZoomBy(1.3)}
+          className="w-11 h-11 rounded-lg pax-panel border border-amber-500/40 hover:border-amber-400 active:border-amber-300 text-amber-300 hover:text-amber-100 flex items-center justify-center text-2xl font-bold shadow-2xl transition active:scale-90 bg-slate-900/90 cursor-pointer"
+          title="Vergrößern (Zoom In)"
+          aria-label="Zoom In"
+        >
+          +
+        </button>
+        <button
+          type="button"
+          onClick={() => handleZoomBy(0.77)}
+          className="w-11 h-11 rounded-lg pax-panel border border-amber-500/40 hover:border-amber-400 active:border-amber-300 text-amber-300 hover:text-amber-100 flex items-center justify-center text-2xl font-bold shadow-2xl transition active:scale-90 bg-slate-900/90 cursor-pointer"
+          title="Verkleinern (Zoom Out)"
+          aria-label="Zoom Out"
+        >
+          −
+        </button>
+        <button
+          type="button"
+          onClick={handleResetCamera}
+          className="w-11 h-11 rounded-lg pax-panel border border-amber-500/40 hover:border-amber-400 active:border-amber-300 text-amber-300 hover:text-amber-100 flex items-center justify-center text-base shadow-2xl transition active:scale-90 bg-slate-900/90 cursor-pointer"
+          title="Europa zentrieren"
+          aria-label="Reset View"
+        >
+          🎯
+        </button>
+      </div>
 
       {/* Floating Hover Tooltip */}
       {hoveredProvince && !isDragging && (
