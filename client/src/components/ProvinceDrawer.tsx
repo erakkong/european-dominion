@@ -82,7 +82,7 @@ export const ProvinceDrawer: React.FC<ProvinceDrawerProps> = ({
           <span>
             {regionController
               ? `100% Kontrolle (${regionController.name}) ★ Boni Aktiv!`
-              : `${regionData.controlBreakdown[playerNation?.tag || ''] || 0}% Preußische Kontrolle`}
+              : `${regionData.controlBreakdown[playerNation?.tag || ''] || 0}% Kontrolle (${playerNation?.name || 'Eigene'})`}
           </span>
         </div>
       )}
