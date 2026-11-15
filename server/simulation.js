@@ -204,12 +204,12 @@ class SimulationEngine {
     const majors = [
       { tag: 'swe2_m', pid: 1049, name: 'Königlich Schwedische Feldarmee', inf: 28000, cav: 9000, art: 60, general: 'König Gustav II. Adolf' },
       { tag: 'atr_m2', pid: 688, name: 'Kaiserliche Armee (Habsburg)', inf: 35000, cav: 10000, art: 80, general: 'Feldmarschall Graf von Bucquoy' },
-      { tag: 'bohe_m', pid: 656, name: 'Böhmisches Ständeheer', inf: 22000, cav: 6000, art: 45, general: 'Graf Heinrich Matthias von Thurn' },
+      { tag: 'atr_m2', pid: 656, name: 'Böhmisches Korps der Kaiserlichen', inf: 22000, cav: 6000, art: 45, general: 'Graf Heinrich Matthias von Thurn' },
       { tag: 'bava_m', pid: 716, name: 'Armee der Katholischen Liga', inf: 25000, cav: 8000, art: 50, general: 'Feldherr Johann T’Serclaes von Tilly' },
       { tag: 'fra_m', pid: 260, name: 'Armée Royale de France', inf: 32000, cav: 8000, art: 70, general: 'Marschall François de Bassompierre' },
       { tag: 'spa3_m', pid: 6561, name: 'Spanische Tercios von Flandern & Kastilien', inf: 40000, cav: 12000, art: 85, general: 'Ambrosio Spinola' },
       { tag: 'pol2_m', pid: 1276, name: 'Kroneheer der Flügelhusaren', inf: 30000, cav: 15000, art: 60, general: 'Großhetman Jan Karol Chodkiewicz' },
-      { tag: 'baa_m', pid: 592, name: 'Brandenburgische Leibgarde', inf: 16000, cav: 4500, art: 30, general: 'Kurfürst Johann Sigismund' },
+      { tag: 'prus_m', pid: 592, name: 'Brandenburg-Preußische Leibgarde', inf: 16000, cav: 4500, art: 30, general: 'Kurfürst Johann Sigismund' },
       { tag: 'net_m2', pid: 6502, name: 'Staatische Armee der Niederlande', inf: 26000, cav: 7000, art: 55, general: 'Moritz von Oranien' },
       { tag: 'tur_m', pid: 1116, name: 'Osmanische Hocharmee (Janitscharen)', inf: 50000, cav: 18000, art: 90, general: 'Sultan Osman II.' }
     ];
