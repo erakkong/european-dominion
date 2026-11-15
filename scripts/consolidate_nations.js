@@ -92,6 +92,76 @@ if (!savoNation) {
   };
 }
 
+// 2b. Restore liberated Caucasian nations
+const liberatedNationDefs = [
+  {
+    tag: 'samt_m',
+    name: 'Samtskhe',
+    color: 'rgb(231, 227, 218)',
+    rgb: [231, 227, 218],
+    capital: 12169,
+    flag: '/assets/flags/samt_m.png',
+    provincesCount: 9,
+    ruler: { name: 'Herrscher von Samtskhe', dynasty: 'Haus Samtskhe', age: 38, legitimacy: 80, traits: ['Reichsstand'] },
+    treasury: 2460, income: 0, expenses: 0, balance: 0, prestige: 68, stability: 80, manpower: 14300,
+    government: 'Absolute Monarchie', laws: { power: 'Absolutismus', economy: 'Merkantilismus', society: 'Adelsprivilegien', military: 'Söldnerheer' }
+  },
+  {
+    tag: 'min_m',
+    name: 'Mingrelien',
+    color: 'rgb(84, 140, 195)',
+    rgb: [84, 140, 195],
+    capital: 1162,
+    flag: '/assets/flags/min_m.png',
+    provincesCount: 3,
+    ruler: { name: 'Herrscher von Mingrelien', dynasty: 'Haus Mingrelien', age: 38, legitimacy: 80, traits: ['Reichsstand'] },
+    treasury: 1620, income: 0, expenses: 0, balance: 0, prestige: 56, stability: 80, manpower: 10100,
+    government: 'Absolute Monarchie', laws: { power: 'Absolutismus', economy: 'Merkantilismus', society: 'Adelsprivilegien', military: 'Söldnerheer' }
+  },
+  {
+    tag: 'imer_m',
+    name: 'Imeretien',
+    color: 'rgb(9, 54, 107)',
+    rgb: [9, 54, 107],
+    capital: 4904,
+    flag: '/assets/flags/imer_m.png',
+    provincesCount: 4,
+    ruler: { name: 'Herrscher von Imeretien', dynasty: 'Haus Imeretien', age: 38, legitimacy: 80, traits: ['Reichsstand'] },
+    treasury: 1760, income: 0, expenses: 0, balance: 0, prestige: 58, stability: 80, manpower: 10800,
+    government: 'Absolute Monarchie', laws: { power: 'Absolutismus', economy: 'Merkantilismus', society: 'Adelsprivilegien', military: 'Söldnerheer' }
+  },
+  {
+    tag: 'nata3_m',
+    name: 'Natukhai',
+    color: 'rgb(24, 138, 26)',
+    rgb: [24, 138, 26],
+    capital: 10814,
+    flag: '/assets/flags/nata3_m.png',
+    provincesCount: 1,
+    ruler: { name: 'Herrscher von Natukhai', dynasty: 'Haus Natukhai', age: 38, legitimacy: 80, traits: ['Reichsstand'] },
+    treasury: 1340, income: 0, expenses: 0, balance: 0, prestige: 52, stability: 80, manpower: 8700,
+    government: 'Absolute Monarchie', laws: { power: 'Absolutismus', economy: 'Merkantilismus', society: 'Adelsprivilegien', military: 'Söldnerheer' }
+  },
+  {
+    tag: 'gur3_m',
+    name: 'Guria',
+    color: 'rgb(218, 226, 85)',
+    rgb: [218, 226, 85],
+    capital: 1214,
+    flag: '/assets/flags/gur3_m.png',
+    provincesCount: 1,
+    ruler: { name: 'Herrscher von Guria', dynasty: 'Haus Guria', age: 38, legitimacy: 80, traits: ['Reichsstand'] },
+    treasury: 1340, income: 0, expenses: 0, balance: 0, prestige: 52, stability: 80, manpower: 8700,
+    government: 'Absolute Monarchie', laws: { power: 'Absolutismus', economy: 'Merkantilismus', society: 'Adelsprivilegien', military: 'Söldnerheer' }
+  }
+];
+
+for (const natDef of liberatedNationDefs) {
+  if (!nations.find(n => n.tag === natDef.tag)) {
+    nations.push(natDef);
+  }
+}
+
 // 3. Name adjustments
 // Lüneburg: bennene lüneburg wieder zu lüneburg
 const lun = nations.find(n => n.tag === 'lun_m');
@@ -218,34 +288,82 @@ const transferMap = {
   'full3_m': 'hess_m',
   'hana3_m': 'hess_m',
 
-  // Osmanisches Reich bekommt Samtskhe, Mingrelien und Imeretien sowie Krim, Natukhai und Guria
-  'samt_m': 'tur_m',
-  'min_m': 'tur_m',
-  'imer_m': 'tur_m',
+  // Osmanisches Reich behält Krim und bekommt Siebenbürgen, Wallachei und Moldau
   'crkh_m2': 'tur_m',
-  'nata3_m': 'tur_m',
-  'gur3_m': 'tur_m',
+  'trass_m': 'tur_m',
+  'wala_m': 'tur_m',
+  'mo_m2': 'tur_m',
 
-  // Bayern bekommt Speyer
+  // Bayern bekommt Speyer, Kempten und Worms
   'spex3_m': 'bava_m',
+  'kemp3_m': 'bava_m',
+  'worm_m': 'bava_m',
 
   // Österreich bekommt Cieszyn
   'cies3_m': 'atr_m2',
 
-  // Nassau bekommt Tecklenburg
-  'teck3_m': 'nass_m'
+  // Nassau bekommt Tecklenburg und Sayn
+  'teck3_m': 'nass_m',
+  'sayn3_m': 'nass_m',
+
+  // Württemberg bekommt Ravensburg
+  'rav_m': 'wurt_m',
+
+  // Münster bekommt Osnabrück
+  'osna3_m': 'mus_m',
+
+  // Lüttich bekommt Aachen
+  'aac_m': 'lie_m'
 };
 
 // Explicit province specific transfers
 const specificProvinceTransfers = {
+  // Befreite Länder (Kaukasus): Samtskhe, Mingrelien, Imeretien, Natukhai, Guria
+  // Samtskhe
+  1091: 'samt_m',
+  1092: 'samt_m',
+  1093: 'samt_m',
+  1163: 'samt_m',
+  1164: 'samt_m',
+  1199: 'samt_m',
+  1200: 'samt_m',
+  10445: 'samt_m',
+  12169: 'samt_m',
+  // Mingrelien
+  1162: 'min_m',
+  7262: 'min_m',
+  11519: 'min_m',
+  // Imeretien
+  1215: 'imer_m',
+  4904: 'imer_m',
+  10446: 'imer_m',
+  12168: 'imer_m',
+  // Natukhai
+  10814: 'nata3_m',
+  // Guria
+  1214: 'gur3_m',
+
+  // Ravensburg zu Württemberg
+  7308: 'wurt_m',
+  // Kempten zu Bayern
+  711: 'bava_m',
+  // Sayn zu Nassau
+  776: 'nass_m',
+  // Osnabrück zu Münster
+  619: 'mus_m',
+  7276: 'mus_m',
+  // Lüttich bekommt Aachen und Namur
+  558: 'lie_m',
+  387: 'lie_m',
+  // Worms zu Bayern
+  7269: 'bava_m',
+
   // Gizab an Persien
   5842: 'ira_m2',
   // Speyer an Bayern
   782: 'bava_m',
   // Cieszyn an Österreich
   3705: 'atr_m2',
-  // Guria (Lanchkhuti) an das Osmanische Reich
-  1214: 'tur_m',
   // Tecklenburg / Lingen an Nassau
   616: 'nass_m',
   // Venedig bekommt Carpi (prov 166)

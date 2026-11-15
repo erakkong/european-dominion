@@ -1023,13 +1023,12 @@
       "ver_g": 5,
       "atr_m2": 18,
       "ans_m": 3,
-      "bava_m": 18,
+      "bava_m": 21,
       "buff3_m": 13,
       "prus_m": 3,
       "lun_m": 8,
       "bamb3_m": 3,
       "nur_m": 3,
-      "kemp3_m": 3,
       "aug_m": 3,
       "wurz_m": 3,
       "sax_m": 16,
@@ -1385,8 +1384,7 @@
     "controlBreakdown": {
       "atr_m2": 76,
       "bava_m": 1,
-      "tur_m": 15,
-      "trass_m": 2,
+      "tur_m": 17,
       "pol2_m": 6
     },
     "controller": null
@@ -1537,12 +1535,9 @@
       "supplyBonus": 0.2
     },
     "controlBreakdown": {
-      "mo_m2": 31,
-      "tur_m": 11,
-      "trass_m": 56,
-      "wala_m": 3
+      "tur_m": 100
     },
-    "controller": null
+    "controller": "tur_m"
   },
   "schweiz": {
     "id": "schweiz",
@@ -1675,9 +1670,9 @@
     "controlBreakdown": {
       "fra_m": 57,
       "savo_m": 2,
-      "spa3_m": 24,
+      "spa3_m": 23,
       "lorr_m": 6,
-      "lie_m": 3,
+      "lie_m": 4,
       "net_m2": 6,
       "bava_m": 1
     },
@@ -1953,7 +1948,7 @@
       "hess_m": 6,
       "prus_m": 3,
       "bava_m": 8,
-      "aac_m": 1,
+      "lie_m": 1,
       "hill3_m": 1,
       "lipp3_m": 1,
       "pald3_m2": 1,
@@ -1965,17 +1960,14 @@
       "hene3_m": 1,
       "wurz_m": 2,
       "mzz_m": 1,
-      "wurt_m": 7,
+      "wurt_m": 8,
       "colm3_m": 1,
       "mem_m": 1,
       "trie_m": 3,
-      "sayn3_m": 1,
       "net_m2": 1,
       "str3_m": 1,
       "ans_m": 1,
       "parm_m": 1,
-      "worm_m": 1,
-      "rav_m": 1,
       "furs3_m": 1,
       "bre3_m": 1
     },
@@ -2479,8 +2471,7 @@
       "olde_m": 6,
       "ef_m": 9,
       "nass_m": 3,
-      "osna3_m": 6,
-      "mus_m": 18,
+      "mus_m": 24,
       "net_m2": 59
     },
     "controller": null
@@ -3157,7 +3148,7 @@
       "prus_m": 2,
       "pol2_m": 80,
       "rus3_m": 8,
-      "trass_m": 2,
+      "tur_m": 2,
       "atr_m2": 8
     },
     "controller": null
@@ -3296,7 +3287,7 @@
     },
     "controlBreakdown": {
       "pol2_m": 81,
-      "mo_m2": 5,
+      "tur_m": 5,
       "atr_m2": 1,
       "rus3_m": 13
     },
@@ -3436,11 +3427,12 @@
       "supplyBonus": 0.2
     },
     "controlBreakdown": {
-      "tur_m": 16,
+      "tur_m": 15,
       "kaz_m": 33,
       "rus3_m": 29,
       "nago_m": 12,
       "shap3_m": 1,
+      "nata3_m": 1,
       "hatu3_m": 2,
       "gazi_m": 3,
       "abz3_m": 2,
@@ -3885,10 +3877,9 @@
       "supplyBonus": 0.2
     },
     "controlBreakdown": {
-      "wala_m": 16,
-      "tur_m": 84
+      "tur_m": 100
     },
-    "controller": null
+    "controller": "tur_m"
   },
   "rumaenien_donau": {
     "id": "rumaenien_donau",
@@ -3955,9 +3946,8 @@
       "supplyBonus": 0.2
     },
     "controlBreakdown": {
-      "tur_m": 68,
-      "pol2_m": 20,
-      "mo_m2": 12
+      "tur_m": 80,
+      "pol2_m": 20
     },
     "controller": null
   },
@@ -4324,11 +4314,15 @@
       "supplyBonus": 0.2
     },
     "controlBreakdown": {
-      "tur_m": 53,
+      "tur_m": 43,
+      "samt_m": 5,
       "ira_m2": 23,
       "kart_m": 5,
+      "min_m": 2,
       "bit_m": 2,
       "hakk_m": 2,
+      "gur3_m": 1,
+      "imer_m": 2,
       "ard_m": 1,
       "shek3_m": 1,
       "abk_m": 1,
