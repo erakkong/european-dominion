@@ -521,7 +521,7 @@
     ],
     "capital": 688,
     "flag": "/assets/flags/atr_m2.png",
-    "provincesCount": 176,
+    "provincesCount": 177,
     "ruler": {
       "name": "Kaiser Ferdinand II.",
       "dynasty": "Habsburg",
@@ -1826,7 +1826,7 @@
     ],
     "capital": 733,
     "flag": "/assets/flags/hess_m.png",
-    "provincesCount": 9,
+    "provincesCount": 10,
     "ruler": {
       "name": "Herrscher von Hessen",
       "dynasty": "Haus Hessen",
@@ -3652,42 +3652,6 @@
     }
   },
   {
-    "tag": "wald3_m",
-    "name": "Waldeck",
-    "color": "rgb(216, 188, 31)",
-    "rgb": [
-      216,
-      188,
-      31
-    ],
-    "capital": 735,
-    "flag": "/assets/flags/wald3_m.png",
-    "provincesCount": 1,
-    "ruler": {
-      "name": "Herrscher von Waldeck",
-      "dynasty": "Haus Waldeck",
-      "age": 38,
-      "legitimacy": 80,
-      "traits": [
-        "Reichsstand"
-      ]
-    },
-    "treasury": 1340,
-    "income": 0,
-    "expenses": 0,
-    "balance": 0,
-    "prestige": 52,
-    "stability": 80,
-    "manpower": 8700,
-    "government": "Absolute Monarchie",
-    "laws": {
-      "power": "Absolutismus",
-      "economy": "Merkantilismus",
-      "society": "Adelsprivilegien",
-      "military": "Söldnerheer"
-    }
-  },
-  {
     "tag": "lic_m",
     "name": "Liechtenstein",
     "color": "rgb(0, 43, 127)",
@@ -3990,42 +3954,6 @@
     "ruler": {
       "name": "Herrscher von Memmingen",
       "dynasty": "Haus Memmingen",
-      "age": 38,
-      "legitimacy": 80,
-      "traits": [
-        "Reichsstand"
-      ]
-    },
-    "treasury": 1340,
-    "income": 0,
-    "expenses": 0,
-    "balance": 0,
-    "prestige": 52,
-    "stability": 80,
-    "manpower": 8700,
-    "government": "Absolute Monarchie",
-    "laws": {
-      "power": "Absolutismus",
-      "economy": "Merkantilismus",
-      "society": "Adelsprivilegien",
-      "military": "Söldnerheer"
-    }
-  },
-  {
-    "tag": "bre3_m",
-    "name": "Bregenz",
-    "color": "rgb(196, 68, 33)",
-    "rgb": [
-      196,
-      68,
-      33
-    ],
-    "capital": 7373,
-    "flag": "/assets/flags/bre3_m.png",
-    "provincesCount": 1,
-    "ruler": {
-      "name": "Herrscher von Bregenz",
-      "dynasty": "Haus Bregenz",
       "age": 38,
       "legitimacy": 80,
       "traits": [

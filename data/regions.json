@@ -1935,7 +1935,7 @@
       "ver_g": 3,
       "swi_m": 16,
       "lic_m": 1,
-      "atr_m2": 3,
+      "atr_m2": 4,
       "kons3_m": 1,
       "bade_m": 3,
       "lich3_m": 1,
@@ -1955,7 +1955,6 @@
       "mus_m": 1,
       "bur3_m": 1,
       "ulm_m": 1,
-      "wald3_m": 1,
       "buff3_m": 2,
       "hene3_m": 1,
       "wurz_m": 2,
@@ -1968,8 +1967,7 @@
       "str3_m": 1,
       "ans_m": 1,
       "parm_m": 1,
-      "furs3_m": 1,
-      "bre3_m": 1
+      "furs3_m": 1
     },
     "controller": null
   },
