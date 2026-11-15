@@ -1383,12 +1383,11 @@
       "supplyBonus": 0.2
     },
     "controlBreakdown": {
-      "atr_m2": 74,
+      "atr_m2": 76,
       "bava_m": 1,
       "tur_m": 15,
       "trass_m": 2,
-      "pol2_m": 6,
-      "cies3_m": 1
+      "pol2_m": 6
     },
     "controller": null
   },
@@ -1953,7 +1952,7 @@
       "co_m": 4,
       "hess_m": 6,
       "prus_m": 3,
-      "bava_m": 7,
+      "bava_m": 8,
       "aac_m": 1,
       "hill3_m": 1,
       "lipp3_m": 1,
@@ -1971,7 +1970,6 @@
       "mem_m": 1,
       "trie_m": 3,
       "sayn3_m": 1,
-      "spex3_m": 1,
       "net_m2": 1,
       "str3_m": 1,
       "ans_m": 1,
@@ -2480,7 +2478,7 @@
     "controlBreakdown": {
       "olde_m": 6,
       "ef_m": 9,
-      "teck3_m": 3,
+      "nass_m": 3,
       "osna3_m": 6,
       "mus_m": 18,
       "net_m2": 59
@@ -2698,10 +2696,10 @@
     },
     "controlBreakdown": {
       "papa_m2": 10,
-      "spa3_m": 49,
+      "spa3_m": 44,
       "geno_g": 8,
       "tur_m": 29,
-      "savo_m": 1,
+      "savo_m": 6,
       "ver_g": 1,
       "mot_m": 1
     },
@@ -2787,13 +2785,13 @@
       "supplyBonus": 0.2
     },
     "controlBreakdown": {
-      "spa3_m": 32,
+      "spa3_m": 26,
       "kn_m": 3,
       "algi_m": 11,
       "hafs_m": 29,
       "tur_m": 20,
       "ver_g": 3,
-      "savo_m": 2
+      "savo_m": 8
     },
     "controller": null
   },
@@ -3438,13 +3436,11 @@
       "supplyBonus": 0.2
     },
     "controlBreakdown": {
-      "tur_m": 2,
-      "crkh_m2": 13,
+      "tur_m": 16,
       "kaz_m": 33,
       "rus3_m": 29,
       "nago_m": 12,
       "shap3_m": 1,
-      "nata3_m": 1,
       "hatu3_m": 2,
       "gazi_m": 3,
       "abz3_m": 2,
@@ -3959,10 +3955,9 @@
       "supplyBonus": 0.2
     },
     "controlBreakdown": {
-      "tur_m": 32,
+      "tur_m": 68,
       "pol2_m": 20,
-      "mo_m2": 12,
-      "crkh_m2": 36
+      "mo_m2": 12
     },
     "controller": null
   },
@@ -4329,12 +4324,11 @@
       "supplyBonus": 0.2
     },
     "controlBreakdown": {
-      "tur_m": 52,
+      "tur_m": 53,
       "ira_m2": 23,
       "kart_m": 5,
       "bit_m": 2,
       "hakk_m": 2,
-      "gur3_m": 1,
       "ard_m": 1,
       "shek3_m": 1,
       "abk_m": 1,
@@ -5053,9 +5047,9 @@
     },
     "controlBreakdown": {
       "tur_m": 38,
-      "ira_m2": 30,
+      "ira_m2": 31,
       "balu_m": 1,
-      "mugh_m": 2,
+      "mugh_m": 1,
       "veca_m": 1,
       "neutral": 1,
       "mush_m": 4,

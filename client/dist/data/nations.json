@@ -10,7 +10,7 @@
     ],
     "capital": 1116,
     "flag": "/assets/flags/tur_m.png",
-    "provincesCount": 654,
+    "provincesCount": 690,
     "ruler": {
       "name": "Osman II.",
       "dynasty": "Osman",
@@ -120,7 +120,7 @@
     ],
     "capital": 2578,
     "flag": "/assets/flags/ira_m2.png",
-    "provincesCount": 193,
+    "provincesCount": 194,
     "ruler": {
       "name": "Herrscher von Persia",
       "dynasty": "Haus Persia",
@@ -230,7 +230,7 @@
     ],
     "capital": 6561,
     "flag": "/assets/flags/spa3_m.png",
-    "provincesCount": 248,
+    "provincesCount": 240,
     "ruler": {
       "name": "Philipp III.",
       "dynasty": "Habsburg",
@@ -521,7 +521,7 @@
     ],
     "capital": 688,
     "flag": "/assets/flags/atr_m2.png",
-    "provincesCount": 175,
+    "provincesCount": 176,
     "ruler": {
       "name": "Kaiser Ferdinand II.",
       "dynasty": "Habsburg",
@@ -575,42 +575,6 @@
     "prestige": 126,
     "stability": 80,
     "manpower": 34600,
-    "government": "Absolute Monarchie",
-    "laws": {
-      "power": "Absolutismus",
-      "economy": "Merkantilismus",
-      "society": "Adelsprivilegien",
-      "military": "Söldnerheer"
-    }
-  },
-  {
-    "tag": "crkh_m2",
-    "name": "Khanat der Krim",
-    "color": "rgb(25, 156, 108)",
-    "rgb": [
-      25,
-      156,
-      108
-    ],
-    "capital": 6627,
-    "flag": "/assets/flags/crkh_m2.png",
-    "provincesCount": 34,
-    "ruler": {
-      "name": "Herrscher von Khanat der Krim",
-      "dynasty": "Haus Khanat der Krim",
-      "age": 38,
-      "legitimacy": 80,
-      "traits": [
-        "Reichsstand"
-      ]
-    },
-    "treasury": 5960,
-    "income": 0,
-    "expenses": 0,
-    "balance": 0,
-    "prestige": 118,
-    "stability": 80,
-    "manpower": 31800,
     "government": "Absolute Monarchie",
     "laws": {
       "power": "Absolutismus",
@@ -957,7 +921,7 @@
     ],
     "capital": 716,
     "flag": "/assets/flags/bava_m.png",
-    "provincesCount": 39,
+    "provincesCount": 40,
     "ruler": {
       "name": "Maximilian I.",
       "dynasty": "Wittelsbach",
@@ -1031,7 +995,7 @@
     ],
     "capital": 148,
     "flag": "/assets/flags/savo_m.png",
-    "provincesCount": 24,
+    "provincesCount": 32,
     "ruler": {
       "name": "Karl Emanuel I. (Haus Savoyen)",
       "dynasty": "Haus Savoyen",
@@ -1934,7 +1898,7 @@
     ],
     "capital": 774,
     "flag": "/assets/flags/nass_m.png",
-    "provincesCount": 6,
+    "provincesCount": 7,
     "ruler": {
       "name": "Herrscher von Nassau",
       "dynasty": "Haus Nassau",
@@ -2078,7 +2042,7 @@
     ],
     "capital": 5563,
     "flag": "/assets/flags/mugh_m.png",
-    "provincesCount": 6,
+    "provincesCount": 5,
     "ruler": {
       "name": "Herrscher von Mogulreich",
       "dynasty": "Haus Mogulreich",
@@ -3688,42 +3652,6 @@
     }
   },
   {
-    "tag": "spex3_m",
-    "name": "Speyer",
-    "color": "rgb(81, 130, 237)",
-    "rgb": [
-      81,
-      130,
-      237
-    ],
-    "capital": 782,
-    "flag": "/assets/flags/spex3_m.png",
-    "provincesCount": 1,
-    "ruler": {
-      "name": "Herrscher von Speyer",
-      "dynasty": "Haus Speyer",
-      "age": 38,
-      "legitimacy": 80,
-      "traits": [
-        "Reichsstand"
-      ]
-    },
-    "treasury": 1340,
-    "income": 0,
-    "expenses": 0,
-    "balance": 0,
-    "prestige": 52,
-    "stability": 80,
-    "manpower": 8700,
-    "government": "Absolute Monarchie",
-    "laws": {
-      "power": "Absolutismus",
-      "economy": "Merkantilismus",
-      "society": "Adelsprivilegien",
-      "military": "Söldnerheer"
-    }
-  },
-  {
     "tag": "worm_m",
     "name": "Bistum Worms",
     "color": "rgb(98, 73, 73)",
@@ -3832,42 +3760,6 @@
     }
   },
   {
-    "tag": "cies3_m",
-    "name": "Cieszyn",
-    "color": "rgb(61, 108, 153)",
-    "rgb": [
-      61,
-      108,
-      153
-    ],
-    "capital": 3705,
-    "flag": "/assets/flags/cies3_m.png",
-    "provincesCount": 1,
-    "ruler": {
-      "name": "Herrscher von Cieszyn",
-      "dynasty": "Haus Cieszyn",
-      "age": 38,
-      "legitimacy": 80,
-      "traits": [
-        "Reichsstand"
-      ]
-    },
-    "treasury": 1340,
-    "income": 0,
-    "expenses": 0,
-    "balance": 0,
-    "prestige": 52,
-    "stability": 80,
-    "manpower": 8700,
-    "government": "Absolute Monarchie",
-    "laws": {
-      "power": "Absolutismus",
-      "economy": "Merkantilismus",
-      "society": "Adelsprivilegien",
-      "military": "Söldnerheer"
-    }
-  },
-  {
     "tag": "lube3_m",
     "name": "Lübeck",
     "color": "rgb(222, 215, 0)",
@@ -3954,42 +3846,6 @@
     "ruler": {
       "name": "Herrscher von Hildesheim",
       "dynasty": "Haus Hildesheim",
-      "age": 38,
-      "legitimacy": 80,
-      "traits": [
-        "Reichsstand"
-      ]
-    },
-    "treasury": 1340,
-    "income": 0,
-    "expenses": 0,
-    "balance": 0,
-    "prestige": 52,
-    "stability": 80,
-    "manpower": 8700,
-    "government": "Absolute Monarchie",
-    "laws": {
-      "power": "Absolutismus",
-      "economy": "Merkantilismus",
-      "society": "Adelsprivilegien",
-      "military": "Söldnerheer"
-    }
-  },
-  {
-    "tag": "teck3_m",
-    "name": "Tecklenburg",
-    "color": "rgb(244, 161, 115)",
-    "rgb": [
-      244,
-      161,
-      115
-    ],
-    "capital": 616,
-    "flag": "/assets/flags/teck3_m.png",
-    "provincesCount": 1,
-    "ruler": {
-      "name": "Herrscher von Tecklenburg",
-      "dynasty": "Haus Tecklenburg",
       "age": 38,
       "legitimacy": 80,
       "traits": [
@@ -4624,42 +4480,6 @@
     }
   },
   {
-    "tag": "gur3_m",
-    "name": "Guria",
-    "color": "rgb(218, 226, 85)",
-    "rgb": [
-      218,
-      226,
-      85
-    ],
-    "capital": 1214,
-    "flag": "/assets/flags/gur3_m.png",
-    "provincesCount": 1,
-    "ruler": {
-      "name": "Herrscher von Guria",
-      "dynasty": "Haus Guria",
-      "age": 38,
-      "legitimacy": 80,
-      "traits": [
-        "Reichsstand"
-      ]
-    },
-    "treasury": 1340,
-    "income": 0,
-    "expenses": 0,
-    "balance": 0,
-    "prestige": 52,
-    "stability": 80,
-    "manpower": 8700,
-    "government": "Absolute Monarchie",
-    "laws": {
-      "power": "Absolutismus",
-      "economy": "Merkantilismus",
-      "society": "Adelsprivilegien",
-      "military": "Söldnerheer"
-    }
-  },
-  {
     "tag": "elis3_m",
     "name": "Elisu",
     "color": "rgb(102, 142, 202)",
@@ -4710,42 +4530,6 @@
     "ruler": {
       "name": "Herrscher von Avaria",
       "dynasty": "Haus Avaria",
-      "age": 38,
-      "legitimacy": 80,
-      "traits": [
-        "Reichsstand"
-      ]
-    },
-    "treasury": 1340,
-    "income": 0,
-    "expenses": 0,
-    "balance": 0,
-    "prestige": 52,
-    "stability": 80,
-    "manpower": 8700,
-    "government": "Absolute Monarchie",
-    "laws": {
-      "power": "Absolutismus",
-      "economy": "Merkantilismus",
-      "society": "Adelsprivilegien",
-      "military": "Söldnerheer"
-    }
-  },
-  {
-    "tag": "nata3_m",
-    "name": "Natukhai",
-    "color": "rgb(24, 138, 26)",
-    "rgb": [
-      24,
-      138,
-      26
-    ],
-    "capital": 10814,
-    "flag": "/assets/flags/nata3_m.png",
-    "provincesCount": 1,
-    "ruler": {
-      "name": "Herrscher von Natukhai",
-      "dynasty": "Haus Natukhai",
       "age": 38,
       "legitimacy": 80,
       "traits": [

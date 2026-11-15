@@ -218,19 +218,49 @@ const transferMap = {
   'full3_m': 'hess_m',
   'hana3_m': 'hess_m',
 
-  // Osmanisches Reich bekommt Samtskhe, Mingrelien und Imeretien
+  // Osmanisches Reich bekommt Samtskhe, Mingrelien und Imeretien sowie Krim, Natukhai und Guria
   'samt_m': 'tur_m',
   'min_m': 'tur_m',
-  'imer_m': 'tur_m'
+  'imer_m': 'tur_m',
+  'crkh_m2': 'tur_m',
+  'nata3_m': 'tur_m',
+  'gur3_m': 'tur_m',
+
+  // Bayern bekommt Speyer
+  'spex3_m': 'bava_m',
+
+  // Österreich bekommt Cieszyn
+  'cies3_m': 'atr_m2',
+
+  // Nassau bekommt Tecklenburg
+  'teck3_m': 'nass_m'
 };
 
 // Explicit province specific transfers
 const specificProvinceTransfers = {
+  // Gizab an Persien
+  5842: 'ira_m2',
+  // Speyer an Bayern
+  782: 'bava_m',
+  // Cieszyn an Österreich
+  3705: 'atr_m2',
+  // Guria (Lanchkhuti) an das Osmanische Reich
+  1214: 'tur_m',
+  // Tecklenburg / Lingen an Nassau
+  616: 'nass_m',
   // Venedig bekommt Carpi (prov 166)
   166: 'ver_g',
-  // Savoyen bekommt ganz Sardinien (Sassari 2277 & Cagliari 2278)
-  2277: 'savo_m',
-  2278: 'savo_m',
+  // Savoyen bekommt die gesamte Insel Sardinien
+  2275: 'savo_m', // Carbonia
+  2276: 'savo_m', // Olbia
+  2277: 'savo_m', // Sassari
+  2278: 'savo_m', // Cagliari
+  2279: 'savo_m', // Oristano
+  2280: 'savo_m', // Nuoro
+  2281: 'savo_m', // Tortoli
+  3013: 'savo_m', // Macomer
+  3014: 'savo_m', // Laconi
+  6892: 'savo_m', // Budoni
   // Winterthur (6879) an die Schweiz
   6879: 'swi_m',
   // Massa (154) an Parma
@@ -317,6 +347,23 @@ for (const t of targets) {
   if (fs.existsSync(path.dirname(t.p))) {
     fs.writeFileSync(t.p, JSON.stringify(t.data, null, 2), 'utf8');
     console.log(`Updated ${path.basename(t.p)} in ${path.dirname(t.p)}`);
+  }
+}
+
+// Copy 1830 Sardinia/Savoy flag if available
+const flagSource = path.join(__dirname, 'assets/sardinia_1830.png');
+if (fs.existsSync(flagSource)) {
+  const flagDestinations = [
+    path.join(__dirname, '../client/public/assets/flags/savo_m.png'),
+    path.join(__dirname, '../client/dist/assets/flags/savo_m.png'),
+    path.join(__dirname, '../client/public/assets/flags/sard_m.png'),
+    path.join(__dirname, '../client/dist/assets/flags/sard_m.png')
+  ];
+  for (const dst of flagDestinations) {
+    if (fs.existsSync(path.dirname(dst))) {
+      fs.copyFileSync(flagSource, dst);
+      console.log(`Updated flag: ${dst}`);
+    }
   }
 }
 
