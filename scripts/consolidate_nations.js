@@ -9,7 +9,7 @@ const provs = JSON.parse(fs.readFileSync(provsPath, 'utf8'));
 const nations = JSON.parse(fs.readFileSync(nationsPath, 'utf8'));
 const regions = JSON.parse(fs.readFileSync(regionsPath, 'utf8'));
 
-// 1. Ensure swi_m and sard_m exist in nations
+// 1. Ensure Switzerland (swi_m) exists
 let swiNation = nations.find(n => n.tag === 'swi_m');
 if (!swiNation) {
   swiNation = {
@@ -45,22 +45,23 @@ if (!swiNation) {
   nations.push(swiNation);
 }
 
-let sardNation = nations.find(n => n.tag === 'sard_m');
-if (!sardNation) {
-  sardNation = {
-    tag: 'sard_m',
-    name: 'Königreich Sardinien',
+// 2. Ensure Savoy (savo_m) exists with historical accuracy
+let savoNation = nations.find(n => n.tag === 'savo_m');
+if (!savoNation) {
+  savoNation = {
+    tag: 'savo_m',
+    name: 'Herzogtum Savoyen',
     color: 'rgb(37, 99, 235)',
     rgb: [37, 99, 235],
-    capital: 148,
-    flag: '/assets/flags/sard_m.png',
+    capital: 148, // Turin
+    flag: '/assets/flags/savo_m.png',
     provincesCount: 0,
     ruler: {
       name: 'Karl Emanuel I. (Haus Savoyen)',
       dynasty: 'Haus Savoyen',
       age: 56,
       legitimacy: 85,
-      traits: ['Militärreformer', 'Dynastische Politik']
+      traits: ['Der Große Herzog von Savoyen', 'Dynastische Politik', 'Militärreformer']
     },
     treasury: 4800,
     income: 0,
@@ -77,21 +78,34 @@ if (!sardNation) {
       military: 'Berufsheer'
     }
   };
-  nations.push(sardNation);
+  nations.push(savoNation);
+} else {
+  savoNation.name = 'Herzogtum Savoyen';
+  savoNation.capital = 148;
+  savoNation.flag = '/assets/flags/savo_m.png';
+  savoNation.ruler = {
+    name: 'Karl Emanuel I. (Haus Savoyen)',
+    dynasty: 'Haus Savoyen',
+    age: 56,
+    legitimacy: 85,
+    traits: ['Der Große Herzog von Savoyen', 'Dynastische Politik', 'Militärreformer']
+  };
 }
 
-// 2. Renaming
+// 3. Name adjustments
+// Lüneburg: bennene lüneburg wieder zu lüneburg
 const lun = nations.find(n => n.tag === 'lun_m');
 if (lun) {
-  lun.name = 'Kurfürstentum Hannover';
-  lun.ruler.traits.push('Haus Hannover');
+  lun.name = 'Fürstentum Lüneburg';
 }
 
-const stet = nations.find(n => n.tag === 'stet3_m');
-if (stet) {
-  stet.name = 'Herzogtum Pommern';
+// Wolfenbüttel name
+const wlf = nations.find(n => n.tag === 'buff3_m');
+if (wlf) {
+  wlf.name = 'Fürstentum Braunschweig-Wolfenbüttel';
 }
 
+// Prussia
 const prus = nations.find(n => n.tag === 'prus_m');
 if (prus) {
   prus.capital = 592; // Berlin
@@ -105,16 +119,20 @@ if (prus) {
   };
 }
 
-// 3. Define province transfers
-// Tag mappings
+// 4. Define province transfers
 const transferMap = {
-  // preußen bekommt brandenburg
+  // Preußen bekommt Brandenburg & ganz Stettin
   'baa_m': 'prus_m',
-  // österreich bekommt böhmen und ungarn als auch tirol
+  'stet3_m': 'prus_m',
+  'camm3_m': 'prus_m',
+
+  // Österreich bekommt Böhmen, Ungarn, Tirol & Trent
   'bohe_m': 'atr_m2',
   'hun_m': 'atr_m2',
   'tyro_m': 'atr_m2',
-  // vereinige die schweiz
+  'tre_m': 'atr_m2',
+
+  // Vereinige die Schweiz (inkl. Winterthur)
   'bern_m': 'swi_m',
   'zuri3_m': 'swi_m',
   'base3_m': 'swi_m',
@@ -129,51 +147,107 @@ const transferMap = {
   'chur3_m': 'swi_m',
   'neuh3_m': 'swi_m',
   'schw_m': 'swi_m',
-  // sardinien bekommt savoyen
-  'savo_m': 'sard_m',
-  // spanien bekommt burgundy und neapel
+  'thar3_m': 'swi_m', // Winterthur
+
+  // Savoyen bekommt ganz Sardinien, Montferrat und Nizza
+  'sard_m': 'savo_m',
+  'mof_m': 'savo_m',
+  'nice_m': 'savo_m',
+
+  // Spanien bekommt Burgundy und Neapel
   'burg_m2': 'spa3_m',
   'besa3_m': 'spa3_m',
   'nap_m': 'spa3_m',
-  // bayern bekommt kurpfalz
+
+  // Bayern bekommt Kurpfalz, Bayreuth, Passau und Berchtesgaden
   'pala_m': 'bava_m',
-  // dänemark bekommt schleswig kiel und holstein
+  'beyr3_m': 'bava_m',
+  'pasc3_m': 'bava_m',
+  'berh3_m': 'bava_m',
+
+  // Dänemark bekommt Schleswig, Kiel und Holstein
   'scch_m': 'den_m',
   'kiel_m': 'den_m',
   'hols_m': 'den_m',
-  // sachsen bekommt saxe coburg, saxe weimar und sachsen anhalt
+
+  // Schweden bekommt Wolgast und Bremen
+  'wolg3_m': 'swe2_m',
+  'bre_m': 'swe2_m',
+
+  // Sachsen bekommt Saxe-Coburg, Saxe-Weimar, Sachsen-Anhalt, Eisenach und Schwarzburg
   'cob2_m': 'sax_m',
   'weim3_m': 'sax_m',
   'anh_m': 'sax_m',
-  // lippe bekommt minden
+  'eis2_m': 'sax_m',
+  'schw3_m': 'sax_m',
+
+  // Wolfenbüttel bekommt Mansfeld
+  'mans3_m': 'buff3_m',
+
+  // Münster bekommt Bentheim
+  'bent3_m': 'mus_m',
+
+  // Parma bekommt Modena und Massa
+  'moden_m2': 'parm_m',
+  'masx3_m': 'parm_m',
+
+  // Lippe bekommt Minden
   'mind3_m': 'lipp3_m',
-  // fürstentum lüneburg (hannover) bekommt verden
+
+  // Lüneburg bekommt Verden
   'verd_m': 'lun_m',
-  // großbaden bekommt offenburg
+
+  // GroßBaden bekommt Offenburg und Rottweil
   'offe3_m': 'bade_m',
-  // stettin (pommern) bekommt cammin
-  'camm3_m': 'stet3_m',
-  // polen litauen bekommt saporischja
+  'rott3_m': 'bade_m',
+
+  // Württemberg bekommt Biberach
+  'wad3_m': 'wurt_m',
+
+  // Polen-Litauen bekommt Saporischja
   'zaph_m': 'pol2_m',
-  // kirchenstaat bekommt surbino (urbino)
+
+  // Kirchenstaat bekommt Urbino
   'urb_m': 'papa_m2',
-  // großtoskana bekommt piombino und lucca
+
+  // Toskana bekommt Piombino und Lucca
   'piom3_m': 'tusc_m2',
   'luc_m': 'tusc_m2',
-  // parma bekommt modena
-  'moden_m2': 'parm_m',
-  // hessen bekommt fulda und hanau
+
+  // Hessen bekommt Fulda und Hanau
   'full3_m': 'hess_m',
-  'hana3_m': 'hess_m'
+  'hana3_m': 'hess_m',
+
+  // Osmanisches Reich bekommt Samtskhe, Mingrelien und Imeretien
+  'samt_m': 'tur_m',
+  'min_m': 'tur_m',
+  'imer_m': 'tur_m'
 };
 
 // Explicit province specific transfers
 const specificProvinceTransfers = {
-  // venedig bekommt carpi (prov 166)
+  // Venedig bekommt Carpi (prov 166)
   166: 'ver_g',
-  // sardinien bekommt sardinien insel (Sassari 2277 & Cagliari 2278)
-  2277: 'sard_m',
-  2278: 'sard_m'
+  // Savoyen bekommt ganz Sardinien (Sassari 2277 & Cagliari 2278)
+  2277: 'savo_m',
+  2278: 'savo_m',
+  // Winterthur (6879) an die Schweiz
+  6879: 'swi_m',
+  // Massa (154) an Parma
+  154: 'parm_m',
+  // Mansfeld (754) an Wolfenbüttel
+  754: 'buff3_m',
+  // Eisenach (755) & Schwarzburg (750) an Sachsen
+  755: 'sax_m',
+  750: 'sax_m',
+  // Bayreuth (6916), Passau (719) & Berchtesgaden (715) an Bayern
+  6916: 'bava_m',
+  719: 'bava_m',
+  715: 'bava_m',
+  // Rottweil (764) an Baden
+  764: 'bade_m',
+  // Biberach (6601) an Württemberg
+  6601: 'wurt_m'
 };
 
 // Execute province updates
@@ -191,7 +265,7 @@ for (const p of provs) {
 }
 console.log(`Transferred ${transferCount} provinces across all rules.`);
 
-// 4. Update nation province counts & filter active nations
+// 5. Update nation province counts & filter active nations
 const nationMap = new Map();
 for (const n of nations) {
   n.provincesCount = provs.filter(p => p.owner === n.tag).length;
@@ -202,7 +276,7 @@ for (const n of nations) {
 const activeNations = nations.filter(n => n.provincesCount > 0);
 console.log(`Active nations with territory: ${activeNations.length} (from ${nations.length})`);
 
-// 5. Update regions control breakdown
+// 6. Update regions control breakdown
 for (const [rId, reg] of Object.entries(regions)) {
   const breakdown = {};
   let total = 0;
@@ -226,7 +300,7 @@ for (const [rId, reg] of Object.entries(regions)) {
   reg.controller = controller;
 }
 
-// 6. Save updated datasets to all locations
+// 7. Save updated datasets to all locations
 const targets = [
   { p: provsPath, data: provs },
   { p: nationsPath, data: activeNations },
@@ -247,7 +321,7 @@ for (const t of targets) {
 }
 
 console.log('--- Summary of Major Powers ---');
-const majorTags = ['prus_m', 'atr_m2', 'swi_m', 'sard_m', 'spa3_m', 'bava_m', 'den_m', 'ver_g', 'sax_m', 'lipp3_m', 'lun_m', 'bade_m', 'stet3_m', 'pol2_m', 'papa_m2', 'tusc_m2', 'parm_m', 'hess_m'];
+const majorTags = ['prus_m', 'atr_m2', 'swi_m', 'savo_m', 'spa3_m', 'bava_m', 'den_m', 'swe2_m', 'tur_m', 'sax_m', 'buff3_m', 'mus_m', 'parm_m', 'bade_m', 'wurt_m', 'lun_m', 'pol2_m', 'egyo_m', 'trip_m'];
 for (const tag of majorTags) {
   const n = activeNations.find(x => x.tag === tag);
   if (n) console.log(`${n.name} (${n.tag}): ${n.provincesCount} provinces`);

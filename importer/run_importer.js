@@ -93,6 +93,8 @@ function getCivName(tag) {
   if (tag.startsWith('sco')) return 'Königreich Schottland';
   if (tag.startsWith('net')) return 'Vereinigte Niederlande';
   if (tag.startsWith('tur')) return 'Osmanisches Reich';
+  if (tag.startsWith('egyo')) return 'Eyalet Ägypten';
+  if (tag.startsWith('trip')) return 'Eyalet Tripolitanien';
   if (tag.startsWith('bava')) return 'Herzogtum Bayern';
   if (tag.startsWith('sax')) return 'Kurfürstentum Sachsen';
   if (tag.startsWith('pal') || tag.startsWith('pfa')) return 'Kurpfalz';
@@ -149,13 +151,11 @@ for (let pid = 0; pid < pdetails.length; pid++) {
   const cx = Math.round(sumX / n);
   const cy = Math.round(sumY / n);
 
-  // EXPANDED NORTHERN BOUNDS:
-  // cy >= 80 encompasses Nordkap, Hammerfest, Tromsø, Alta, Kiruna, Lapland, Murmansk, Kola, Barents Sea, White Sea!
-  // cx: 6800 to 11800 encompasses Iceland to Urals/Caspian.
-  const inTheaterCoords = (cx >= 6800 && cx <= 11800 && cy >= 80 && cy <= 3250);
+  // EXPANDED BOUNDS (North Cape to Northern Libya & Egypt):
+  const inTheaterCoords = (cx >= 6800 && cx <= 11800 && cy >= 80 && cy <= 3550);
   const isEuropeContinent = (p.co === 2);
-  const isOttomanOrCaucasus = (p.co === 1 && cx >= 9500 && cx <= 11600 && cy >= 2250 && cy <= 3200);
-  const isNorthAfricaCoastal = (p.co === 6 && cx >= 7800 && cx <= 10400 && cy >= 2900 && cy <= 3250);
+  const isOttomanOrCaucasus = (p.co === 1 && cx >= 9500 && cx <= 11600 && cy >= 2250 && cy <= 3550);
+  const isNorthAfricaCoastal = (p.co === 6 && cx >= 7800 && cx <= 10400 && cy >= 2900 && cy <= 3550);
   const isSeaInBounds = (p.tr === 0 && inTheaterCoords);
 
   if (inTheaterCoords && (isEuropeContinent || isOttomanOrCaucasus || isNorthAfricaCoastal || isSeaInBounds)) {
@@ -263,7 +263,9 @@ const REGIONS = {
   'thrakien_konstantinopel': { id: 'thrakien_konstantinopel', name: 'Konstantinopel & Meerengen', color: '#702459', stateRegion: 'STATE_EDIRNE' },
   'westanatolien': { id: 'westanatolien', name: 'Westanatolien', color: '#521b41', stateRegion: 'STATE_AYDIN' },
   'zentralanatolien': { id: 'zentralanatolien', name: 'Zentralanatolien', color: '#441434', stateRegion: 'STATE_ANKARA' },
-  'kaukasus': { id: 'kaukasus', name: 'Kaukasus & Krim-Khanat', color: '#234e52', stateRegion: 'STATE_GEORGIA' }
+  'kaukasus': { id: 'kaukasus', name: 'Kaukasus & Krim-Khanat', color: '#234e52', stateRegion: 'STATE_GEORGIA' },
+  'tripolitanien_libyen': { id: 'tripolitanien_libyen', name: 'Tripolitanien & Kyrenaika (Libyen)', color: '#b45309', stateRegion: 'STATE_TRIPOLI' },
+  'aegypten_nil': { id: 'aegypten_nil', name: 'Eyalet Ägypten & Nildelta', color: '#d97706', stateRegion: 'STATE_LOWER_EGYPT' }
 };
 
 function determineRegion(cx, cy) {
@@ -271,6 +273,11 @@ function determineRegion(cx, cy) {
   if (cy <= 600) {
     if (cx >= 9800) return 'finnland_kola';
     return 'nordnorwegen_lapland';
+  }
+  // North Africa & Egypt (cy >= 3100)
+  if (cy >= 3100) {
+    if (cx <= 9550) return 'tripolitanien_libyen';
+    return 'aegypten_nil';
   }
   // Scandinavia
   if (cx >= 8500 && cx <= 10100 && cy <= 1800) {
@@ -472,7 +479,9 @@ const HISTORICAL_RULERS_1618 = {
   'ver_g': { name: 'Nicolò Donato', dynasty: 'Donà', age: 78, legitimacy: 85, traits: ['Doge der Serenissima Venedig'] },
   'por2_m': { name: 'Philipp III. (Personalunion)', dynasty: 'Habsburg', age: 40, legitimacy: 78, traits: ['Krone von Portugal'] },
   'savo_m': { name: 'Karl Emanuel I.', dynasty: 'Savoyen', age: 56, legitimacy: 84, traits: ['Der Große Herzog von Savoyen'] },
-  'nap_m': { name: 'Vizekönig Pedro Téllez-Girón', dynasty: 'Osuna', age: 44, legitimacy: 80, traits: ['Spanischer Vizekönig von Neapel'] }
+  'nap_m': { name: 'Vizekönig Pedro Téllez-Girón', dynasty: 'Osuna', age: 44, legitimacy: 80, traits: ['Spanischer Vizekönig von Neapel'] },
+  'egyo_m': { name: 'Ibrahim Pascha', dynasty: 'Osmanische Statthalter', age: 48, legitimacy: 85, traits: ['Beylerbey von Ägypten', 'Verwalter des Niltals'] },
+  'trip_m': { name: 'Sulayman Dey', dynasty: 'Deylik Tripolis', age: 42, legitimacy: 80, traits: ['Herrscher der Barbaresken', 'Pascha von Tripolitanien'] }
 };
 
 const provCountByNation = {};

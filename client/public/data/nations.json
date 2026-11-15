@@ -10,7 +10,7 @@
     ],
     "capital": 1116,
     "flag": "/assets/flags/tur_m.png",
-    "provincesCount": 535,
+    "provincesCount": 654,
     "ruler": {
       "name": "Osman II.",
       "dynasty": "Osman",
@@ -21,13 +21,13 @@
         "Sultan des Reiches"
       ]
     },
-    "treasury": 76100,
+    "treasury": 90520,
     "income": 0,
     "expenses": 0,
     "balance": 0,
     "prestige": 350,
     "stability": 80,
-    "manpower": 382500,
+    "manpower": 454600,
     "government": "Absolute Monarchie",
     "laws": {
       "power": "Absolutismus",
@@ -110,6 +110,42 @@
     }
   },
   {
+    "tag": "ira_m2",
+    "name": "Persia",
+    "color": "rgb(51, 195, 113)",
+    "rgb": [
+      51,
+      195,
+      113
+    ],
+    "capital": 2578,
+    "flag": "/assets/flags/ira_m2.png",
+    "provincesCount": 193,
+    "ruler": {
+      "name": "Herrscher von Persia",
+      "dynasty": "Haus Persia",
+      "age": 38,
+      "legitimacy": 80,
+      "traits": [
+        "Reichsstand"
+      ]
+    },
+    "treasury": 28220,
+    "income": 0,
+    "expenses": 0,
+    "balance": 0,
+    "prestige": 350,
+    "stability": 80,
+    "manpower": 143100,
+    "government": "Absolute Monarchie",
+    "laws": {
+      "power": "Absolutismus",
+      "economy": "Merkantilismus",
+      "society": "Adelsprivilegien",
+      "military": "Söldnerheer"
+    }
+  },
+  {
     "tag": "fra_m",
     "name": "Frankreich",
     "color": "rgb(22, 73, 216)",
@@ -157,7 +193,7 @@
     ],
     "capital": 1049,
     "flag": "/assets/flags/swe2_m.png",
-    "provincesCount": 170,
+    "provincesCount": 180,
     "ruler": {
       "name": "Gustav II. Adolf",
       "dynasty": "Wasa",
@@ -294,42 +330,6 @@
     }
   },
   {
-    "tag": "ira_m2",
-    "name": "Persia",
-    "color": "rgb(51, 195, 113)",
-    "rgb": [
-      51,
-      195,
-      113
-    ],
-    "capital": 2578,
-    "flag": "/assets/flags/ira_m2.png",
-    "provincesCount": 118,
-    "ruler": {
-      "name": "Herrscher von Persia",
-      "dynasty": "Haus Persia",
-      "age": 38,
-      "legitimacy": 80,
-      "traits": [
-        "Reichsstand"
-      ]
-    },
-    "treasury": 17720,
-    "income": 0,
-    "expenses": 0,
-    "balance": 0,
-    "prestige": 286,
-    "stability": 80,
-    "manpower": 90600,
-    "government": "Absolute Monarchie",
-    "laws": {
-      "power": "Absolutismus",
-      "economy": "Merkantilismus",
-      "society": "Adelsprivilegien",
-      "military": "Söldnerheer"
-    }
-  },
-  {
     "tag": "kaz_m",
     "name": "Kasachen-Khanat",
     "color": "rgb(0, 147, 221)",
@@ -366,6 +366,42 @@
     }
   },
   {
+    "tag": "mor_m",
+    "name": "Marokko",
+    "color": "rgb(100, 20, 20)",
+    "rgb": [
+      100,
+      20,
+      20
+    ],
+    "capital": 2927,
+    "flag": "/assets/flags/mor_m.png",
+    "provincesCount": 53,
+    "ruler": {
+      "name": "Herrscher von Marokko",
+      "dynasty": "Haus Marokko",
+      "age": 38,
+      "legitimacy": 80,
+      "traits": [
+        "Reichsstand"
+      ]
+    },
+    "treasury": 8620,
+    "income": 0,
+    "expenses": 0,
+    "balance": 0,
+    "prestige": 156,
+    "stability": 80,
+    "manpower": 45100,
+    "government": "Absolute Monarchie",
+    "laws": {
+      "power": "Absolutismus",
+      "economy": "Merkantilismus",
+      "society": "Adelsprivilegien",
+      "military": "Söldnerheer"
+    }
+  },
+  {
     "tag": "algi_m",
     "name": "Algier",
     "color": "rgb(25, 122, 28)",
@@ -393,6 +429,43 @@
     "prestige": 146,
     "stability": 80,
     "manpower": 41600,
+    "government": "Absolute Monarchie",
+    "laws": {
+      "power": "Absolutismus",
+      "economy": "Merkantilismus",
+      "society": "Adelsprivilegien",
+      "military": "Söldnerheer"
+    }
+  },
+  {
+    "tag": "egyo_m",
+    "name": "Khedivat Ägypten",
+    "color": "rgb(194, 174, 105)",
+    "rgb": [
+      194,
+      174,
+      105
+    ],
+    "capital": 2669,
+    "flag": "/assets/flags/egyo_m.png",
+    "provincesCount": 47,
+    "ruler": {
+      "name": "Ibrahim Pascha",
+      "dynasty": "Osmanische Statthalter",
+      "age": 48,
+      "legitimacy": 85,
+      "traits": [
+        "Beylerbey von Ägypten",
+        "Verwalter des Niltals"
+      ]
+    },
+    "treasury": 7780,
+    "income": 0,
+    "expenses": 0,
+    "balance": 0,
+    "prestige": 144,
+    "stability": 80,
+    "manpower": 40900,
     "government": "Absolute Monarchie",
     "laws": {
       "power": "Absolutismus",
@@ -448,7 +521,7 @@
     ],
     "capital": 688,
     "flag": "/assets/flags/atr_m2.png",
-    "provincesCount": 172,
+    "provincesCount": 175,
     "ruler": {
       "name": "Kaiser Ferdinand II.",
       "dynasty": "Habsburg",
@@ -525,6 +598,42 @@
     "ruler": {
       "name": "Herrscher von Khanat der Krim",
       "dynasty": "Haus Khanat der Krim",
+      "age": 38,
+      "legitimacy": 80,
+      "traits": [
+        "Reichsstand"
+      ]
+    },
+    "treasury": 5960,
+    "income": 0,
+    "expenses": 0,
+    "balance": 0,
+    "prestige": 118,
+    "stability": 80,
+    "manpower": 31800,
+    "government": "Absolute Monarchie",
+    "laws": {
+      "power": "Absolutismus",
+      "economy": "Merkantilismus",
+      "society": "Adelsprivilegien",
+      "military": "Söldnerheer"
+    }
+  },
+  {
+    "tag": "hafs_m",
+    "name": "Hafsiden",
+    "color": "rgb(131, 80, 30)",
+    "rgb": [
+      131,
+      80,
+      30
+    ],
+    "capital": 2242,
+    "flag": "/assets/flags/hafs_m.png",
+    "provincesCount": 34,
+    "ruler": {
+      "name": "Herrscher von Hafsiden",
+      "dynasty": "Haus Hafsiden",
       "age": 38,
       "legitimacy": 80,
       "traits": [
@@ -657,78 +766,6 @@
     }
   },
   {
-    "tag": "hafs_m",
-    "name": "Hafsiden",
-    "color": "rgb(131, 80, 30)",
-    "rgb": [
-      131,
-      80,
-      30
-    ],
-    "capital": 2242,
-    "flag": "/assets/flags/hafs_m.png",
-    "provincesCount": 29,
-    "ruler": {
-      "name": "Herrscher von Hafsiden",
-      "dynasty": "Haus Hafsiden",
-      "age": 38,
-      "legitimacy": 80,
-      "traits": [
-        "Reichsstand"
-      ]
-    },
-    "treasury": 5260,
-    "income": 0,
-    "expenses": 0,
-    "balance": 0,
-    "prestige": 108,
-    "stability": 80,
-    "manpower": 28300,
-    "government": "Absolute Monarchie",
-    "laws": {
-      "power": "Absolutismus",
-      "economy": "Merkantilismus",
-      "society": "Adelsprivilegien",
-      "military": "Söldnerheer"
-    }
-  },
-  {
-    "tag": "mor_m",
-    "name": "Marokko",
-    "color": "rgb(100, 20, 20)",
-    "rgb": [
-      100,
-      20,
-      20
-    ],
-    "capital": 2927,
-    "flag": "/assets/flags/mor_m.png",
-    "provincesCount": 27,
-    "ruler": {
-      "name": "Herrscher von Marokko",
-      "dynasty": "Haus Marokko",
-      "age": 38,
-      "legitimacy": 80,
-      "traits": [
-        "Reichsstand"
-      ]
-    },
-    "treasury": 4980,
-    "income": 0,
-    "expenses": 0,
-    "balance": 0,
-    "prestige": 104,
-    "stability": 80,
-    "manpower": 26900,
-    "government": "Absolute Monarchie",
-    "laws": {
-      "power": "Absolutismus",
-      "economy": "Merkantilismus",
-      "society": "Adelsprivilegien",
-      "military": "Söldnerheer"
-    }
-  },
-  {
     "tag": "khiv_m",
     "name": "Khanat Chiwa",
     "color": "rgb(78, 78, 22)",
@@ -847,7 +884,7 @@
     ],
     "capital": 592,
     "flag": "/assets/flags/prus_m.png",
-    "provincesCount": 45,
+    "provincesCount": 59,
     "ruler": {
       "name": "Johann Sigismund (Hohenzollern)",
       "dynasty": "Hohenzollern",
@@ -920,7 +957,7 @@
     ],
     "capital": 716,
     "flag": "/assets/flags/bava_m.png",
-    "provincesCount": 36,
+    "provincesCount": 39,
     "ruler": {
       "name": "Maximilian I.",
       "dynasty": "Wittelsbach",
@@ -957,7 +994,7 @@
     ],
     "capital": 758,
     "flag": "/assets/flags/sax_m.png",
-    "provincesCount": 21,
+    "provincesCount": 23,
     "ruler": {
       "name": "Johann Georg I.",
       "dynasty": "Wettin",
@@ -975,6 +1012,44 @@
     "prestige": 86,
     "stability": 80,
     "manpower": 20600,
+    "government": "Absolute Monarchie",
+    "laws": {
+      "power": "Absolutismus",
+      "economy": "Merkantilismus",
+      "society": "Adelsprivilegien",
+      "military": "Söldnerheer"
+    }
+  },
+  {
+    "tag": "savo_m",
+    "name": "Herzogtum Savoyen",
+    "color": "rgb(185, 108, 232)",
+    "rgb": [
+      185,
+      108,
+      232
+    ],
+    "capital": 148,
+    "flag": "/assets/flags/savo_m.png",
+    "provincesCount": 24,
+    "ruler": {
+      "name": "Karl Emanuel I. (Haus Savoyen)",
+      "dynasty": "Haus Savoyen",
+      "age": 56,
+      "legitimacy": 85,
+      "traits": [
+        "Der Große Herzog von Savoyen",
+        "Dynastische Politik",
+        "Militärreformer"
+      ]
+    },
+    "treasury": 3580,
+    "income": 0,
+    "expenses": 0,
+    "balance": 0,
+    "prestige": 84,
+    "stability": 80,
+    "manpower": 19900,
     "government": "Absolute Monarchie",
     "laws": {
       "power": "Absolutismus",
@@ -1164,20 +1239,20 @@
     }
   },
   {
-    "tag": "stet3_m",
-    "name": "Herzogtum Pommern",
-    "color": "rgb(43, 87, 63)",
+    "tag": "mush_m",
+    "name": "Mushasha",
+    "color": "rgb(8, 72, 65)",
     "rgb": [
-      43,
-      87,
-      63
+      8,
+      72,
+      65
     ],
-    "capital": 570,
-    "flag": "/assets/flags/stet3_m.png",
-    "provincesCount": 14,
+    "capital": 2623,
+    "flag": "/assets/flags/mush_m.png",
+    "provincesCount": 13,
     "ruler": {
-      "name": "Herrscher von Stettin",
-      "dynasty": "Haus Stettin",
+      "name": "Herrscher von Mushasha",
+      "dynasty": "Haus Mushasha",
       "age": 38,
       "legitimacy": 80,
       "traits": [
@@ -1214,6 +1289,78 @@
     "ruler": {
       "name": "Herrscher von Lothringen",
       "dynasty": "Haus Lothringen",
+      "age": 38,
+      "legitimacy": 80,
+      "traits": [
+        "Reichsstand"
+      ]
+    },
+    "treasury": 2880,
+    "income": 0,
+    "expenses": 0,
+    "balance": 0,
+    "prestige": 74,
+    "stability": 80,
+    "manpower": 16400,
+    "government": "Absolute Monarchie",
+    "laws": {
+      "power": "Absolutismus",
+      "economy": "Merkantilismus",
+      "society": "Adelsprivilegien",
+      "military": "Söldnerheer"
+    }
+  },
+  {
+    "tag": "fezz_m",
+    "name": "Fessan",
+    "color": "rgb(231, 0, 17)",
+    "rgb": [
+      231,
+      0,
+      17
+    ],
+    "capital": 4348,
+    "flag": "/assets/flags/fezz_m.png",
+    "provincesCount": 12,
+    "ruler": {
+      "name": "Herrscher von Fessan",
+      "dynasty": "Haus Fessan",
+      "age": 38,
+      "legitimacy": 80,
+      "traits": [
+        "Reichsstand"
+      ]
+    },
+    "treasury": 2880,
+    "income": 0,
+    "expenses": 0,
+    "balance": 0,
+    "prestige": 74,
+    "stability": 80,
+    "manpower": 16400,
+    "government": "Absolute Monarchie",
+    "laws": {
+      "power": "Absolutismus",
+      "economy": "Merkantilismus",
+      "society": "Adelsprivilegien",
+      "military": "Söldnerheer"
+    }
+  },
+  {
+    "tag": "basr_m",
+    "name": "Basra",
+    "color": "rgb(156, 68, 51)",
+    "rgb": [
+      156,
+      68,
+      51
+    ],
+    "capital": 2602,
+    "flag": "/assets/flags/basr_m.png",
+    "provincesCount": 12,
+    "ruler": {
+      "name": "Herrscher von Basra",
+      "dynasty": "Haus Basra",
       "age": 38,
       "legitimacy": 80,
       "traits": [
@@ -1308,8 +1455,45 @@
     }
   },
   {
+    "tag": "trip_m",
+    "name": "Vilâyet Tripolitanien",
+    "color": "rgb(0, 102, 0)",
+    "rgb": [
+      0,
+      102,
+      0
+    ],
+    "capital": 1365,
+    "flag": "/assets/flags/trip_m.png",
+    "provincesCount": 11,
+    "ruler": {
+      "name": "Sulayman Dey",
+      "dynasty": "Deylik Tripolis",
+      "age": 42,
+      "legitimacy": 80,
+      "traits": [
+        "Herrscher der Barbaresken",
+        "Pascha von Tripolitanien"
+      ]
+    },
+    "treasury": 2740,
+    "income": 0,
+    "expenses": 0,
+    "balance": 0,
+    "prestige": 72,
+    "stability": 80,
+    "manpower": 15700,
+    "government": "Absolute Monarchie",
+    "laws": {
+      "power": "Absolutismus",
+      "economy": "Merkantilismus",
+      "society": "Adelsprivilegien",
+      "military": "Söldnerheer"
+    }
+  },
+  {
     "tag": "lun_m",
-    "name": "Kurfürstentum Hannover",
+    "name": "Fürstentum Lüneburg",
     "color": "rgb(16, 61, 160)",
     "rgb": [
       16,
@@ -1325,9 +1509,7 @@
       "age": 38,
       "legitimacy": 80,
       "traits": [
-        "Reichsstand",
-        "Haus Hannover",
-        "Haus Hannover"
+        "Reichsstand"
       ]
     },
     "treasury": 2600,
@@ -1356,10 +1538,46 @@
     ],
     "capital": 768,
     "flag": "/assets/flags/wurt_m.png",
-    "provincesCount": 10,
+    "provincesCount": 11,
     "ruler": {
       "name": "Herrscher von Württemberg",
       "dynasty": "Haus Württemberg",
+      "age": 38,
+      "legitimacy": 80,
+      "traits": [
+        "Reichsstand"
+      ]
+    },
+    "treasury": 2600,
+    "income": 0,
+    "expenses": 0,
+    "balance": 0,
+    "prestige": 70,
+    "stability": 80,
+    "manpower": 15000,
+    "government": "Absolute Monarchie",
+    "laws": {
+      "power": "Absolutismus",
+      "economy": "Merkantilismus",
+      "society": "Adelsprivilegien",
+      "military": "Söldnerheer"
+    }
+  },
+  {
+    "tag": "tugg_m",
+    "name": "Touggourt",
+    "color": "rgb(18, 108, 202)",
+    "rgb": [
+      18,
+      108,
+      202
+    ],
+    "capital": 2732,
+    "flag": "/assets/flags/tugg_m.png",
+    "provincesCount": 10,
+    "ruler": {
+      "name": "Herrscher von Touggourt",
+      "dynasty": "Haus Touggourt",
       "age": 38,
       "legitimacy": 80,
       "traits": [
@@ -1419,7 +1637,7 @@
   },
   {
     "tag": "buff3_m",
-    "name": "Wolfenbuttel",
+    "name": "Fürstentum Braunschweig-Wolfenbüttel",
     "color": "rgb(244, 244, 7)",
     "rgb": [
       244,
@@ -1428,7 +1646,7 @@
     ],
     "capital": 632,
     "flag": "/assets/flags/buff3_m.png",
-    "provincesCount": 9,
+    "provincesCount": 10,
     "ruler": {
       "name": "Herrscher von Wolfenbuttel",
       "dynasty": "Haus Wolfenbuttel",
@@ -1490,20 +1708,20 @@
     }
   },
   {
-    "tag": "samt_m",
-    "name": "Samtskhe",
-    "color": "rgb(231, 227, 218)",
+    "tag": "anaz_m",
+    "name": "Anazzah",
+    "color": "rgb(111, 31, 186)",
     "rgb": [
-      231,
-      227,
-      218
+      111,
+      31,
+      186
     ],
-    "capital": 12169,
-    "flag": "/assets/flags/samt_m.png",
+    "capital": 6172,
+    "flag": "/assets/flags/anaz_m.png",
     "provincesCount": 9,
     "ruler": {
-      "name": "Herrscher von Samtskhe",
-      "dynasty": "Haus Samtskhe",
+      "name": "Herrscher von Anazzah",
+      "dynasty": "Haus Anazzah",
       "age": 38,
       "legitimacy": 80,
       "traits": [
@@ -1540,6 +1758,42 @@
     "ruler": {
       "name": "Herrscher von Gazikumukh",
       "dynasty": "Haus Gazikumukh",
+      "age": 38,
+      "legitimacy": 80,
+      "traits": [
+        "Reichsstand"
+      ]
+    },
+    "treasury": 2320,
+    "income": 0,
+    "expenses": 0,
+    "balance": 0,
+    "prestige": 66,
+    "stability": 80,
+    "manpower": 13600,
+    "government": "Absolute Monarchie",
+    "laws": {
+      "power": "Absolutismus",
+      "economy": "Merkantilismus",
+      "society": "Adelsprivilegien",
+      "military": "Söldnerheer"
+    }
+  },
+  {
+    "tag": "jsh_m",
+    "name": "Schammar",
+    "color": "rgb(108, 12, 30)",
+    "rgb": [
+      108,
+      12,
+      30
+    ],
+    "capital": 6173,
+    "flag": "/assets/flags/jsh_m.png",
+    "provincesCount": 8,
+    "ruler": {
+      "name": "Herrscher von Schammar",
+      "dynasty": "Haus Schammar",
       "age": 38,
       "legitimacy": 80,
       "traits": [
@@ -1644,7 +1898,7 @@
     ],
     "capital": 627,
     "flag": "/assets/flags/mus_m.png",
-    "provincesCount": 7,
+    "provincesCount": 9,
     "ruler": {
       "name": "Herrscher von Münster",
       "dynasty": "Haus Münster",
@@ -1742,20 +1996,92 @@
     }
   },
   {
-    "tag": "wolg3_m",
-    "name": "Wolgast",
-    "color": "rgb(118, 132, 26)",
+    "tag": "sus3_m",
+    "name": "Sus",
+    "color": "rgb(29, 149, 90)",
     "rgb": [
-      118,
-      132,
-      26
+      29,
+      149,
+      90
     ],
-    "capital": 7277,
-    "flag": "/assets/flags/wolg3_m.png",
+    "capital": 3225,
+    "flag": "/assets/flags/sus3_m.png",
     "provincesCount": 6,
     "ruler": {
-      "name": "Herrscher von Wolgast",
-      "dynasty": "Haus Wolgast",
+      "name": "Herrscher von Sus",
+      "dynasty": "Haus Sus",
+      "age": 38,
+      "legitimacy": 80,
+      "traits": [
+        "Reichsstand"
+      ]
+    },
+    "treasury": 2040,
+    "income": 0,
+    "expenses": 0,
+    "balance": 0,
+    "prestige": 62,
+    "stability": 80,
+    "manpower": 12200,
+    "government": "Absolute Monarchie",
+    "laws": {
+      "power": "Absolutismus",
+      "economy": "Merkantilismus",
+      "society": "Adelsprivilegien",
+      "military": "Söldnerheer"
+    }
+  },
+  {
+    "tag": "mzab_m",
+    "name": "Mozabiten",
+    "color": "rgb(20, 110, 145)",
+    "rgb": [
+      20,
+      110,
+      145
+    ],
+    "capital": 4781,
+    "flag": "/assets/flags/mzab_m.png",
+    "provincesCount": 6,
+    "ruler": {
+      "name": "Herrscher von Mozabiten",
+      "dynasty": "Haus Mozabiten",
+      "age": 38,
+      "legitimacy": 80,
+      "traits": [
+        "Reichsstand"
+      ]
+    },
+    "treasury": 2040,
+    "income": 0,
+    "expenses": 0,
+    "balance": 0,
+    "prestige": 62,
+    "stability": 80,
+    "manpower": 12200,
+    "government": "Absolute Monarchie",
+    "laws": {
+      "power": "Absolutismus",
+      "economy": "Merkantilismus",
+      "society": "Adelsprivilegien",
+      "military": "Söldnerheer"
+    }
+  },
+  {
+    "tag": "mugh_m",
+    "name": "Mogulreich",
+    "color": "rgb(41, 98, 11)",
+    "rgb": [
+      41,
+      98,
+      11
+    ],
+    "capital": 5563,
+    "flag": "/assets/flags/mugh_m.png",
+    "provincesCount": 6,
+    "ruler": {
+      "name": "Herrscher von Mogulreich",
+      "dynasty": "Haus Mogulreich",
       "age": 38,
       "legitimacy": 80,
       "traits": [
@@ -1788,7 +2114,7 @@
     ],
     "capital": 6907,
     "flag": "/assets/flags/parm_m.png",
-    "provincesCount": 9,
+    "provincesCount": 10,
     "ruler": {
       "name": "Herrscher von Parma",
       "dynasty": "Haus Parma",
@@ -1828,78 +2154,6 @@
     "ruler": {
       "name": "Herrscher von Fürsterzbistum Salzburg",
       "dynasty": "Haus Fürsterzbistum Salzburg",
-      "age": 38,
-      "legitimacy": 80,
-      "traits": [
-        "Reichsstand"
-      ]
-    },
-    "treasury": 1900,
-    "income": 0,
-    "expenses": 0,
-    "balance": 0,
-    "prestige": 60,
-    "stability": 80,
-    "manpower": 11500,
-    "government": "Absolute Monarchie",
-    "laws": {
-      "power": "Absolutismus",
-      "economy": "Merkantilismus",
-      "society": "Adelsprivilegien",
-      "military": "Söldnerheer"
-    }
-  },
-  {
-    "tag": "tugg_m",
-    "name": "Touggourt",
-    "color": "rgb(18, 108, 202)",
-    "rgb": [
-      18,
-      108,
-      202
-    ],
-    "capital": 2732,
-    "flag": "/assets/flags/tugg_m.png",
-    "provincesCount": 5,
-    "ruler": {
-      "name": "Herrscher von Touggourt",
-      "dynasty": "Haus Touggourt",
-      "age": 38,
-      "legitimacy": 80,
-      "traits": [
-        "Reichsstand"
-      ]
-    },
-    "treasury": 1900,
-    "income": 0,
-    "expenses": 0,
-    "balance": 0,
-    "prestige": 60,
-    "stability": 80,
-    "manpower": 11500,
-    "government": "Absolute Monarchie",
-    "laws": {
-      "power": "Absolutismus",
-      "economy": "Merkantilismus",
-      "society": "Adelsprivilegien",
-      "military": "Söldnerheer"
-    }
-  },
-  {
-    "tag": "mzab_m",
-    "name": "Mozabiten",
-    "color": "rgb(20, 110, 145)",
-    "rgb": [
-      20,
-      110,
-      145
-    ],
-    "capital": 4781,
-    "flag": "/assets/flags/mzab_m.png",
-    "provincesCount": 5,
-    "ruler": {
-      "name": "Herrscher von Mozabiten",
-      "dynasty": "Haus Mozabiten",
       "age": 38,
       "legitimacy": 80,
       "traits": [
@@ -1994,42 +2248,6 @@
     }
   },
   {
-    "tag": "bre_m",
-    "name": "Freie Hansestadt Bremen",
-    "color": "rgb(237, 64, 52)",
-    "rgb": [
-      237,
-      64,
-      52
-    ],
-    "capital": 531,
-    "flag": "/assets/flags/bre_m.png",
-    "provincesCount": 4,
-    "ruler": {
-      "name": "Herrscher von Freie Hansestadt Bremen",
-      "dynasty": "Haus Freie Hansestadt Bremen",
-      "age": 38,
-      "legitimacy": 80,
-      "traits": [
-        "Reichsstand"
-      ]
-    },
-    "treasury": 1760,
-    "income": 0,
-    "expenses": 0,
-    "balance": 0,
-    "prestige": 58,
-    "stability": 80,
-    "manpower": 10800,
-    "government": "Absolute Monarchie",
-    "laws": {
-      "power": "Absolutismus",
-      "economy": "Merkantilismus",
-      "society": "Adelsprivilegien",
-      "military": "Söldnerheer"
-    }
-  },
-  {
     "tag": "wurz_m",
     "name": "Hochstift Würzburg",
     "color": "rgb(145, 97, 17)",
@@ -2102,42 +2320,6 @@
     }
   },
   {
-    "tag": "imer_m",
-    "name": "Imeretien",
-    "color": "rgb(9, 54, 107)",
-    "rgb": [
-      9,
-      54,
-      107
-    ],
-    "capital": 4904,
-    "flag": "/assets/flags/imer_m.png",
-    "provincesCount": 4,
-    "ruler": {
-      "name": "Herrscher von Imeretien",
-      "dynasty": "Haus Imeretien",
-      "age": 38,
-      "legitimacy": 80,
-      "traits": [
-        "Reichsstand"
-      ]
-    },
-    "treasury": 1760,
-    "income": 0,
-    "expenses": 0,
-    "balance": 0,
-    "prestige": 58,
-    "stability": 80,
-    "manpower": 10800,
-    "government": "Absolute Monarchie",
-    "laws": {
-      "power": "Absolutismus",
-      "economy": "Merkantilismus",
-      "society": "Adelsprivilegien",
-      "military": "Söldnerheer"
-    }
-  },
-  {
     "tag": "kab3_m",
     "name": "Kabardia",
     "color": "rgb(18, 107, 5)",
@@ -2188,6 +2370,42 @@
     "ruler": {
       "name": "Herrscher von Bled el Djerid",
       "dynasty": "Haus Bled el Djerid",
+      "age": 38,
+      "legitimacy": 80,
+      "traits": [
+        "Reichsstand"
+      ]
+    },
+    "treasury": 1760,
+    "income": 0,
+    "expenses": 0,
+    "balance": 0,
+    "prestige": 58,
+    "stability": 80,
+    "manpower": 10800,
+    "government": "Absolute Monarchie",
+    "laws": {
+      "power": "Absolutismus",
+      "economy": "Merkantilismus",
+      "society": "Adelsprivilegien",
+      "military": "Söldnerheer"
+    }
+  },
+  {
+    "tag": "balu_m",
+    "name": "Belutschistan",
+    "color": "rgb(23, 79, 52)",
+    "rgb": [
+      23,
+      79,
+      52
+    ],
+    "capital": 1323,
+    "flag": "/assets/flags/balu_m.png",
+    "provincesCount": 4,
+    "ruler": {
+      "name": "Herrscher von Belutschistan",
+      "dynasty": "Haus Belutschistan",
       "age": 38,
       "legitimacy": 80,
       "traits": [
@@ -2390,78 +2608,6 @@
     }
   },
   {
-    "tag": "tre_m",
-    "name": "Trent",
-    "color": "rgb(90, 125, 44)",
-    "rgb": [
-      90,
-      125,
-      44
-    ],
-    "capital": 175,
-    "flag": "/assets/flags/tre_m.png",
-    "provincesCount": 3,
-    "ruler": {
-      "name": "Herrscher von Trent",
-      "dynasty": "Haus Trent",
-      "age": 38,
-      "legitimacy": 80,
-      "traits": [
-        "Reichsstand"
-      ]
-    },
-    "treasury": 1620,
-    "income": 0,
-    "expenses": 0,
-    "balance": 0,
-    "prestige": 56,
-    "stability": 80,
-    "manpower": 10100,
-    "government": "Absolute Monarchie",
-    "laws": {
-      "power": "Absolutismus",
-      "economy": "Merkantilismus",
-      "society": "Adelsprivilegien",
-      "military": "Söldnerheer"
-    }
-  },
-  {
-    "tag": "mof_m",
-    "name": "Montferrat",
-    "color": "rgb(165, 96, 201)",
-    "rgb": [
-      165,
-      96,
-      201
-    ],
-    "capital": 6493,
-    "flag": "/assets/flags/mof_m.png",
-    "provincesCount": 3,
-    "ruler": {
-      "name": "Herrscher von Montferrat",
-      "dynasty": "Haus Montferrat",
-      "age": 38,
-      "legitimacy": 80,
-      "traits": [
-        "Reichsstand"
-      ]
-    },
-    "treasury": 1620,
-    "income": 0,
-    "expenses": 0,
-    "balance": 0,
-    "prestige": 56,
-    "stability": 80,
-    "manpower": 10100,
-    "government": "Absolute Monarchie",
-    "laws": {
-      "power": "Absolutismus",
-      "economy": "Merkantilismus",
-      "society": "Adelsprivilegien",
-      "military": "Söldnerheer"
-    }
-  },
-  {
     "tag": "bit_m",
     "name": "Bitlis",
     "color": "rgb(141, 27, 57)",
@@ -2476,42 +2622,6 @@
     "ruler": {
       "name": "Herrscher von Bitlis",
       "dynasty": "Haus Bitlis",
-      "age": 38,
-      "legitimacy": 80,
-      "traits": [
-        "Reichsstand"
-      ]
-    },
-    "treasury": 1620,
-    "income": 0,
-    "expenses": 0,
-    "balance": 0,
-    "prestige": 56,
-    "stability": 80,
-    "manpower": 10100,
-    "government": "Absolute Monarchie",
-    "laws": {
-      "power": "Absolutismus",
-      "economy": "Merkantilismus",
-      "society": "Adelsprivilegien",
-      "military": "Söldnerheer"
-    }
-  },
-  {
-    "tag": "min_m",
-    "name": "Mingrelien",
-    "color": "rgb(84, 140, 195)",
-    "rgb": [
-      84,
-      140,
-      195
-    ],
-    "capital": 1162,
-    "flag": "/assets/flags/min_m.png",
-    "provincesCount": 3,
-    "ruler": {
-      "name": "Herrscher von Mingrelien",
-      "dynasty": "Haus Mingrelien",
       "age": 38,
       "legitimacy": 80,
       "traits": [
@@ -2678,42 +2788,6 @@
     }
   },
   {
-    "tag": "nice_m",
-    "name": "Bistum Nizza",
-    "color": "rgb(162, 50, 193)",
-    "rgb": [
-      162,
-      50,
-      193
-    ],
-    "capital": 136,
-    "flag": "/assets/flags/nice_m.png",
-    "provincesCount": 2,
-    "ruler": {
-      "name": "Herrscher von Bistum Nizza",
-      "dynasty": "Haus Bistum Nizza",
-      "age": 38,
-      "legitimacy": 80,
-      "traits": [
-        "Reichsstand"
-      ]
-    },
-    "treasury": 1480,
-    "income": 0,
-    "expenses": 0,
-    "balance": 0,
-    "prestige": 54,
-    "stability": 80,
-    "manpower": 9400,
-    "government": "Absolute Monarchie",
-    "laws": {
-      "power": "Absolutismus",
-      "economy": "Merkantilismus",
-      "society": "Adelsprivilegien",
-      "military": "Söldnerheer"
-    }
-  },
-  {
     "tag": "bade_m",
     "name": "GroßBaden",
     "color": "rgb(149, 76, 18)",
@@ -2724,7 +2798,7 @@
     ],
     "capital": 763,
     "flag": "/assets/flags/bade_m.png",
-    "provincesCount": 3,
+    "provincesCount": 4,
     "ruler": {
       "name": "Herrscher von GroßBaden",
       "dynasty": "Haus GroßBaden",
@@ -2908,42 +2982,6 @@
     "ruler": {
       "name": "Herrscher von Hamburg",
       "dynasty": "Haus Hamburg",
-      "age": 38,
-      "legitimacy": 80,
-      "traits": [
-        "Reichsstand"
-      ]
-    },
-    "treasury": 1480,
-    "income": 0,
-    "expenses": 0,
-    "balance": 0,
-    "prestige": 54,
-    "stability": 80,
-    "manpower": 9400,
-    "government": "Absolute Monarchie",
-    "laws": {
-      "power": "Absolutismus",
-      "economy": "Merkantilismus",
-      "society": "Adelsprivilegien",
-      "military": "Söldnerheer"
-    }
-  },
-  {
-    "tag": "bent3_m",
-    "name": "Bentheim",
-    "color": "rgb(253, 116, 64)",
-    "rgb": [
-      253,
-      116,
-      64
-    ],
-    "capital": 623,
-    "flag": "/assets/flags/bent3_m.png",
-    "provincesCount": 2,
-    "ruler": {
-      "name": "Herrscher von Bentheim",
-      "dynasty": "Haus Bentheim",
       "age": 38,
       "legitimacy": 80,
       "traits": [
@@ -3326,42 +3364,6 @@
     }
   },
   {
-    "tag": "trip_m",
-    "name": "Vilâyet Tripolitanien",
-    "color": "rgb(0, 102, 0)",
-    "rgb": [
-      0,
-      102,
-      0
-    ],
-    "capital": 1365,
-    "flag": "/assets/flags/trip_m.png",
-    "provincesCount": 2,
-    "ruler": {
-      "name": "Herrscher von Vilâyet Tripolitanien",
-      "dynasty": "Haus Vilâyet Tripolitanien",
-      "age": 38,
-      "legitimacy": 80,
-      "traits": [
-        "Reichsstand"
-      ]
-    },
-    "treasury": 1480,
-    "income": 0,
-    "expenses": 0,
-    "balance": 0,
-    "prestige": 54,
-    "stability": 80,
-    "manpower": 9400,
-    "government": "Absolute Monarchie",
-    "laws": {
-      "power": "Absolutismus",
-      "economy": "Merkantilismus",
-      "society": "Adelsprivilegien",
-      "military": "Söldnerheer"
-    }
-  },
-  {
     "tag": "ormo3_m",
     "name": "Ormond",
     "color": "rgb(15, 68, 234)",
@@ -3542,42 +3544,6 @@
     }
   },
   {
-    "tag": "masx3_m",
-    "name": "Massa",
-    "color": "rgb(187, 124, 35)",
-    "rgb": [
-      187,
-      124,
-      35
-    ],
-    "capital": 154,
-    "flag": "/assets/flags/masx3_m.png",
-    "provincesCount": 1,
-    "ruler": {
-      "name": "Herrscher von Massa",
-      "dynasty": "Haus Massa",
-      "age": 38,
-      "legitimacy": 80,
-      "traits": [
-        "Reichsstand"
-      ]
-    },
-    "treasury": 1340,
-    "income": 0,
-    "expenses": 0,
-    "balance": 0,
-    "prestige": 52,
-    "stability": 80,
-    "manpower": 8700,
-    "government": "Absolute Monarchie",
-    "laws": {
-      "power": "Absolutismus",
-      "economy": "Merkantilismus",
-      "society": "Adelsprivilegien",
-      "military": "Söldnerheer"
-    }
-  },
-  {
     "tag": "sayn3_m",
     "name": "Sayn",
     "color": "rgb(177, 11, 154)",
@@ -3650,42 +3616,6 @@
     }
   },
   {
-    "tag": "pasc3_m",
-    "name": "Passau",
-    "color": "rgb(204, 68, 173)",
-    "rgb": [
-      204,
-      68,
-      173
-    ],
-    "capital": 719,
-    "flag": "/assets/flags/pasc3_m.png",
-    "provincesCount": 1,
-    "ruler": {
-      "name": "Herrscher von Passau",
-      "dynasty": "Haus Passau",
-      "age": 38,
-      "legitimacy": 80,
-      "traits": [
-        "Reichsstand"
-      ]
-    },
-    "treasury": 1340,
-    "income": 0,
-    "expenses": 0,
-    "balance": 0,
-    "prestige": 52,
-    "stability": 80,
-    "manpower": 8700,
-    "government": "Absolute Monarchie",
-    "laws": {
-      "power": "Absolutismus",
-      "economy": "Merkantilismus",
-      "society": "Adelsprivilegien",
-      "military": "Söldnerheer"
-    }
-  },
-  {
     "tag": "rosq3_m",
     "name": "Regensburg",
     "color": "rgb(130, 119, 103)",
@@ -3736,42 +3666,6 @@
     "ruler": {
       "name": "Herrscher von Republik Ragusa",
       "dynasty": "Haus Republik Ragusa",
-      "age": 38,
-      "legitimacy": 80,
-      "traits": [
-        "Reichsstand"
-      ]
-    },
-    "treasury": 1340,
-    "income": 0,
-    "expenses": 0,
-    "balance": 0,
-    "prestige": 52,
-    "stability": 80,
-    "manpower": 8700,
-    "government": "Absolute Monarchie",
-    "laws": {
-      "power": "Absolutismus",
-      "economy": "Merkantilismus",
-      "society": "Adelsprivilegien",
-      "military": "Söldnerheer"
-    }
-  },
-  {
-    "tag": "mans3_m",
-    "name": "Mansfeld",
-    "color": "rgb(217, 144, 120)",
-    "rgb": [
-      217,
-      144,
-      120
-    ],
-    "capital": 754,
-    "flag": "/assets/flags/mans3_m.png",
-    "provincesCount": 1,
-    "ruler": {
-      "name": "Herrscher von Mansfeld",
-      "dynasty": "Haus Mansfeld",
       "age": 38,
       "legitimacy": 80,
       "traits": [
@@ -3880,78 +3774,6 @@
     "ruler": {
       "name": "Herrscher von Reichsstadt Aachen",
       "dynasty": "Haus Reichsstadt Aachen",
-      "age": 38,
-      "legitimacy": 80,
-      "traits": [
-        "Reichsstand"
-      ]
-    },
-    "treasury": 1340,
-    "income": 0,
-    "expenses": 0,
-    "balance": 0,
-    "prestige": 52,
-    "stability": 80,
-    "manpower": 8700,
-    "government": "Absolute Monarchie",
-    "laws": {
-      "power": "Absolutismus",
-      "economy": "Merkantilismus",
-      "society": "Adelsprivilegien",
-      "military": "Söldnerheer"
-    }
-  },
-  {
-    "tag": "beyr3_m",
-    "name": "Bayreuth",
-    "color": "rgb(64, 95, 178)",
-    "rgb": [
-      64,
-      95,
-      178
-    ],
-    "capital": 6916,
-    "flag": "/assets/flags/beyr3_m.png",
-    "provincesCount": 1,
-    "ruler": {
-      "name": "Herrscher von Bayreuth",
-      "dynasty": "Haus Bayreuth",
-      "age": 38,
-      "legitimacy": 80,
-      "traits": [
-        "Reichsstand"
-      ]
-    },
-    "treasury": 1340,
-    "income": 0,
-    "expenses": 0,
-    "balance": 0,
-    "prestige": 52,
-    "stability": 80,
-    "manpower": 8700,
-    "government": "Absolute Monarchie",
-    "laws": {
-      "power": "Absolutismus",
-      "economy": "Merkantilismus",
-      "society": "Adelsprivilegien",
-      "military": "Söldnerheer"
-    }
-  },
-  {
-    "tag": "schw3_m",
-    "name": "Schwarzburg",
-    "color": "rgb(155, 112, 251)",
-    "rgb": [
-      155,
-      112,
-      251
-    ],
-    "capital": 750,
-    "flag": "/assets/flags/schw3_m.png",
-    "provincesCount": 1,
-    "ruler": {
-      "name": "Herrscher von Schwarzburg",
-      "dynasty": "Haus Schwarzburg",
       "age": 38,
       "legitimacy": 80,
       "traits": [
@@ -4298,78 +4120,6 @@
     }
   },
   {
-    "tag": "berh3_m",
-    "name": "Berchtesgaden",
-    "color": "rgb(122, 164, 130)",
-    "rgb": [
-      122,
-      164,
-      130
-    ],
-    "capital": 715,
-    "flag": "/assets/flags/berh3_m.png",
-    "provincesCount": 1,
-    "ruler": {
-      "name": "Herrscher von Berchtesgaden",
-      "dynasty": "Haus Berchtesgaden",
-      "age": 38,
-      "legitimacy": 80,
-      "traits": [
-        "Reichsstand"
-      ]
-    },
-    "treasury": 1340,
-    "income": 0,
-    "expenses": 0,
-    "balance": 0,
-    "prestige": 52,
-    "stability": 80,
-    "manpower": 8700,
-    "government": "Absolute Monarchie",
-    "laws": {
-      "power": "Absolutismus",
-      "economy": "Merkantilismus",
-      "society": "Adelsprivilegien",
-      "military": "Söldnerheer"
-    }
-  },
-  {
-    "tag": "thar3_m",
-    "name": "Thurgau",
-    "color": "rgb(84, 110, 77)",
-    "rgb": [
-      84,
-      110,
-      77
-    ],
-    "capital": 6879,
-    "flag": "/assets/flags/thar3_m.png",
-    "provincesCount": 1,
-    "ruler": {
-      "name": "Herrscher von Thurgau",
-      "dynasty": "Haus Thurgau",
-      "age": 38,
-      "legitimacy": 80,
-      "traits": [
-        "Reichsstand"
-      ]
-    },
-    "treasury": 1340,
-    "income": 0,
-    "expenses": 0,
-    "balance": 0,
-    "prestige": 52,
-    "stability": 80,
-    "manpower": 8700,
-    "government": "Absolute Monarchie",
-    "laws": {
-      "power": "Absolutismus",
-      "economy": "Merkantilismus",
-      "society": "Adelsprivilegien",
-      "military": "Söldnerheer"
-    }
-  },
-  {
     "tag": "colm3_m",
     "name": "Colmar",
     "color": "rgb(113, 158, 80)",
@@ -4658,42 +4408,6 @@
     }
   },
   {
-    "tag": "rott3_m",
-    "name": "Rottweil",
-    "color": "rgb(212, 198, 51)",
-    "rgb": [
-      212,
-      198,
-      51
-    ],
-    "capital": 764,
-    "flag": "/assets/flags/rott3_m.png",
-    "provincesCount": 1,
-    "ruler": {
-      "name": "Herrscher von Rottweil",
-      "dynasty": "Haus Rottweil",
-      "age": 38,
-      "legitimacy": 80,
-      "traits": [
-        "Reichsstand"
-      ]
-    },
-    "treasury": 1340,
-    "income": 0,
-    "expenses": 0,
-    "balance": 0,
-    "prestige": 52,
-    "stability": 80,
-    "manpower": 8700,
-    "government": "Absolute Monarchie",
-    "laws": {
-      "power": "Absolutismus",
-      "economy": "Merkantilismus",
-      "society": "Adelsprivilegien",
-      "military": "Söldnerheer"
-    }
-  },
-  {
     "tag": "mem_m",
     "name": "Memmingen",
     "color": "rgb(12, 119, 89)",
@@ -4780,42 +4494,6 @@
     "ruler": {
       "name": "Herrscher von Wangen",
       "dynasty": "Haus Wangen",
-      "age": 38,
-      "legitimacy": 80,
-      "traits": [
-        "Reichsstand"
-      ]
-    },
-    "treasury": 1340,
-    "income": 0,
-    "expenses": 0,
-    "balance": 0,
-    "prestige": 52,
-    "stability": 80,
-    "manpower": 8700,
-    "government": "Absolute Monarchie",
-    "laws": {
-      "power": "Absolutismus",
-      "economy": "Merkantilismus",
-      "society": "Adelsprivilegien",
-      "military": "Söldnerheer"
-    }
-  },
-  {
-    "tag": "wad3_m",
-    "name": "Waldburg",
-    "color": "rgb(198, 168, 23)",
-    "rgb": [
-      198,
-      168,
-      23
-    ],
-    "capital": 6601,
-    "flag": "/assets/flags/wad3_m.png",
-    "provincesCount": 1,
-    "ruler": {
-      "name": "Herrscher von Waldburg",
-      "dynasty": "Haus Waldburg",
       "age": 38,
       "legitimacy": 80,
       "traits": [
@@ -5306,78 +4984,6 @@
     }
   },
   {
-    "tag": "mugh_m",
-    "name": "Mogulreich",
-    "color": "rgb(41, 98, 11)",
-    "rgb": [
-      41,
-      98,
-      11
-    ],
-    "capital": 5563,
-    "flag": "/assets/flags/mugh_m.png",
-    "provincesCount": 1,
-    "ruler": {
-      "name": "Herrscher von Mogulreich",
-      "dynasty": "Haus Mogulreich",
-      "age": 38,
-      "legitimacy": 80,
-      "traits": [
-        "Reichsstand"
-      ]
-    },
-    "treasury": 1340,
-    "income": 0,
-    "expenses": 0,
-    "balance": 0,
-    "prestige": 52,
-    "stability": 80,
-    "manpower": 8700,
-    "government": "Absolute Monarchie",
-    "laws": {
-      "power": "Absolutismus",
-      "economy": "Merkantilismus",
-      "society": "Adelsprivilegien",
-      "military": "Söldnerheer"
-    }
-  },
-  {
-    "tag": "eis2_m",
-    "name": "Saxe-Eisenach",
-    "color": "rgb(29, 122, 58)",
-    "rgb": [
-      29,
-      122,
-      58
-    ],
-    "capital": 755,
-    "flag": "/assets/flags/eis2_m.png",
-    "provincesCount": 1,
-    "ruler": {
-      "name": "Herrscher von Saxe-Eisenach",
-      "dynasty": "Haus Saxe-Eisenach",
-      "age": 38,
-      "legitimacy": 80,
-      "traits": [
-        "Reichsstand"
-      ]
-    },
-    "treasury": 1340,
-    "income": 0,
-    "expenses": 0,
-    "balance": 0,
-    "prestige": 52,
-    "stability": 80,
-    "manpower": 8700,
-    "government": "Absolute Monarchie",
-    "laws": {
-      "power": "Absolutismus",
-      "economy": "Merkantilismus",
-      "society": "Adelsprivilegien",
-      "military": "Söldnerheer"
-    }
-  },
-  {
     "tag": "swi_m",
     "name": "Schweizer Eidgenossenschaft",
     "color": "rgb(220, 38, 38)",
@@ -5388,7 +4994,7 @@
     ],
     "capital": 310,
     "flag": "/assets/flags/swi_m.png",
-    "provincesCount": 25,
+    "provincesCount": 26,
     "ruler": {
       "name": "Tagsatzung der Eidgenossenschaft",
       "dynasty": "Alte Eidgenossenschaft",
@@ -5413,43 +5019,6 @@
       "economy": "Freier Handel",
       "society": "Bürgerrechte",
       "military": "Wehrpflicht"
-    }
-  },
-  {
-    "tag": "sard_m",
-    "name": "Königreich Sardinien",
-    "color": "rgb(37, 99, 235)",
-    "rgb": [
-      37,
-      99,
-      235
-    ],
-    "capital": 148,
-    "flag": "/assets/flags/sard_m.png",
-    "provincesCount": 19,
-    "ruler": {
-      "name": "Karl Emanuel I. (Haus Savoyen)",
-      "dynasty": "Haus Savoyen",
-      "age": 56,
-      "legitimacy": 85,
-      "traits": [
-        "Militärreformer",
-        "Dynastische Politik"
-      ]
-    },
-    "treasury": 4800,
-    "income": 0,
-    "expenses": 0,
-    "balance": 0,
-    "prestige": 86,
-    "stability": 82,
-    "manpower": 29000,
-    "government": "Absolute Monarchie",
-    "laws": {
-      "power": "Absolutismus",
-      "economy": "Merkantilismus",
-      "society": "Adelsprivilegien",
-      "military": "Berufsheer"
     }
   }
 ]
