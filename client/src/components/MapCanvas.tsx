@@ -1,0 +1,516 @@
+import React, { useRef, useEffect, useState, useCallback } from 'react';
+import { Province, Nation, Region, Strait, Army, MapMode } from '../types';
+
+interface MapCanvasProps {
+  provinces: Province[];
+  nations: Record<string, Nation>;
+  regions: Record<string, Region>;
+  straits: Record<string, Strait>;
+  armies: Army[];
+  playerNation: string;
+  mapMode: MapMode;
+  selectedProvince: Province | null;
+  onSelectProvince: (prov: Province | null) => void;
+  onSelectStrait: (strait: Strait) => void;
+  onSelectArmy: (army: Army) => void;
+  onIssueMoveCommand?: (armyId: string, targetPid: number) => void;
+}
+
+// Point in polygon test
+function pointInPoly(pt: [number, number], poly: [number, number][]): boolean {
+  let inside = false;
+  const x = pt[0], y = pt[1];
+  for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+    const xi = poly[i][0], yi = poly[i][1];
+    const xj = poly[j][0], yj = poly[j][1];
+    const intersect = ((yi > y) !== (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+    if (intersect) inside = !inside;
+  }
+  return inside;
+}
+
+// Colors for Terrain Mode
+const TERRAIN_COLORS: Record<string, string> = {
+  sea: '#0c1d2e',
+  plains: '#455938',
+  forest: '#1e3820',
+  hills: '#5c5243',
+  mountains: '#423d47',
+  marsh: '#25444a',
+  desert: '#786e40',
+  drylands: '#6b663b',
+  steppes: '#566336'
+};
+
+// Colors for Resource Mode
+const RESOURCE_COLORS: Record<string, string> = {
+  grain: '#d4af37',
+  wheat: '#d4af37',
+  fish: '#3b82f6',
+  wood: '#854d0e',
+  iron: '#64748b',
+  coal: '#1e293b',
+  cloth: '#6366f1',
+  wine: '#831843',
+  livestock: '#a16207',
+  horses: '#ca8a04',
+  salt: '#e2e8f0',
+  silver: '#cbd5e1',
+  gold: '#fbbf24',
+  tobacco: '#78350f',
+  spices: '#ea580c'
+};
+
+export const MapCanvas: React.FC<MapCanvasProps> = ({
+  provinces,
+  nations,
+  regions,
+  straits,
+  armies,
+  playerNation,
+  mapMode,
+  selectedProvince,
+  onSelectProvince,
+  onSelectStrait,
+  onSelectArmy,
+  onIssueMoveCommand
+}) => {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
+  // Camera State (Pan & Zoom)
+  const [camera, setCamera] = useState({ x: -1400, y: -700, zoom: 0.75 });
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  const [hoveredProvince, setHoveredProvince] = useState<Province | null>(null);
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+
+  // Selected Army for movement orders
+  const [selectedArmyId, setSelectedArmyId] = useState<string | null>(null);
+
+  // Transform screen to world coordinates
+  const screenToWorld = useCallback((screenX: number, screenY: number): [number, number] => {
+    return [
+      (screenX - camera.x) / camera.zoom,
+      (screenY - camera.y) / camera.zoom
+    ];
+  }, [camera]);
+
+  // Handle Mouse Wheel Zoom
+  const handleWheel = (e: React.WheelEvent) => {
+    e.preventDefault();
+    const zoomFactor = e.deltaY < 0 ? 1.15 : 0.85;
+    const newZoom = Math.max(0.25, Math.min(3.5, camera.zoom * zoomFactor));
+
+    // Zoom centered at mouse cursor
+    const mouseX = e.clientX;
+    const mouseY = e.clientY;
+    const worldX = (mouseX - camera.x) / camera.zoom;
+    const worldY = (mouseY - camera.y) / camera.zoom;
+
+    setCamera({
+      zoom: newZoom,
+      x: mouseX - worldX * newZoom,
+      y: mouseY - worldY * newZoom
+    });
+  };
+
+  // Mouse Down
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (e.button === 0 || e.button === 1 || e.button === 2) {
+      setIsDragging(true);
+      setDragStart({ x: e.clientX - camera.x, y: e.clientY - camera.y });
+    }
+  };
+
+  // Mouse Move
+  const handleMouseMove = (e: React.MouseEvent) => {
+    setMousePos({ x: e.clientX, y: e.clientY });
+
+    if (isDragging) {
+      setCamera(prev => ({
+        ...prev,
+        x: e.clientX - dragStart.x,
+        y: e.clientY - dragStart.y
+      }));
+      return;
+    }
+
+    // Hit Test for Province Hover
+    const [wx, wy] = screenToWorld(e.clientX, e.clientY);
+    let found: Province | null = null;
+
+    // Fast Bounding Box check first
+    for (let i = provinces.length - 1; i >= 0; i--) {
+      const p = provinces[i];
+      if (p.isSea) continue; // Prioritize land provinces for hover
+      const [bx1, by1, bx2, by2] = p.bbox;
+      if (wx >= bx1 && wx <= bx2 && wy >= by1 && wy <= by2) {
+        if (pointInPoly([wx, wy], p.points)) {
+          found = p;
+          break;
+        }
+      }
+    }
+
+    setHoveredProvince(found);
+  };
+
+  // Mouse Up
+  const handleMouseUp = (e: React.MouseEvent) => {
+    if (isDragging) {
+      // If barely moved, treat as click
+      const dist = Math.hypot((e.clientX - dragStart.x) - camera.x, (e.clientY - dragStart.y) - camera.y);
+      setIsDragging(false);
+
+      if (dist < 5) {
+        handleMapClick(e);
+      }
+    }
+  };
+
+  // Map Click
+  const handleMapClick = (e: React.MouseEvent) => {
+    const [wx, wy] = screenToWorld(e.clientX, e.clientY);
+
+    // 1. Check Strait Badges Click
+    for (const strait of Object.values(straits)) {
+      if (strait.provinces && strait.provinces.length > 0) {
+        const p0 = provinces.find(p => p.id === strait.provinces[0]);
+        if (p0) {
+          const dist = Math.hypot(wx - p0.cx, wy - p0.cy);
+          if (dist < 35 / camera.zoom) {
+            onSelectStrait(strait);
+            return;
+          }
+        }
+      }
+    }
+
+    // 2. Check Army Click
+    for (const army of armies) {
+      const p = provinces.find(pr => pr.id === army.pid);
+      if (p) {
+        const dist = Math.hypot(wx - p.cx, wy - p.cy);
+        if (dist < 25 / camera.zoom) {
+          setSelectedArmyId(army.id);
+          onSelectArmy(army);
+          return;
+        }
+      }
+    }
+
+    // 3. If an army is selected and right-clicked or clicked on another province, issue move order
+    if (e.button === 2 && selectedArmyId && onIssueMoveCommand && hoveredProvince) {
+      onIssueMoveCommand(selectedArmyId, hoveredProvince.id);
+      setSelectedArmyId(null);
+      return;
+    }
+
+    // 4. Select Province
+    if (hoveredProvince) {
+      onSelectProvince(hoveredProvince);
+    } else {
+      // Find sea province if land wasn't clicked
+      for (let i = provinces.length - 1; i >= 0; i--) {
+        const p = provinces[i];
+        const [bx1, by1, bx2, by2] = p.bbox;
+        if (wx >= bx1 && wx <= bx2 && wy >= by1 && wy <= by2) {
+          if (pointInPoly([wx, wy], p.points)) {
+            onSelectProvince(p);
+            return;
+          }
+        }
+      }
+      onSelectProvince(null);
+    }
+  };
+
+  // Main Canvas Render Loop
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    // Set canvas dimensions to window size
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    // Clear background (Deep ocean blue)
+    ctx.fillStyle = '#0a1420';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.save();
+    ctx.translate(camera.x, camera.y);
+    ctx.scale(camera.zoom, camera.zoom);
+
+    // Viewport Culling Bounds in World Space
+    const viewLeft = -camera.x / camera.zoom;
+    const viewTop = -camera.y / camera.zoom;
+    const viewRight = (canvas.width - camera.x) / camera.zoom;
+    const viewBottom = (canvas.height - camera.y) / camera.zoom;
+
+    // 1. DRAW SEA PROVINCES FIRST
+    for (const p of provinces) {
+      if (!p.isSea) continue;
+      const [bx1, by1, bx2, by2] = p.bbox;
+      if (bx2 < viewLeft || bx1 > viewRight || by2 < viewTop || by1 > viewBottom) continue;
+
+      ctx.beginPath();
+      ctx.moveTo(p.points[0][0], p.points[0][1]);
+      for (let k = 1; k < p.points.length; k++) {
+        ctx.lineTo(p.points[k][0], p.points[k][1]);
+      }
+      ctx.closePath();
+      ctx.fillStyle = '#0d1f33';
+      ctx.fill();
+      ctx.strokeStyle = '#091522';
+      ctx.lineWidth = 0.5;
+      ctx.stroke();
+    }
+
+    // 2. DRAW LAND PROVINCES
+    for (const p of provinces) {
+      if (p.isSea) continue;
+      const [bx1, by1, bx2, by2] = p.bbox;
+      if (bx2 < viewLeft || bx1 > viewRight || by2 < viewTop || by1 > viewBottom) continue;
+
+      ctx.beginPath();
+      ctx.moveTo(p.points[0][0], p.points[0][1]);
+      for (let k = 1; k < p.points.length; k++) {
+        ctx.lineTo(p.points[k][0], p.points[k][1]);
+      }
+      ctx.closePath();
+
+      // Determine fill color by active map mode
+      let fillColor = '#334155'; // default
+
+      if (mapMode === 'political') {
+        if (p.owner && nations[p.owner]) {
+          fillColor = nations[p.owner].color;
+        } else {
+          fillColor = '#475569';
+        }
+      } else if (mapMode === 'terrain') {
+        fillColor = TERRAIN_COLORS[p.terrain] || '#455938';
+      } else if (mapMode === 'economy') {
+        if (p.resource && RESOURCE_COLORS[p.resource]) {
+          fillColor = RESOURCE_COLORS[p.resource];
+        } else {
+          fillColor = '#475569';
+        }
+      } else if (mapMode === 'diplomacy') {
+        if (p.owner === playerNation) {
+          fillColor = '#1e3a8a'; // Blue (self)
+        } else if (p.owner === 'fra_p' && playerNation === 'prus_m') {
+          fillColor = '#7f1d1d'; // Red (rival)
+        } else if (p.owner && nations[p.owner]) {
+          fillColor = '#334155'; // Neutral
+        }
+      } else if (mapMode === 'infrastructure') {
+        const rLvl = p.buildings.railway || 0;
+        fillColor = rLvl > 0 ? '#15803d' : '#334155';
+      } else if (mapMode === 'military') {
+        const fort = p.buildings.fortress || 0;
+        fillColor = fort > 0 ? '#701a75' : '#1e293b';
+      }
+
+      ctx.fillStyle = fillColor;
+      ctx.fill();
+
+      // Border styling
+      ctx.strokeStyle = '#0f172a';
+      ctx.lineWidth = 0.8;
+      ctx.stroke();
+
+      // Highlight if Hovered
+      if (hoveredProvince && hoveredProvince.id === p.id) {
+        ctx.strokeStyle = '#fde047';
+        ctx.lineWidth = 2.5 / camera.zoom;
+        ctx.stroke();
+      }
+
+      // Highlight if Selected
+      if (selectedProvince && selectedProvince.id === p.id) {
+        ctx.strokeStyle = '#f59e0b';
+        ctx.lineWidth = 3.5 / camera.zoom;
+        ctx.stroke();
+      }
+    }
+
+    // 3. DRAW LARGE REGIONS OUTLINES & LABELS (When zoomed out or in region mode)
+    if (camera.zoom < 1.2) {
+      for (const [rId, reg] of Object.entries(regions)) {
+        if (reg.provinces && reg.provinces.length > 0) {
+          // Find center of region
+          let rx = 0, ry = 0, count = 0;
+          for (const pid of reg.provinces) {
+            const p = provinces.find(pr => pr.id === pid);
+            if (p) {
+              rx += p.cx;
+              ry += p.cy;
+              count++;
+            }
+          }
+          if (count > 0) {
+            rx /= count;
+            ry /= count;
+
+            if (rx >= viewLeft && rx <= viewRight && ry >= viewTop && ry <= viewBottom) {
+              ctx.font = `bold ${Math.max(10, Math.min(18, 14 / camera.zoom))}px 'Cinzel', serif`;
+              ctx.textAlign = 'center';
+              ctx.textBaseline = 'middle';
+              ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+              ctx.fillText(reg.name.toUpperCase(), rx + 1, ry + 1);
+              ctx.fillStyle = reg.controller ? '#fde047' : 'rgba(255, 255, 255, 0.65)';
+              ctx.fillText(reg.name.toUpperCase(), rx, ry);
+            }
+          }
+        }
+      }
+    }
+
+    // 4. DRAW CAPITAL STARS & MAJOR CITY NAMES (Zoom >= 0.7)
+    if (camera.zoom >= 0.7) {
+      for (const n of Object.values(nations)) {
+        const cap = provinces.find(p => p.id === n.capital);
+        if (cap && cap.cx >= viewLeft && cap.cx <= viewRight && cap.cy >= viewTop && cap.cy <= viewBottom) {
+          // Draw Star
+          ctx.beginPath();
+          ctx.arc(cap.cx, cap.cy, 5, 0, 2 * Math.PI);
+          ctx.fillStyle = '#f59e0b';
+          ctx.fill();
+          ctx.strokeStyle = '#ffffff';
+          ctx.lineWidth = 1.5;
+          ctx.stroke();
+
+          // Label
+          ctx.font = `600 ${Math.max(9, Math.min(14, 11))}px 'Inter', sans-serif`;
+          ctx.fillStyle = '#ffffff';
+          ctx.textAlign = 'center';
+          ctx.fillText(`★ ${cap.name}`, cap.cx, cap.cy - 10);
+        }
+      }
+    }
+
+    // 5. DRAW STRATEGIC CHOKEPOINTS & STRAITS BADGES
+    for (const strait of Object.values(straits)) {
+      if (strait.provinces && strait.provinces.length > 0) {
+        const p0 = provinces.find(p => p.id === strait.provinces[0]);
+        if (p0 && p0.cx >= viewLeft && p0.cx <= viewRight && p0.cy >= viewTop && p0.cy <= viewBottom) {
+          // Badge circle
+          ctx.beginPath();
+          ctx.arc(p0.cx, p0.cy, 12, 0, 2 * Math.PI);
+          ctx.fillStyle = strait.isBlockaded ? '#dc2626' : '#d97706';
+          ctx.fill();
+          ctx.strokeStyle = '#ffffff';
+          ctx.lineWidth = 2;
+          ctx.stroke();
+
+          // Anchor / Port icon text
+          ctx.font = 'bold 11px sans-serif';
+          ctx.fillStyle = '#ffffff';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(strait.type === 'strait' ? '⚓' : '🌊', p0.cx, p0.cy);
+
+          // Name label
+          ctx.font = 'bold 11px "Inter", sans-serif';
+          ctx.fillStyle = '#fef08a';
+          ctx.fillText(strait.name, p0.cx, p0.cy + 18);
+        }
+      }
+    }
+
+    // 6. DRAW ARMIES
+    for (const army of armies) {
+      const p = provinces.find(pr => pr.id === army.pid);
+      if (p && p.cx >= viewLeft && p.cx <= viewRight && p.cy >= viewTop && p.cy <= viewBottom) {
+        const totalTroops = (army.units.line_infantry || 0) + (army.units.cavalry || 0) + (army.units.artillery || 0) * 10;
+        const isPlayer = (army.nation === playerNation);
+
+        // Army marker
+        ctx.beginPath();
+        ctx.rect(p.cx - 16, p.cy - 10, 32, 20);
+        ctx.fillStyle = isPlayer ? '#1d4ed8' : '#374151';
+        ctx.fill();
+        ctx.strokeStyle = isPlayer ? '#60a5fa' : '#9ca3af';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+
+        ctx.font = 'bold 10px "Inter", sans-serif';
+        ctx.fillStyle = '#ffffff';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(`${Math.round(totalTroops / 1000)}k`, p.cx, p.cy);
+
+        if (army.isMoving) {
+          ctx.fillText('➔', p.cx + 20, p.cy);
+        }
+      }
+    }
+
+    ctx.restore();
+  }, [provinces, nations, regions, straits, armies, camera, mapMode, hoveredProvince, selectedProvince, playerNation]);
+
+  return (
+    <div className="relative w-full h-full overflow-hidden" onContextMenu={e => e.preventDefault()}>
+      <canvas
+        ref={canvasRef}
+        className="w-full h-full cursor-grab active:cursor-grabbing"
+        onWheel={handleWheel}
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+      />
+
+      {/* Floating Hover Tooltip */}
+      {hoveredProvince && !isDragging && (
+        <div
+          className="pointer-events-none fixed z-50 pax-panel p-2.5 rounded shadow-2xl text-xs max-w-xs"
+          style={{
+            left: `${mousePos.x + 16}px`,
+            top: `${mousePos.y + 16}px`,
+            borderColor: 'rgba(212, 175, 55, 0.6)'
+          }}
+        >
+          <div className="flex items-center gap-2 mb-1.5 border-b border-amber-500/30 pb-1">
+            {hoveredProvince.owner && nations[hoveredProvince.owner] && (
+              <img
+                src={nations[hoveredProvince.owner].flag}
+                alt="flag"
+                className="w-5 h-3.5 object-cover rounded shadow"
+                onError={(e) => { (e.target as HTMLElement).style.display = 'none'; }}
+              />
+            )}
+            <span className="font-bold text-amber-300 font-royal text-sm">{hoveredProvince.name}</span>
+          </div>
+
+          <div className="grid grid-cols-2 gap-x-3 gap-y-1 text-slate-300">
+            <div>Besitzer:</div>
+            <div className="font-semibold text-slate-100">
+              {hoveredProvince.owner && nations[hoveredProvince.owner] ? nations[hoveredProvince.owner].name : 'Neutral'}
+            </div>
+
+            <div>Region:</div>
+            <div className="text-amber-200">
+              {hoveredProvince.region && regions[hoveredProvince.region] ? regions[hoveredProvince.region].name : 'Europäisches Territorium'}
+            </div>
+
+            <div>Bevölkerung:</div>
+            <div className="text-slate-100">{hoveredProvince.population.toLocaleString('de-DE')}</div>
+
+            <div>Gelände:</div>
+            <div className="capitalize text-emerald-300">{hoveredProvince.terrain}</div>
+
+            <div>Ressource:</div>
+            <div className="capitalize text-amber-300">{hoveredProvince.resource || 'Keine'}</div>
+
+            <div>Verteidigung:</div>
+            <div className="text-rose-300">+{hoveredProvince.defense}%</div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
