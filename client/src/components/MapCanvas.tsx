@@ -166,6 +166,56 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     return list;
   }, [nations, provinceMap]);
 
+  // Pre-calculate National Outer Borders (Außengrenzen & Küsten) and Internal Province Borders (Inlandsgrenzen)
+  const { nationalBordersPath, internalBordersPath } = useMemo(() => {
+    const edgeMap = new Map<bigint, { p1: [number, number]; p2: [number, number]; o1: string; o2: string | null }>();
+
+    for (let i = 0; i < provinces.length; i++) {
+      const p = provinces[i];
+      if (p.isSea || !p.points) continue;
+      const pts = p.points;
+      const n = pts.length;
+      const owner = p.owner || 'neutral';
+
+      for (let j = 0; j < n; j++) {
+        const pt1 = pts[j];
+        const pt2 = pts[(j + 1) % n];
+        const id1 = pt1[0] * 65536 + pt1[1];
+        const id2 = pt2[0] * 65536 + pt2[1];
+        const k = id1 < id2
+          ? BigInt(id1) * 4294967296n + BigInt(id2)
+          : BigInt(id2) * 4294967296n + BigInt(id1);
+
+        const existing = edgeMap.get(k);
+        if (!existing) {
+          edgeMap.set(k, { p1: pt1, p2: pt2, o1: owner, o2: null });
+        } else {
+          existing.o2 = owner;
+        }
+      }
+    }
+
+    const nationalPath = new Path2D();
+    const internalPath = new Path2D();
+
+    for (const e of edgeMap.values()) {
+      if (e.o2 === null || e.o1 !== e.o2) {
+        // Coast or National border between different sovereign nations
+        nationalPath.moveTo(e.p1[0], e.p1[1]);
+        nationalPath.lineTo(e.p2[0], e.p2[1]);
+      } else {
+        // Internal province border within the same nation
+        internalPath.moveTo(e.p1[0], e.p1[1]);
+        internalPath.lineTo(e.p2[0], e.p2[1]);
+      }
+    }
+
+    return {
+      nationalBordersPath: nationalPath,
+      internalBordersPath: internalPath
+    };
+  }, [provinces]);
+
   // Transform screen to world coordinates
   const screenToWorld = useCallback((screenX: number, screenY: number): [number, number] => {
     return [
@@ -562,25 +612,57 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
 
       ctx.fillStyle = fillColor;
       ctx.fill();
+    }
 
-      // Border styling
-      ctx.strokeStyle = '#0f172a';
-      ctx.lineWidth = 0.8;
+    // 2b. DRAW INTERNAL PROVINCE BORDERS (Inlandsgrenzen)
+    // Only visible when zoomed in (> 0.65), drawn in a subtle, muted grey tone so they don't look like national borders
+    if (camera.zoom > 0.65) {
+      const zoomT = Math.min(1, (camera.zoom - 0.65) / 0.45);
+      const internalAlpha = zoomT * 0.42;
+      ctx.save();
+      ctx.strokeStyle = `rgba(160, 174, 192, ${internalAlpha})`; // Soft elegant grey
+      ctx.lineWidth = Math.max(0.5, 0.75 / camera.zoom);
+      ctx.stroke(internalBordersPath);
+      ctx.restore();
+    }
+
+    // 2c. DRAW NATIONAL OUTER BORDERS & COASTS (Außengrenzen)
+    // Prominently visible at all zoom levels in crisp dark styling
+    ctx.save();
+    ctx.strokeStyle = '#080d15';
+    ctx.lineWidth = Math.max(0.85, 1.4 / camera.zoom);
+    ctx.stroke(nationalBordersPath);
+    ctx.restore();
+
+    // 2d. HIGHLIGHT HOVERED & SELECTED PROVINCE
+    if (hoveredProvince && !hoveredProvince.isSea) {
+      ctx.save();
+      ctx.beginPath();
+      const pts = hoveredProvince.points;
+      ctx.moveTo(pts[0][0], pts[0][1]);
+      for (let k = 1; k < pts.length; k++) {
+        ctx.lineTo(pts[k][0], pts[k][1]);
+      }
+      ctx.closePath();
+      ctx.strokeStyle = '#fde047';
+      ctx.lineWidth = 2.5 / camera.zoom;
       ctx.stroke();
+      ctx.restore();
+    }
 
-      // Highlight if Hovered
-      if (hoveredProvince && hoveredProvince.id === p.id) {
-        ctx.strokeStyle = '#fde047';
-        ctx.lineWidth = 2.5 / camera.zoom;
-        ctx.stroke();
+    if (selectedProvince && !selectedProvince.isSea) {
+      ctx.save();
+      ctx.beginPath();
+      const pts = selectedProvince.points;
+      ctx.moveTo(pts[0][0], pts[0][1]);
+      for (let k = 1; k < pts.length; k++) {
+        ctx.lineTo(pts[k][0], pts[k][1]);
       }
-
-      // Highlight if Selected
-      if (selectedProvince && selectedProvince.id === p.id) {
-        ctx.strokeStyle = '#f59e0b';
-        ctx.lineWidth = 3.5 / camera.zoom;
-        ctx.stroke();
-      }
+      ctx.closePath();
+      ctx.strokeStyle = '#f59e0b';
+      ctx.lineWidth = 3.5 / camera.zoom;
+      ctx.stroke();
+      ctx.restore();
     }
 
     // 3. DRAW LARGE REGIONS OUTLINES & LABELS (When zoomed out) - FAST O(1)
@@ -684,7 +766,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
 
     animId = requestAnimationFrame(render);
     return () => cancelAnimationFrame(animId);
-  }, [provinces, nations, regions, straits, armies, camera, mapMode, hoveredProvince, selectedProvince, playerNation, regionLabels, capitalMarkers, provinceMap]);
+  }, [provinces, nations, regions, straits, armies, camera, mapMode, hoveredProvince, selectedProvince, playerNation, regionLabels, capitalMarkers, provinceMap, nationalBordersPath, internalBordersPath]);
 
   return (
     <div className="relative w-full h-full overflow-hidden touch-none select-none" onContextMenu={e => e.preventDefault()}>
