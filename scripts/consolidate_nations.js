@@ -133,6 +133,7 @@ const transferMap = {
   'savo_m': 'sard_m',
   // spanien bekommt burgundy und neapel
   'burg_m2': 'spa3_m',
+  'besa3_m': 'spa3_m',
   'nap_m': 'spa3_m',
   // bayern bekommt kurpfalz
   'pala_m': 'bava_m',

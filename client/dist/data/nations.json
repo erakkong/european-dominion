@@ -194,7 +194,7 @@
     ],
     "capital": 6561,
     "flag": "/assets/flags/spa3_m.png",
-    "provincesCount": 247,
+    "provincesCount": 248,
     "ruler": {
       "name": "Philipp III.",
       "dynasty": "Habsburg",
@@ -1326,6 +1326,7 @@
       "legitimacy": 80,
       "traits": [
         "Reichsstand",
+        "Haus Hannover",
         "Haus Hannover"
       ]
     },
@@ -3555,42 +3556,6 @@
     "ruler": {
       "name": "Herrscher von Massa",
       "dynasty": "Haus Massa",
-      "age": 38,
-      "legitimacy": 80,
-      "traits": [
-        "Reichsstand"
-      ]
-    },
-    "treasury": 1340,
-    "income": 0,
-    "expenses": 0,
-    "balance": 0,
-    "prestige": 52,
-    "stability": 80,
-    "manpower": 8700,
-    "government": "Absolute Monarchie",
-    "laws": {
-      "power": "Absolutismus",
-      "economy": "Merkantilismus",
-      "society": "Adelsprivilegien",
-      "military": "Söldnerheer"
-    }
-  },
-  {
-    "tag": "besa3_m",
-    "name": "Besancon",
-    "color": "rgb(198, 229, 19)",
-    "rgb": [
-      198,
-      229,
-      19
-    ],
-    "capital": 328,
-    "flag": "/assets/flags/besa3_m.png",
-    "provincesCount": 1,
-    "ruler": {
-      "name": "Herrscher von Besancon",
-      "dynasty": "Haus Besancon",
       "age": 38,
       "legitimacy": 80,
       "traits": [
