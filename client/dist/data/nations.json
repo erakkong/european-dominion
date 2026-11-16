@@ -630,7 +630,7 @@
     ],
     "capital": 165,
     "flag": "/assets/flags/ver_g.png",
-    "provincesCount": 34,
+    "provincesCount": 35,
     "ruler": {
       "name": "Nicolò Donato",
       "dynasty": "Donà",
@@ -1924,42 +1924,6 @@
     }
   },
   {
-    "tag": "mugh_m",
-    "name": "Mogulreich",
-    "color": "rgb(41, 98, 11)",
-    "rgb": [
-      41,
-      98,
-      11
-    ],
-    "capital": 5563,
-    "flag": "/assets/flags/mugh_m.png",
-    "provincesCount": 5,
-    "ruler": {
-      "name": "Herrscher von Mogulreich",
-      "dynasty": "Haus Mogulreich",
-      "age": 38,
-      "legitimacy": 80,
-      "traits": [
-        "Reichsstand"
-      ]
-    },
-    "treasury": 2040,
-    "income": 0,
-    "expenses": 0,
-    "balance": 0,
-    "prestige": 62,
-    "stability": 80,
-    "manpower": 12200,
-    "government": "Absolute Monarchie",
-    "laws": {
-      "power": "Absolutismus",
-      "economy": "Merkantilismus",
-      "society": "Adelsprivilegien",
-      "military": "Söldnerheer"
-    }
-  },
-  {
     "tag": "parm_m",
     "name": "Parma",
     "color": "rgb(0, 119, 210)",
@@ -2258,7 +2222,7 @@
     ],
     "capital": 1323,
     "flag": "/assets/flags/balu_m.png",
-    "provincesCount": 4,
+    "provincesCount": 9,
     "ruler": {
       "name": "Herrscher von Belutschistan",
       "dynasty": "Haus Belutschistan",
@@ -2658,42 +2622,6 @@
     "ruler": {
       "name": "Herrscher von GroßBaden",
       "dynasty": "Haus GroßBaden",
-      "age": 38,
-      "legitimacy": 80,
-      "traits": [
-        "Reichsstand"
-      ]
-    },
-    "treasury": 1480,
-    "income": 0,
-    "expenses": 0,
-    "balance": 0,
-    "prestige": 54,
-    "stability": 80,
-    "manpower": 9400,
-    "government": "Absolute Monarchie",
-    "laws": {
-      "power": "Absolutismus",
-      "economy": "Merkantilismus",
-      "society": "Adelsprivilegien",
-      "military": "Söldnerheer"
-    }
-  },
-  {
-    "tag": "mt_m",
-    "name": "Mantua",
-    "color": "rgb(158, 54, 113)",
-    "rgb": [
-      158,
-      54,
-      113
-    ],
-    "capital": 169,
-    "flag": "/assets/flags/mt_m.png",
-    "provincesCount": 1,
-    "ruler": {
-      "name": "Herrscher von Mantua",
-      "dynasty": "Haus Mantua",
       "age": 38,
       "legitimacy": 80,
       "traits": [

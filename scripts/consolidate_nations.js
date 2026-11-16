@@ -319,7 +319,13 @@ const transferMap = {
   'bre3_m': 'atr_m2',
 
   // Hessen bekommt Waldeck
-  'wald3_m': 'hess_m'
+  'wald3_m': 'hess_m',
+
+  // Mantua zu Venedig annektieren
+  'mt_m': 'ver_g',
+
+  // Mogulreich an Belutschistan annektieren
+  'mugh_m': 'balu_m'
 };
 
 // Explicit province specific transfers
@@ -406,7 +412,17 @@ const specificProvinceTransfers = {
   // Rottweil (764) an Baden
   764: 'bade_m',
   // Biberach (6601) an Württemberg
-  6601: 'wurt_m'
+  6601: 'wurt_m',
+
+  // Mantua (169) zu Venedig
+  169: 'ver_g',
+
+  // Mogulreich Provinzen an Belutschistan
+  1321: 'balu_m',
+  2939: 'balu_m',
+  5851: 'balu_m',
+  6232: 'balu_m',
+  10515: 'balu_m'
 };
 
 // Execute province updates
@@ -424,90 +440,8 @@ for (const p of provs) {
 }
 console.log(`Transferred ${transferCount} provinces across all rules.`);
 
-// 4b. Fix blocky / square island & microstate geometries (e.g. Monaco, Malta, Ibiza, etc.)
-const enhancedGeometries = {
-  // 1. Monaco (134): Natural Riviera coastline with Le Rocher promontory & Port Hercule
-  134: [
-    [2089, 2618], [2091, 2615], [2092, 2613], [2093, 2612], [2096, 2611], [2098, 2613], [2099, 2615], [2103, 2615],
-    [2102, 2616], [2100, 2617], [2098, 2618], [2096, 2619], [2095, 2620],
-    [2094, 2621], [2093, 2622], [2092, 2622], [2091, 2621], [2090, 2620],
-    [2089, 2619]
-  ],
-  // 2. Valletta / Malta & Gozo (270): Authentic NW-to-SE Mediterranean archipelago
-  270: [
-    [2417, 3103], [2420, 3101], [2424, 3102], [2426, 3105], [2423, 3108], [2419, 3107],
-    [2426, 3110], [2428, 3108], [2432, 3109],
-    [2436, 3112], [2440, 3114], [2443, 3118], [2447, 3121], [2451, 3125],
-    [2452, 3128], [2449, 3131], [2445, 3130],
-    [2440, 3128], [2436, 3124], [2432, 3120], [2429, 3116], [2425, 3113],
-    [2421, 3110], [2416, 3106]
-  ],
-  // 3. Ibiza & Formentera (2274): Authentic Balearic island geometry
-  2274: [
-    [1806, 2917], [1810, 2920], [1813, 2924],
-    [1815, 2928], [1817, 2933], [1814, 2937],
-    [1812, 2941], [1811, 2945], [1808, 2948], [1805, 2948], [1803, 2945], [1804, 2941],
-    [1801, 2938], [1796, 2935], [1792, 2931],
-    [1791, 2928], [1794, 2924], [1798, 2921], [1802, 2918]
-  ],
-  // 4. St Helier / Jersey (258): Authentic Channel Island shape
-  258: [
-    [1623, 2221], [1628, 2220], [1634, 2221], [1638, 2224],
-    [1640, 2228], [1639, 2232],
-    [1636, 2236], [1632, 2238], [1627, 2239], [1623, 2237],
-    [1619, 2234], [1618, 2229], [1620, 2225]
-  ],
-  // 5. Les Martins / Guernsey (259): Authentic triangular Channel Island shape
-  259: [
-    [1611, 2202], [1615, 2205],
-    [1617, 2209], [1616, 2213],
-    [1613, 2217], [1609, 2219], [1604, 2218],
-    [1599, 2216], [1597, 2212], [1598, 2207], [1603, 2204], [1607, 2202]
-  ],
-  // 6. Pantelleria (4693): Authentic elliptical Mediterranean volcanic island
-  4693: [
-    [2313, 3051], [2318, 3051], [2322, 3054],
-    [2326, 3058], [2329, 3063], [2327, 3067],
-    [2324, 3071], [2319, 3073], [2315, 3072],
-    [2310, 3068], [2307, 3063], [2308, 3057], [2310, 3053]
-  ],
-  // 7. Mesta / Chios (3218): Authentic indented Greek Aegean island
-  3218: [
-    [2989, 2947], [2995, 2946], [3002, 2948], [3007, 2953],
-    [3010, 2959], [3011, 2966], [3007, 2971],
-    [3004, 2976], [2998, 2979], [2992, 2979],
-    [2985, 2977], [2979, 2973], [2976, 2967],
-    [2978, 2961], [2982, 2956], [2985, 2951]
-  ],
-  // 8. Gibraltar (85): Authentic tapered Rock of Gibraltar pointing south
-  85: [
-    [1471, 3093], [1474, 3092], [1477, 3093],
-    [1479, 3095], [1478, 3098], [1476, 3101],
-    [1474, 3102], [1473, 3102],
-    [1471, 3100], [1469, 3097], [1470, 3094]
-  ],
-  // 9. Ceuta (10021): Tapered peninsula of Almina into Mediterranean
-  10021: [
-    [1470, 3103], [1472, 3102], [1474, 3102],
-    [1478, 3103], [1483, 3104], [1488, 3106],
-    [1494, 3108], [1495, 3110], [1492, 3112],
-    [1486, 3112], [1480, 3111], [1475, 3110], [1472, 3107], [1471, 3104]
-  ],
-  // 10. Melilla (10023): Curved Cape Tres Forcas coastal headland
-  10023: [
-    [1589, 3130], [1593, 3128], [1597, 3129],
-    [1602, 3131], [1606, 3134], [1608, 3137],
-    [1607, 3141], [1603, 3143], [1598, 3144],
-    [1593, 3142], [1589, 3139], [1588, 3135]
-  ],
-  // 11. Santa Cruz das Flores / Azores (11390): Organic volcanic Atlantic island
-  11390: [
-    [214, 2871], [221, 2870], [227, 2873],
-    [233, 2878], [235, 2886], [234, 2895],
-    [231, 2905], [226, 2913], [220, 2915], [214, 2912],
-    [206, 2904], [200, 2894], [198, 2884], [202, 2877], [207, 2873]
-  ]
-};
+// 4b. Fix blocky / square island & coastal province geometries (37 requested provinces + Monaco & Malta)
+const enhancedGeometries = JSON.parse(fs.readFileSync(path.join(__dirname, 'static_enhanced_geometries.json'), 'utf8'));
 
 for (const [idStr, newPts] of Object.entries(enhancedGeometries)) {
   const pid = Number(idStr);
@@ -579,9 +513,24 @@ const targets = [
   { p: path.join(__dirname, '../client/dist/data/regions.json'), data: regions }
 ];
 
+function safeWriteFile(filePath, content) {
+  let attempts = 0;
+  while (attempts < 5) {
+    try {
+      fs.writeFileSync(filePath, content, 'utf8');
+      return;
+    } catch (e) {
+      attempts++;
+      if (attempts >= 5) throw e;
+      const waitTill = new Date(new Date().getTime() + 250);
+      while (waitTill > new Date()) {}
+    }
+  }
+}
+
 for (const t of targets) {
   if (fs.existsSync(path.dirname(t.p))) {
-    fs.writeFileSync(t.p, JSON.stringify(t.data, null, 2), 'utf8');
+    safeWriteFile(t.p, JSON.stringify(t.data, null, 2));
     console.log(`Updated ${path.basename(t.p)} in ${path.dirname(t.p)}`);
   }
 }

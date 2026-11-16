@@ -1476,8 +1476,7 @@
       "parm_m": 6,
       "tusc_m2": 4,
       "papa_m2": 14,
-      "ver_g": 12,
-      "mt_m": 1,
+      "ver_g": 13,
       "san_m2": 1,
       "tur_m": 57,
       "atr_m2": 4
@@ -5040,8 +5039,7 @@
     "controlBreakdown": {
       "tur_m": 38,
       "ira_m2": 31,
-      "balu_m": 1,
-      "mugh_m": 1,
+      "balu_m": 3,
       "veca_m": 1,
       "neutral": 1,
       "mush_m": 4,
