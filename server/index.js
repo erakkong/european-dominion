@@ -5,6 +5,15 @@ const cors = require('cors');
 const path = require('path');
 const { simulation, BUILDING_TYPES } = require('./simulation');
 const { saveGameState, loadGameState, listSaves } = require('./saveManager');
+const {
+  readUsers,
+  loginUser,
+  registerUser,
+  getClaimedNations,
+  getUserFromToken,
+  logoutUser,
+  adminSetUserNation
+} = require('./auth');
 
 const app = express();
 const server = http.createServer(app);
@@ -48,6 +57,52 @@ simulation.processTick = function() {
 };
 
 // REST API Endpoints
+// Auth Endpoints
+app.post('/api/auth/login', (req, res) => {
+  const { username, password } = req.body || {};
+  const result = loginUser(username, password);
+  res.json(result);
+});
+
+app.post('/api/auth/register', (req, res) => {
+  const { username, password, nationTag } = req.body || {};
+  const nationsList = Array.from(simulation.nations.values());
+  const result = registerUser(username, password, nationTag, nationsList);
+  res.json(result);
+});
+
+app.get('/api/auth/me', (req, res) => {
+  const authHeader = req.headers.authorization || '';
+  const token = authHeader.replace(/^Bearer\s+/i, '') || req.query.token;
+  const user = getUserFromToken(token);
+  res.json({ user });
+});
+
+app.post('/api/auth/logout', (req, res) => {
+  const authHeader = req.headers.authorization || '';
+  const token = authHeader.replace(/^Bearer\s+/i, '') || req.body?.token;
+  logoutUser(token);
+  res.json({ success: true });
+});
+
+app.get('/api/auth/claimed-nations', (req, res) => {
+  res.json(getClaimedNations());
+});
+
+app.post('/api/auth/admin/set-nation', (req, res) => {
+  const authHeader = req.headers.authorization || '';
+  const token = authHeader.replace(/^Bearer\s+/i, '') || req.body?.token;
+  const caller = getUserFromToken(token);
+  if (!caller || caller.role !== 'admin') {
+    return res.status(403).json({ success: false, error: 'Nur Administratoren haben hierfür die Berechtigung.' });
+  }
+
+  const { targetUsername, nationTag } = req.body || {};
+  const nationsList = Array.from(simulation.nations.values());
+  const result = adminSetUserNation(targetUsername, nationTag, nationsList);
+  res.json(result);
+});
+
 app.get('/api/state', (req, res) => {
   res.json(simulation.getStateSnapshot());
 });

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Nation, DateState, MapMode } from '../types';
-import { Play, Pause, FastForward, Save, Volume2, VolumeX, Shield, Landmark, Users, Award, Crown, Compass } from 'lucide-react';
+import { Nation, DateState, MapMode, User } from '../types';
+import { Play, Pause, FastForward, Save, Volume2, VolumeX, Shield, Landmark, Users as UsersIcon, Award, Crown, Compass, User as UserIcon } from 'lucide-react';
 
 interface TopBarProps {
   playerNation: Nation | null;
@@ -13,6 +13,8 @@ interface TopBarProps {
   onSetSpeed: (speed: number) => void;
   onOpenSaveLoad: () => void;
   onOpenNationSelect: () => void;
+  currentUser: User | null;
+  onOpenAuth: () => void;
 }
 
 export const TopBar: React.FC<TopBarProps> = ({
@@ -25,7 +27,9 @@ export const TopBar: React.FC<TopBarProps> = ({
   onTogglePause,
   onSetSpeed,
   onOpenSaveLoad,
-  onOpenNationSelect
+  onOpenNationSelect,
+  currentUser,
+  onOpenAuth
 }) => {
   const [isMuted, setIsMuted] = useState(false);
   const [audioElement, setAudioElement] = useState<HTMLAudioElement | null>(null);
@@ -61,9 +65,15 @@ export const TopBar: React.FC<TopBarProps> = ({
         {/* Left: Nation & Ruler */}
         <div className="flex items-center gap-3">
           <div
-            onClick={onOpenNationSelect}
+            onClick={() => {
+              if (currentUser && currentUser.role !== 'admin') {
+                alert(`Als Spieler bist du an die Nation "${playerNation?.name}" gebunden. Nur Administratoren können die Nation frei wechseln.`);
+                return;
+              }
+              onOpenNationSelect();
+            }}
             className="flex items-center gap-2 cursor-pointer p-1.5 rounded hover:bg-amber-500/10 border border-amber-500/30 transition group"
-            title="Land wechseln"
+            title={currentUser && currentUser.role !== 'admin' ? `Fest zugewiesen an ${currentUser.username}` : 'Land wechseln'}
           >
             {playerNation?.flag && (
               <img
@@ -117,7 +127,7 @@ export const TopBar: React.FC<TopBarProps> = ({
 
           {/* Population */}
           <div className="flex items-center gap-2" title="Reichsbevölkerung">
-            <Users size={16} className="text-sky-400" />
+            <UsersIcon size={16} className="text-sky-400" />
             <div className="flex flex-col items-start leading-none">
               <span className="font-bold text-slate-100 text-sm">
                 {(playerNation?.provincesCount ? playerNation.provincesCount * 95000 : 2500000).toLocaleString('de-DE')}
@@ -138,8 +148,38 @@ export const TopBar: React.FC<TopBarProps> = ({
           </div>
         </div>
 
-        {/* Right: Date, Time Controls, Save, Audio */}
-        <div className="flex items-center gap-4">
+        {/* Right: Account, Date, Time Controls, Save, Audio */}
+        <div className="flex items-center gap-3">
+          {/* User Account / Admin Badge */}
+          <button
+            onClick={onOpenAuth}
+            className={`flex items-center gap-1.5 px-2.5 py-1 rounded text-xs transition border shadow ${
+              currentUser?.role === 'admin'
+                ? 'bg-amber-500/20 text-amber-300 border-amber-400/60 hover:bg-amber-500/30'
+                : currentUser
+                ? 'bg-blue-600/20 text-blue-200 border-blue-500/40 hover:bg-blue-600/30'
+                : 'bg-amber-500/10 text-amber-200 border-amber-500/40 hover:bg-amber-500/20 animate-pulse'
+            }`}
+            title={currentUser ? `Angemeldet als ${currentUser.username}` : 'Anmelden oder Konto erstellen'}
+          >
+            {currentUser?.role === 'admin' ? (
+              <>
+                <Crown size={14} className="text-amber-400" />
+                <span className="font-bold">Admin: {currentUser.username}</span>
+              </>
+            ) : currentUser ? (
+              <>
+                <UserIcon size={14} className="text-blue-400" />
+                <span className="font-semibold">{currentUser.username}</span>
+              </>
+            ) : (
+              <>
+                <UserIcon size={14} className="text-amber-400" />
+                <span className="font-semibold">Anmelden</span>
+              </>
+            )}
+          </button>
+
           {/* Audio */}
           <button
             onClick={toggleAudio}

@@ -526,8 +526,8 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    // Clear background (Deep ocean blue)
-    ctx.fillStyle = '#0a1420';
+    // Clear background (Matches deep sea province color to remove all ocean gaps and island shadows)
+    ctx.fillStyle = '#0d1f33';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     ctx.save();
@@ -554,7 +554,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
       ctx.closePath();
       ctx.fillStyle = '#0d1f33';
       ctx.fill();
-      ctx.strokeStyle = '#091522';
+      ctx.strokeStyle = 'rgba(9, 21, 34, 0.2)';
       ctx.lineWidth = 0.5;
       ctx.stroke();
     }
@@ -665,41 +665,44 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
       ctx.restore();
     }
 
-    // 3. DRAW LARGE REGIONS OUTLINES & LABELS (When zoomed out) - FAST O(1)
-    if (camera.zoom < 1.2) {
-      for (let i = 0; i < regionLabels.length; i++) {
-        const reg = regionLabels[i];
-        if (reg.rx >= viewLeft && reg.rx <= viewRight && reg.ry >= viewTop && reg.ry <= viewBottom) {
-          ctx.font = `bold ${Math.max(10, Math.min(18, 14 / camera.zoom))}px 'Cinzel', serif`;
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
-          ctx.fillText(reg.name, reg.rx + 1, reg.ry + 1);
-          ctx.fillStyle = reg.controller ? '#fde047' : 'rgba(255, 255, 255, 0.65)';
-          ctx.fillText(reg.name, reg.rx, reg.ry);
-        }
-      }
-    }
+    // 3. REGION LABELS REMOVED (per user request: "entferne die regionsbezeichnungen")
 
     // 4. DRAW CAPITAL STARS & MAJOR CITY NAMES (Zoom >= 0.7) - FAST O(1)
     if (camera.zoom >= 0.7) {
       for (let i = 0; i < capitalMarkers.length; i++) {
         const cap = capitalMarkers[i];
         if (cap.cx >= viewLeft && cap.cx <= viewRight && cap.cy >= viewTop && cap.cy <= viewBottom) {
-          // Draw Star
+          // Draw Star Marker Circle
           ctx.beginPath();
-          ctx.arc(cap.cx, cap.cy, 5, 0, 2 * Math.PI);
+          ctx.arc(cap.cx, cap.cy, 6, 0, 2 * Math.PI);
           ctx.fillStyle = '#f59e0b';
           ctx.fill();
           ctx.strokeStyle = '#ffffff';
           ctx.lineWidth = 1.5;
           ctx.stroke();
 
-          // Label
-          ctx.font = `600 ${Math.max(9, Math.min(14, 11))}px 'Inter', sans-serif`;
+          // Inner white star core
+          ctx.beginPath();
+          ctx.arc(cap.cx, cap.cy, 2, 0, 2 * Math.PI);
           ctx.fillStyle = '#ffffff';
+          ctx.fill();
+
+          // Label with dark background badge for crisp legibility on land
+          ctx.font = `600 ${Math.max(9, Math.min(13, 11))}px 'Inter', sans-serif`;
+          const text = cap.capName;
+          const textWidth = ctx.measureText(text).width;
+          const pad = 4;
+          const labelY = cap.cy - 12;
+
+          ctx.fillStyle = 'rgba(10, 15, 26, 0.75)';
+          ctx.beginPath();
+          ctx.roundRect(cap.cx - textWidth / 2 - pad, labelY - 11, textWidth + pad * 2, 14, 3);
+          ctx.fill();
+
+          ctx.fillStyle = '#fef3c7';
           ctx.textAlign = 'center';
-          ctx.fillText(`★ ${cap.capName}`, cap.cx, cap.cy - 10);
+          ctx.textBaseline = 'alphabetic';
+          ctx.fillText(text, cap.cx, labelY);
         }
       }
     }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Province, Nation, Region, Strait, ConstructionItem, Army, GameEvent, DateState, MapMode } from './types';
+import { Province, Nation, Region, Strait, ConstructionItem, Army, GameEvent, DateState, MapMode, User } from './types';
 import { TopBar } from './components/TopBar';
 import { MapCanvas } from './components/MapCanvas';
 import { ProvinceDrawer } from './components/ProvinceDrawer';
@@ -9,6 +9,7 @@ import { StraitModal } from './components/StraitModal';
 import { NationSelectModal } from './components/NationSelectModal';
 import { SaveLoadModal } from './components/SaveLoadModal';
 import { BottomTicker } from './components/BottomTicker';
+import { AuthModal } from './components/AuthModal';
 
 export default function App() {
   // Game State
@@ -34,11 +35,13 @@ export default function App() {
   const [isRightPanelOpen, setIsRightPanelOpen] = useState<boolean>(false);
   const [isNationSelectOpen, setIsNationSelectOpen] = useState<boolean>(false);
   const [isSaveLoadOpen, setIsSaveLoadOpen] = useState<boolean>(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const wsRef = useRef<WebSocket | null>(null);
 
-  // Initial Data Fetch
+  // Initial Data Fetch & Auth Restore
   useEffect(() => {
     async function loadInitialData() {
       try {
@@ -65,6 +68,28 @@ export default function App() {
           setArmies(stateData.armies || []);
           setEvents(stateData.events || []);
         }
+
+        // Restore auth session from localStorage
+        const savedToken = localStorage.getItem('pax_token');
+        if (savedToken) {
+          try {
+            const meRes = await fetch('/api/auth/me', {
+              headers: { Authorization: `Bearer ${savedToken}` }
+            });
+            const meData = await meRes.json();
+            if (meData.user) {
+              setCurrentUser(meData.user);
+              if (meData.user.nationTag) {
+                setPlayerNationTag(meData.user.nationTag);
+              }
+            } else {
+              localStorage.removeItem('pax_token');
+              localStorage.removeItem('pax_user');
+            }
+          } catch {
+            // Silently ignore network error on session check
+          }
+        }
       } catch (err) {
         console.error('[APP] Data loading error:', err);
       } finally {
@@ -74,6 +99,26 @@ export default function App() {
 
     loadInitialData();
   }, []);
+
+  const handleLoginSuccess = (user: User, _token: string) => {
+    setCurrentUser(user);
+    if (user.nationTag) {
+      setPlayerNationTag(user.nationTag);
+      sendAction('SELECT_NATION', { tag: user.nationTag });
+    }
+  };
+
+  const handleLogout = () => {
+    const token = localStorage.getItem('pax_token');
+    fetch('/api/auth/logout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token })
+    }).catch(() => {});
+    localStorage.removeItem('pax_token');
+    localStorage.removeItem('pax_user');
+    setCurrentUser(null);
+  };
 
   // WebSocket Setup
   useEffect(() => {
@@ -255,6 +300,8 @@ export default function App() {
         onSetSpeed={handleSetSpeed}
         onOpenSaveLoad={() => setIsSaveLoadOpen(true)}
         onOpenNationSelect={() => setIsNationSelectOpen(true)}
+        currentUser={currentUser}
+        onOpenAuth={() => setIsAuthModalOpen(true)}
       />
 
       {/* Central Interactive Map Engine */}
@@ -330,6 +377,16 @@ export default function App() {
         onClose={() => setIsSaveLoadOpen(false)}
         onSave={handleSaveGame}
         onLoad={handleLoadGame}
+      />
+
+      {/* Auth Modal (Login / Register / 1-Nation Lock) */}
+      <AuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+        nations={nations}
+        currentUser={currentUser}
+        onLoginSuccess={handleLoginSuccess}
+        onLogout={handleLogout}
       />
 
       {/* Bottom News & Event Ticker */}

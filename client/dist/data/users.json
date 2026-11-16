@@ -1,0 +1,10 @@
+[
+  {
+    "id": "admin_1",
+    "username": "admin",
+    "password": "admin-123",
+    "role": "admin",
+    "nationTag": null,
+    "createdAt": "2026-11-16T20:22:00.683Z"
+  }
+]

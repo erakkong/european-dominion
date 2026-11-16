@@ -1,3 +1,10 @@
+export interface User {
+  id: string;
+  username: string;
+  role: 'admin' | 'player';
+  nationTag: string | null;
+}
+
 export interface DateState {
   year: number;
   month: number;
