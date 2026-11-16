@@ -1,0 +1,50 @@
+[
+  {
+    "id": "system_welcome",
+    "userId": "system",
+    "username": "Reichskanzlei",
+    "role": "system",
+    "nationTag": null,
+    "nationName": "Europäischer Kurier",
+    "nationColor": "rgb(245, 158, 11)",
+    "text": "Willkommen in der diplomatischen Depeschenkammer von European Dominion! Angemeldete Herrscher können hier Botschaften austauschen.",
+    "timestamp": "16:18",
+    "time": 1794861833556
+  },
+  {
+    "id": "msg_1794861842227_wuvd0",
+    "userId": "admin_1",
+    "username": "admin",
+    "role": "admin",
+    "nationTag": "swe2_m",
+    "nationName": "Spielleitung (Admin)",
+    "nationColor": "rgb(245, 158, 11)",
+    "text": "Friede sei mit den Höfen Europas!",
+    "timestamp": "21:44",
+    "time": 1794861842227
+  },
+  {
+    "id": "msg_1794861892373_byys7",
+    "userId": "user_1794861886365_505",
+    "username": "asdasd",
+    "role": "player",
+    "nationTag": "tur_m",
+    "nationName": "Reichsunmittelbar",
+    "nationColor": "rgb(148, 163, 184)",
+    "text": "test",
+    "timestamp": "21:44",
+    "time": 1794861892373
+  },
+  {
+    "id": "msg_1794861897894_0ayyv",
+    "userId": "admin_1",
+    "username": "admin",
+    "role": "admin",
+    "nationTag": "tur_m",
+    "nationName": "Spielleitung (Admin)",
+    "nationColor": "rgb(245, 158, 11)",
+    "text": "Seid gegrüßt, Völker Europas!",
+    "timestamp": "21:44",
+    "time": 1794861897894
+  }
+]

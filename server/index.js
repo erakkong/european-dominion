@@ -14,6 +14,7 @@ const {
   logoutUser,
   adminSetUserNation
 } = require('./auth');
+const chat = require('./chat');
 
 const app = express();
 const server = http.createServer(app);
@@ -100,6 +101,26 @@ app.post('/api/auth/admin/set-nation', (req, res) => {
   const { targetUsername, nationTag } = req.body || {};
   const nationsList = Array.from(simulation.nations.values());
   const result = adminSetUserNation(targetUsername, nationTag, nationsList);
+  res.json(result);
+});
+
+// Chat Endpoints
+app.get('/api/chat/messages', (req, res) => {
+  res.json({ success: true, messages: chat.getHistory() });
+});
+
+app.post('/api/chat/send', (req, res) => {
+  const authHeader = req.headers.authorization || '';
+  const token = authHeader.replace(/^Bearer\s+/i, '') || req.body?.token;
+  const user = getUserFromToken(token);
+  if (!user) {
+    return res.status(401).json({ success: false, error: 'Nur angemeldete Herrscher können im Diplomatenchat schreiben. Bitte melde dich an!' });
+  }
+  const result = chat.addMessage({ user, text: req.body?.text, simulation });
+  if (!result.success) {
+    return res.status(400).json(result);
+  }
+  broadcast({ type: 'CHAT_MESSAGE', message: result.message });
   res.json(result);
 });
 
@@ -275,10 +296,24 @@ wss.on('connection', (ws) => {
     state: simulation.getStateSnapshot()
   }));
 
+  // Send initial chat history
+  ws.send(JSON.stringify({
+    type: 'CHAT_HISTORY',
+    messages: chat.getHistory()
+  }));
+
   ws.on('message', (message) => {
     try {
       const data = JSON.parse(message);
-      // Handle client websocket requests if any
+      if (data.type === 'SEND_CHAT') {
+        const user = getUserFromToken(data.token);
+        if (user) {
+          const result = chat.addMessage({ user, text: data.text, simulation });
+          if (result.success) {
+            broadcast({ type: 'CHAT_MESSAGE', message: result.message });
+          }
+        }
+      }
     } catch (err) {
       console.error('[WS] Message parse error:', err);
     }

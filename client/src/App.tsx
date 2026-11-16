@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Province, Nation, Region, Strait, ConstructionItem, Army, GameEvent, DateState, MapMode, User } from './types';
+import { Province, Nation, Region, Strait, ConstructionItem, Army, GameEvent, DateState, MapMode, User, ChatMessage } from './types';
 import { TopBar } from './components/TopBar';
 import { MapCanvas } from './components/MapCanvas';
 import { ProvinceDrawer } from './components/ProvinceDrawer';
@@ -10,6 +10,7 @@ import { NationSelectModal } from './components/NationSelectModal';
 import { SaveLoadModal } from './components/SaveLoadModal';
 import { BottomTicker } from './components/BottomTicker';
 import { AuthModal } from './components/AuthModal';
+import { ChatWidget } from './components/ChatWidget';
 
 export default function App() {
   // Game State
@@ -37,6 +38,7 @@ export default function App() {
   const [isSaveLoadOpen, setIsSaveLoadOpen] = useState<boolean>(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const wsRef = useRef<WebSocket | null>(null);
@@ -89,6 +91,17 @@ export default function App() {
           } catch {
             // Silently ignore network error on session check
           }
+        }
+
+        // Fetch recent diplomatic chat messages
+        try {
+          const chatRes = await fetch('/api/chat/messages');
+          const chatData = await chatRes.json();
+          if (chatData?.messages) {
+            setChatMessages(chatData.messages);
+          }
+        } catch {
+          // Silently ignore chat loading error
         }
       } catch (err) {
         console.error('[APP] Data loading error:', err);
@@ -189,6 +202,19 @@ export default function App() {
             setArmies(msg.state.armies || []);
             setConstructionQueue(msg.state.constructionQueue || []);
             break;
+          case 'CHAT_HISTORY':
+            if (msg.messages) {
+              setChatMessages(msg.messages);
+            }
+            break;
+          case 'CHAT_MESSAGE':
+            if (msg.message) {
+              setChatMessages(prev => {
+                if (prev.some(m => m.id === msg.message.id)) return prev;
+                return [...prev.slice(-99), msg.message];
+              });
+            }
+            break;
           default:
             break;
         }
@@ -270,6 +296,29 @@ export default function App() {
       body: JSON.stringify({ name })
     });
     return await res.json();
+  };
+
+  const handleSendChatMessage = async (text: string) => {
+    const token = localStorage.getItem('pax_token');
+    if (!token) {
+      setIsAuthModalOpen(true);
+      return { success: false, error: 'Bitte melde dich zuerst an.' };
+    }
+
+    try {
+      const res = await fetch('/api/chat/send', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ text, token })
+      });
+      const data = await res.json();
+      return data;
+    } catch (err: any) {
+      return { success: false, error: err.message || 'Verbindungsfehler' };
+    }
   };
 
   const currentPlayerNation = nations[playerNationTag] || null;
@@ -387,6 +436,15 @@ export default function App() {
         currentUser={currentUser}
         onLoginSuccess={handleLoginSuccess}
         onLogout={handleLogout}
+      />
+
+      {/* Real-time Diplomatic Chat */}
+      <ChatWidget
+        messages={chatMessages}
+        currentUser={currentUser}
+        nations={nations}
+        onSendMessage={handleSendChatMessage}
+        onOpenAuth={() => setIsAuthModalOpen(true)}
       />
 
       {/* Bottom News & Event Ticker */}

@@ -5,6 +5,19 @@ export interface User {
   nationTag: string | null;
 }
 
+export interface ChatMessage {
+  id: string;
+  userId: string;
+  username: string;
+  role: 'admin' | 'player' | 'system';
+  nationTag: string | null;
+  nationName: string;
+  nationColor: string;
+  text: string;
+  timestamp: string;
+  time: number;
+}
+
 export interface DateState {
   year: number;
   month: number;
