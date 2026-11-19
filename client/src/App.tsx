@@ -39,6 +39,8 @@ export default function App() {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
+  const [isChatOpen, setIsChatOpen] = useState<boolean>(false);
+  const [unreadChatCount, setUnreadChatCount] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const wsRef = useRef<WebSocket | null>(null);
@@ -213,6 +215,10 @@ export default function App() {
                 if (prev.some(m => m.id === msg.message.id)) return prev;
                 return [...prev.slice(-99), msg.message];
               });
+              setIsChatOpen(open => {
+                if (!open) setUnreadChatCount(c => c + 1);
+                return open;
+              });
             }
             break;
           default:
@@ -354,7 +360,7 @@ export default function App() {
       />
 
       {/* Central Interactive Map Engine */}
-      <main className="w-full h-full pt-16 pb-9">
+      <main className="w-full h-full pt-12 pb-10">
         <MapCanvas
           provinces={provinces}
           nations={nations}
@@ -364,7 +370,10 @@ export default function App() {
           playerNation={playerNationTag}
           mapMode={mapMode}
           selectedProvince={selectedProvince}
-          onSelectProvince={setSelectedProvince}
+          onSelectProvince={(p) => {
+            setSelectedProvince(p);
+            if (p) setIsRightPanelOpen(false);
+          }}
           onSelectStrait={setSelectedStrait}
           onSelectArmy={(army) => console.log('Selected army:', army)}
           onIssueMoveCommand={handleIssueMoveCommand}
@@ -438,28 +447,41 @@ export default function App() {
         onLogout={handleLogout}
       />
 
-      {/* Real-time Diplomatic Chat */}
+      {/* Real-time Diplomatic Chat (Docked Above Ticker) */}
       <ChatWidget
         messages={chatMessages}
         currentUser={currentUser}
         nations={nations}
         onSendMessage={handleSendChatMessage}
         onOpenAuth={() => setIsAuthModalOpen(true)}
+        isOpen={isChatOpen}
+        onClose={() => setIsChatOpen(false)}
       />
 
-      {/* Bottom News & Event Ticker */}
+      {/* Bottom Imperial Command Dock */}
       <BottomTicker
         events={events}
         onToggleLeftPanel={() => {
           setIsLeftPanelOpen(!isLeftPanelOpen);
-          setIsRightPanelOpen(false);
+          if (!isLeftPanelOpen) setIsRightPanelOpen(false);
         }}
         onToggleRightPanel={() => {
           setIsRightPanelOpen(!isRightPanelOpen);
-          setIsLeftPanelOpen(false);
+          if (!isRightPanelOpen) {
+            setSelectedProvince(null);
+            setIsLeftPanelOpen(false);
+          }
         }}
         isLeftPanelOpen={isLeftPanelOpen}
         isRightPanelOpen={isRightPanelOpen}
+        onToggleChat={() => {
+          setIsChatOpen(prev => {
+            if (!prev) setUnreadChatCount(0);
+            return !prev;
+          });
+        }}
+        isChatOpen={isChatOpen}
+        unreadChatCount={unreadChatCount}
       />
     </div>
   );

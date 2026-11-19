@@ -1,5 +1,6 @@
 import React, { useRef, useEffect, useState, useCallback, useMemo } from 'react';
 import { Province, Nation, Region, Strait, Army, MapMode } from '../types';
+import { Compass } from 'lucide-react';
 
 interface MapCanvasProps {
   provinces: Province[];
@@ -780,15 +781,16 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
+        onMouseLeave={() => setHoveredProvince(null)}
       />
 
-      {/* Floating On-Screen Touch / Zoom Controls for iPad & Desktop */}
-      <div className="fixed bottom-6 right-6 z-40 flex flex-col gap-2.5 select-none pointer-events-auto">
+      {/* Floating Cartographic Zoom & Pan Controls (Docked Safely on the Left) */}
+      <div className="fixed bottom-14 left-4 z-30 flex flex-col gap-1.5 select-none pointer-events-auto">
         <button
           type="button"
           onClick={() => handleZoomBy(1.3)}
-          className="w-11 h-11 rounded-lg pax-panel border border-amber-500/40 hover:border-amber-400 active:border-amber-300 text-amber-300 hover:text-amber-100 flex items-center justify-center text-2xl font-bold shadow-2xl transition active:scale-90 bg-slate-900/90 cursor-pointer"
-          title="Vergrößern (Zoom In)"
+          className="w-9 h-9 rounded imperial-btn text-amber-300 hover:text-amber-100 flex items-center justify-center text-xl font-bold shadow-xl transition active:scale-95"
+          title="Karte vergrößern (+)"
           aria-label="Zoom In"
         >
           +
@@ -796,8 +798,8 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
         <button
           type="button"
           onClick={() => handleZoomBy(0.77)}
-          className="w-11 h-11 rounded-lg pax-panel border border-amber-500/40 hover:border-amber-400 active:border-amber-300 text-amber-300 hover:text-amber-100 flex items-center justify-center text-2xl font-bold shadow-2xl transition active:scale-90 bg-slate-900/90 cursor-pointer"
-          title="Verkleinern (Zoom Out)"
+          className="w-9 h-9 rounded imperial-btn text-amber-300 hover:text-amber-100 flex items-center justify-center text-xl font-bold shadow-xl transition active:scale-95"
+          title="Karte verkleinern (−)"
           aria-label="Zoom Out"
         >
           −
@@ -805,18 +807,18 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
         <button
           type="button"
           onClick={handleResetCamera}
-          className="w-11 h-11 rounded-lg pax-panel border border-amber-500/40 hover:border-amber-400 active:border-amber-300 text-amber-300 hover:text-amber-100 flex items-center justify-center text-base shadow-2xl transition active:scale-90 bg-slate-900/90 cursor-pointer"
+          className="w-9 h-9 rounded imperial-btn text-amber-300 hover:text-amber-100 flex items-center justify-center text-xs shadow-xl transition active:scale-95"
           title="Europa zentrieren"
           aria-label="Reset View"
         >
-          🎯
+          <Compass size={14} />
         </button>
       </div>
 
-      {/* Floating Hover Tooltip */}
-      {hoveredProvince && !isDragging && (
+      {/* Floating Hover Tooltip (Only for Land Provinces & Dismissed when Drawer is Open) */}
+      {hoveredProvince && !isDragging && !selectedProvince && !hoveredProvince.isSea && (
         <div
-          className="pointer-events-none fixed z-50 pax-panel p-2.5 rounded shadow-2xl text-xs max-w-xs"
+          className="pointer-events-none fixed z-50 imperial-panel p-2.5 rounded shadow-2xl text-xs max-w-xs animate-in fade-in-50 duration-100"
           style={{
             left: `${mousePos.x + 16}px`,
             top: `${mousePos.y + 16}px`,
@@ -827,7 +829,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
             {hoveredProvince.owner && nations[hoveredProvince.owner] && (
               <img
                 src={nations[hoveredProvince.owner].flag}
-                alt="flag"
+                alt="Flagge"
                 className="w-5 h-3.5 object-cover rounded shadow"
                 onError={(e) => { (e.target as HTMLElement).style.display = 'none'; }}
               />
@@ -835,28 +837,28 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
             <span className="font-bold text-amber-300 font-royal text-sm">{hoveredProvince.name}</span>
           </div>
 
-          <div className="grid grid-cols-2 gap-x-3 gap-y-1 text-slate-300">
-            <div>Besitzer:</div>
+          <div className="grid grid-cols-2 gap-x-3 gap-y-1 text-slate-300 font-sans-ui text-[11px]">
+            <div className="text-slate-400">Herrscherhaus:</div>
             <div className="font-semibold text-slate-100">
               {hoveredProvince.owner && nations[hoveredProvince.owner] ? nations[hoveredProvince.owner].name : 'Neutral'}
             </div>
 
-            <div>Region:</div>
+            <div className="text-slate-400">Region:</div>
             <div className="text-amber-200">
               {hoveredProvince.region && regions[hoveredProvince.region] ? regions[hoveredProvince.region].name : 'Europäisches Territorium'}
             </div>
 
-            <div>Bevölkerung:</div>
-            <div className="text-slate-100">{hoveredProvince.population.toLocaleString('de-DE')}</div>
+            <div className="text-slate-400">Bevölkerung:</div>
+            <div className="text-slate-100 font-mono">{hoveredProvince.population.toLocaleString('de-DE')}</div>
 
-            <div>Gelände:</div>
+            <div className="text-slate-400">Gelände:</div>
             <div className="capitalize text-emerald-300">{hoveredProvince.terrain}</div>
 
-            <div>Ressource:</div>
-            <div className="capitalize text-amber-300">{hoveredProvince.resource || 'Keine'}</div>
+            <div className="text-slate-400">Handelsgut:</div>
+            <div className="capitalize text-amber-300">{hoveredProvince.resource || 'Getreide'}</div>
 
-            <div>Verteidigung:</div>
-            <div className="text-rose-300">+{hoveredProvince.defense}%</div>
+            <div className="text-slate-400">Verteidigung:</div>
+            <div className="text-rose-300 font-mono">+{hoveredProvince.defense}%</div>
           </div>
         </div>
       )}

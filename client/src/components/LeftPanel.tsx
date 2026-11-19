@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Nation } from '../types';
-import { X, Crown, Scale, Users, HeartHandshake, ScrollText, Flag, Sparkles, AlertCircle } from 'lucide-react';
+import { X, Crown, Scale, HeartHandshake, ScrollText, Shield, Award, Users } from 'lucide-react';
 
 interface LeftPanelProps {
   playerNation: Nation | null;
@@ -20,33 +20,46 @@ export const LeftPanel: React.FC<LeftPanelProps> = ({
   if (!isOpen || !playerNation) return null;
 
   return (
-    <div className="fixed top-16 left-0 bottom-8 w-[420px] z-40 pax-panel shadow-2xl flex flex-col border-r border-amber-500/30 overflow-hidden animate-in slide-in-from-left duration-200">
+    <aside aria-label="Staatsrat und Hofstaat" className="fixed top-14 left-3 bottom-12 w-88 sm:w-96 z-40 imperial-panel rounded-lg shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-left duration-200 select-none border border-amber-500/40">
       {/* Header */}
-      <div className="pax-header p-3 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Crown size={18} className="text-amber-400" />
-          <h2 className="font-royal font-bold text-amber-300 text-base">Reichsverwaltung & Hofstaat</h2>
+      <div className="imperial-header p-3.5 flex items-center justify-between">
+        <div className="flex items-center gap-2.5">
+          <div className="p-1.5 rounded bg-amber-500/20 border border-amber-500/40 text-amber-300">
+            <Crown size={16} />
+          </div>
+          <div>
+            <h2 className="font-royal font-bold text-amber-300 text-sm md:text-base leading-none">
+              Staatsrat & Hofstaat
+            </h2>
+            <span className="text-[11px] text-slate-300 font-parchment italic mt-0.5 block">
+              Regentschaft von {playerNation.name}
+            </span>
+          </div>
         </div>
-        <button onClick={onClose} className="p-1 rounded text-slate-400 hover:text-white hover:bg-slate-800 transition">
+        <button
+          onClick={onClose}
+          className="p-1.5 rounded text-slate-400 hover:text-amber-300 hover:bg-slate-800 transition"
+          title="Schließen"
+        >
           <X size={16} />
         </button>
       </div>
 
       {/* Tabs */}
-      <div className="flex border-b border-slate-800 bg-slate-950 text-xs">
+      <div className="flex border-b border-amber-500/30 bg-slate-950 text-xs font-royal">
         {[
-          { id: 'politics', name: 'Gesetze', icon: <Scale size={13} /> },
-          { id: 'dynasty', name: 'Dynastie & Hof', icon: <Crown size={13} /> },
-          { id: 'diplomacy', name: 'Diplomatie', icon: <HeartHandshake size={13} /> },
-          { id: 'missions', name: 'Missionen', icon: <ScrollText size={13} /> }
+          { id: 'politics', name: 'Gesetze', icon: <Scale size={12} /> },
+          { id: 'dynasty', name: 'Dynastie', icon: <Crown size={12} /> },
+          { id: 'diplomacy', name: 'Diplomatie', icon: <HeartHandshake size={12} /> },
+          { id: 'missions', name: 'Ziele', icon: <ScrollText size={12} /> }
         ].map(t => (
           <button
             key={t.id}
             onClick={() => setActiveTab(t.id as any)}
-            className={`flex-1 py-2 font-semibold flex items-center justify-center gap-1.5 transition ${
+            className={`flex-1 py-2 font-bold flex items-center justify-center gap-1.5 transition text-[11px] ${
               activeTab === t.id
-                ? 'text-amber-300 border-b-2 border-amber-400 bg-slate-900/60'
-                : 'text-slate-400 hover:text-slate-200'
+                ? 'text-amber-300 border-b-2 border-amber-400 bg-amber-500/10'
+                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900/50'
             }`}
           >
             {t.icon}
@@ -56,43 +69,43 @@ export const LeftPanel: React.FC<LeftPanelProps> = ({
       </div>
 
       {/* Body */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4 text-xs">
-        {/* POLITICS & LAWS TAB */}
+      <div className="flex-1 overflow-y-auto p-3.5 space-y-3 text-xs">
+        {/* POLITICS & LAWS */}
         {activeTab === 'politics' && (
           <div className="space-y-3">
-            <div className="p-3 rounded bg-amber-950/30 border border-amber-500/30">
-              <span className="text-[11px] text-amber-300 font-bold uppercase tracking-wider block mb-1">
-                Staatsform & Verfassungsordnung
+            <div className="p-3 rounded imperial-card border-amber-500/30">
+              <span className="text-[10px] text-amber-400 font-royal font-bold uppercase tracking-wider block mb-1">
+                Staatsordnung des Jahres 1618
               </span>
               <div className="font-royal font-bold text-slate-100 text-sm">
                 {playerNation.government}
               </div>
-              <p className="text-[11px] text-slate-400 mt-1">
-                Der Monarch besitzt uneingeschränkte Vollmachten über Krieg, Finanzen und Gesetze.
+              <p className="text-[11px] text-slate-300 font-sans-ui mt-1 leading-relaxed">
+                Der Monarch regiert mit fürstlicher Autorität über Lehnswesen, Finanzen, Bündnisse und Kriegszüge.
               </p>
             </div>
 
             <div className="space-y-2">
-              <span className="text-[11px] text-slate-400 font-bold uppercase tracking-wider block">
-                Grundgesetze des Reiches (Victoria 3 System)
+              <span className="text-[10px] text-slate-400 font-royal font-bold uppercase tracking-wider block">
+                Grundgesetze & Verordnungen
               </span>
 
               {[
-                { title: 'Königliche Macht & Autorität', active: playerNation.laws.power, options: ['Absolutismus', 'Ständeversammlung', 'Konstitutionell'] },
+                { title: 'Fürstliche Macht & Regentschaft', active: playerNation.laws.power, options: ['Absolutismus', 'Ständeversammlung', 'Konstitutionell'] },
                 { title: 'Wirtschafts- & Handelsordnung', active: playerNation.laws.economy, options: ['Merkantilismus', 'Freihandel', 'Protektionismus'] },
-                { title: 'Gesellschaftsstruktur', active: playerNation.laws.society, options: ['Adelsprivilegien', 'Bürgerliche Gleichheit', 'Bildungspflicht'] },
-                { title: 'Wehrverfassung', active: playerNation.laws.military, options: ['Berufsheer', 'Kantonssystem', 'Wehrpflicht'] }
+                { title: 'Ständische Gesellschaft', active: playerNation.laws.society, options: ['Adelsprivilegien', 'Bürgerrechte', 'Zunftordnung'] },
+                { title: 'Militär- & Wehrverfassung', active: playerNation.laws.military, options: ['Berufsheer', 'Söldnerregimenter', 'Landeswehr'] }
               ].map(law => (
-                <div key={law.title} className="p-2.5 rounded bg-slate-900/80 border border-slate-800">
-                  <div className="font-semibold text-slate-200 mb-1.5">{law.title}</div>
-                  <div className="flex gap-1.5">
+                <div key={law.title} className="p-2.5 rounded imperial-card">
+                  <div className="font-royal font-semibold text-slate-200 mb-1.5 text-xs">{law.title}</div>
+                  <div className="flex gap-1.5 font-sans-ui">
                     {law.options.map(opt => (
                       <span
                         key={opt}
-                        className={`flex-1 py-1 px-1.5 text-center rounded text-[11px] font-medium border ${
+                        className={`flex-1 py-1 px-1 text-center rounded text-[10px] font-medium border transition ${
                           opt === law.active
-                            ? 'bg-amber-500/20 border-amber-500 text-amber-300 font-bold'
-                            : 'bg-slate-800/60 border-slate-700/60 text-slate-400 hover:text-slate-200 cursor-pointer'
+                            ? 'bg-amber-500/20 border-amber-400 text-amber-300 font-bold shadow-sm'
+                            : 'bg-slate-900/60 border-slate-700/60 text-slate-400 hover:text-slate-200 cursor-pointer'
                         }`}
                       >
                         {opt}
@@ -105,103 +118,115 @@ export const LeftPanel: React.FC<LeftPanelProps> = ({
           </div>
         )}
 
-        {/* DYNASTY & COURT TAB */}
+        {/* DYNASTY & COURT */}
         {activeTab === 'dynasty' && (
           <div className="space-y-3">
-            <div className="p-3 rounded bg-slate-900/80 border border-slate-800">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="w-12 h-14 rounded bg-slate-800 border border-amber-500/40 flex items-center justify-center text-amber-300 font-royal font-bold text-lg shadow">
+            <div className="p-3 rounded imperial-card border-amber-500/40">
+              <div className="flex items-center gap-3 mb-2.5">
+                <div className="w-12 h-14 rounded bg-slate-950 border border-amber-400/50 flex items-center justify-center text-amber-300 font-royal font-bold text-2xl shadow-inner">
                   👑
                 </div>
                 <div>
-                  <h3 className="font-royal font-bold text-amber-300 text-sm">{playerNation.ruler.name}</h3>
-                  <div className="text-[11px] text-slate-300">Haus {playerNation.ruler.dynasty} · {playerNation.ruler.age} Jahre</div>
-                  <div className="text-[11px] text-emerald-400 font-semibold">Legitimität: {playerNation.ruler.legitimacy}%</div>
+                  <h3 className="font-royal font-bold text-amber-300 text-sm md:text-base leading-tight">
+                    {playerNation.ruler.name}
+                  </h3>
+                  <div className="text-[11px] text-slate-300 font-parchment italic mt-0.5">
+                    Haus {playerNation.ruler.dynasty} · {playerNation.ruler.age} Jahre
+                  </div>
+                  <div className="text-[10px] text-emerald-400 font-mono font-bold mt-1">
+                    Dynastische Legitimität: {playerNation.ruler.legitimacy}%
+                  </div>
                 </div>
               </div>
 
-              <div className="text-[11px] text-slate-400 pt-2 border-t border-slate-800">
-                <span className="font-semibold text-slate-200">Herrscher-Eigenschaften: </span>
-                {playerNation.ruler.traits.join(', ')}
+              <div className="text-[11px] text-slate-300 pt-2 border-t border-amber-500/20 font-sans-ui">
+                <span className="font-bold text-amber-200 font-royal text-[10px] uppercase block mb-1">Eigenschaften:</span>
+                <div className="flex flex-wrap gap-1">
+                  {playerNation.ruler.traits.map(t => (
+                    <span key={t} className="px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-300 border border-amber-500/30 text-[10px] font-semibold">
+                      {t}
+                    </span>
+                  ))}
+                </div>
               </div>
             </div>
 
-            <div className="p-3 rounded bg-slate-900/80 border border-slate-800 space-y-2">
-              <span className="font-semibold text-slate-200 block text-xs">Thronfolge & Dynastische Eheverbindungen:</span>
-              <div className="p-2 rounded bg-slate-950/60 border border-slate-800 flex items-center justify-between">
+            <div className="p-3 rounded imperial-card space-y-2">
+              <span className="font-royal font-bold text-slate-200 block text-xs">
+                Thronfolge & Dynastische Verbindungen:
+              </span>
+              <div className="p-2.5 rounded bg-slate-950/70 border border-amber-500/20 flex items-center justify-between">
                 <div>
-                  <div className="font-semibold text-slate-100">Kronprinz Friedrich Wilhelm</div>
-                  <div className="text-[10px] text-slate-400">Erbe des Thrones · 22 Jahre alt</div>
+                  <div className="font-royal font-bold text-slate-100 text-xs">Kronprinz Friedrich Wilhelm</div>
+                  <div className="text-[10px] text-slate-400 font-parchment italic">Reichserbe · 22 Jahre alt</div>
                 </div>
-                <button className="pax-btn text-[11px] py-1 px-2 text-amber-300 border-amber-500/40">
+                <button className="px-2.5 py-1 rounded imperial-btn text-[10px] font-bold">
                   Heirat anbahnen
                 </button>
               </div>
 
-              <p className="text-[11px] text-slate-400 italic">
-                Dynastische Hochzeiten mit anderen europäischen Höfen (z.B. Wien, London, Petersburg) schaffen dauerhafte Bündnisse und wertvolle Erbansprüche.
+              <p className="text-[11px] text-slate-400 font-parchment italic leading-relaxed">
+                Dynastische Hochzeiten mit befreundeten Fürstenhäusern sichern dauerhafte Schutzbündnisse und diplomatischen Rückhalt in Reichstagen.
               </p>
             </div>
           </div>
         )}
 
-        {/* DIPLOMACY TAB */}
+        {/* DIPLOMACY */}
         {activeTab === 'diplomacy' && (
           <div className="space-y-2.5">
-            <span className="text-[11px] text-slate-400 font-bold uppercase tracking-wider block">
-              Europäische Mächte & Beziehungen
+            <span className="text-[10px] text-slate-400 font-royal font-bold uppercase tracking-wider block">
+              Europäische Fürstenhöfe
             </span>
 
-            {Object.values(nations).slice(0, 8).map(n => {
+            {Object.values(nations).slice(0, 10).map(n => {
               if (n.tag === playerNation.tag) return null;
               return (
-                <div key={n.tag} className="p-2.5 rounded bg-slate-900/80 border border-slate-800 flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <img src={n.flag} alt="flag" className="w-6 h-4 object-cover rounded shadow" />
+                <div key={n.tag} className="p-2.5 rounded imperial-card flex items-center justify-between">
+                  <div className="flex items-center gap-2.5">
+                    <img src={n.flag} alt="Flagge" className="w-6 h-4 object-cover rounded shadow border border-amber-500/30" />
                     <div>
-                      <div className="font-semibold text-slate-100 text-xs">{n.name}</div>
-                      <div className="text-[10px] text-slate-400">{n.provincesCount} Provinzen · {n.government}</div>
+                      <div className="font-royal font-bold text-slate-100 text-xs">{n.name}</div>
+                      <div className="text-[10px] text-slate-400 font-sans-ui">{n.provincesCount} Provinzen · {n.government}</div>
                     </div>
                   </div>
 
-                  <div className="flex gap-1.5">
-                    <button className="pax-btn text-[11px] py-1 px-2 text-amber-300">
-                      Depesche
-                    </button>
-                  </div>
+                  <button className="px-2 py-1 rounded imperial-btn text-[10px] font-bold">
+                    Gesandtschaft
+                  </button>
                 </div>
               );
             })}
           </div>
         )}
 
-        {/* MISSIONS TAB */}
+        {/* MISSIONS */}
         {activeTab === 'missions' && (
           <div className="space-y-2.5">
-            <span className="text-[11px] text-slate-400 font-bold uppercase tracking-wider block">
-              Historische Missionen & Reichsziele
+            <span className="text-[10px] text-slate-400 font-royal font-bold uppercase tracking-wider block">
+              Historische Reichsmissionen
             </span>
 
             {[
-              { title: 'Brandenburg-Preußische Konsolidierung', desc: 'Sichert die Grenzen Brandenburgs und baut Berlin zu einer europäischen Kulturmetropole aus.', reward: '+50 Prestige, +15% Steuereffizienz', progress: 80 },
-              { title: 'Die Festung Schlesien halten', desc: 'Verteidigt Schlesien gegen österreichische Rückeroberungsansprüche und baut die Festung Glatz aus.', reward: '+20% Infanteriekampfkraft', progress: 100 },
-              { title: 'Gründung des Deutschen Bundes / Reichs', desc: 'Vereint alle norddeutschen Staaten durch Bündnisse, Märkte oder militärischen Schutz.', reward: 'Kaiserreich Ausrufung!', progress: 35 }
+              { title: 'Konsolidierung des Kernreiches', desc: 'Sichert die Grenzen gegen Übergriffe und baut die Residenzstadt zur Prachtmetropole aus.', reward: '+50 Prestige, +15% Steuern', progress: 80 },
+              { title: 'Herrschaft über die Fluss- & Seezölle', desc: 'Kontrolliert die strategischen Wasserwege und baut Seehäfen an den Küsten aus.', reward: '+25% Handelsvolumen', progress: 50 },
+              { title: 'Die Kaiserkrone Europas', desc: 'Erlangt den obersten Großmachtstatus durch Bündnisse und militärische Vorherrschaft.', reward: 'Kaiserliche Hegemonie!', progress: 30 }
             ].map(m => (
-              <div key={m.title} className="p-3 rounded bg-slate-900/80 border border-slate-800 space-y-1.5">
+              <div key={m.title} className="p-3 rounded imperial-card space-y-1.5">
                 <div className="flex items-center justify-between">
-                  <div className="font-semibold text-amber-300 text-xs">{m.title}</div>
+                  <div className="font-royal font-bold text-amber-300 text-xs">{m.title}</div>
                   <span className="font-mono text-xs font-bold text-emerald-400">{m.progress}%</span>
                 </div>
-                <p className="text-[11px] text-slate-300">{m.desc}</p>
-                <div className="text-[10px] text-amber-400/90 font-semibold">Belohnung: {m.reward}</div>
-                <div className="w-full bg-slate-800 h-1 rounded-full overflow-hidden">
-                  <div className="bg-amber-400 h-full" style={{ width: `${m.progress}%` }} />
+                <p className="text-[11px] text-slate-300 font-sans-ui leading-relaxed">{m.desc}</p>
+                <div className="text-[10px] text-amber-400 font-semibold font-royal">Belohnung: {m.reward}</div>
+                <div className="w-full bg-slate-950 h-1.5 rounded-full overflow-hidden border border-amber-500/30">
+                  <div className="bg-gradient-to-r from-amber-500 to-amber-300 h-full" style={{ width: `${m.progress}%` }} />
                 </div>
               </div>
             ))}
           </div>
         )}
       </div>
-    </div>
+    </aside>
   );
 };

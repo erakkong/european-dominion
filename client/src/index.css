@@ -2,17 +2,19 @@
 
 :root {
   --primary-gold: #d4af37;
-  --primary-gold-hover: #f3cf55;
-  --panel-bg: rgba(13, 19, 33, 0.95);
+  --primary-gold-bright: #f6d860;
+  --primary-gold-dark: #8f721e;
+  --panel-bg: rgba(10, 14, 23, 0.94);
   --panel-border: rgba(212, 175, 55, 0.35);
-  --panel-highlight: rgba(243, 207, 85, 0.15);
+  --panel-border-glow: rgba(246, 216, 96, 0.25);
+  --parchment-bg: #1c2438;
 }
 
 html, body {
   margin: 0;
   padding: 0;
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  background-color: #06090e;
+  font-family: 'EB Garamond', Georgia, serif;
+  background-color: #06090f;
   color: #e2e8f0;
   overflow: hidden;
   user-select: none;
@@ -26,103 +28,141 @@ canvas {
   touch-action: none;
 }
 
-.overflow-y-auto {
-  touch-action: pan-y;
+.overflow-y-auto, .overflow-x-auto {
+  touch-action: pan-y pan-x;
   -webkit-overflow-scrolling: touch;
 }
 
-h1, h2, h3, .font-royal {
+/* Typography */
+.font-royal {
   font-family: 'Cinzel', Georgia, serif;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.04em;
 }
 
-/* Glassmorphism panel styling */
-.pax-panel {
-  background: linear-gradient(135deg, rgba(17, 24, 39, 0.97) 0%, rgba(13, 19, 33, 0.95) 100%);
-  border: 1px solid rgba(212, 175, 55, 0.3);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(14px);
+.font-decorative {
+  font-family: 'Cinzel Decorative', Georgia, serif;
 }
 
-.pax-header {
-  background: linear-gradient(90deg, rgba(30, 41, 59, 0.95) 0%, rgba(15, 23, 42, 0.9) 100%);
+.font-parchment {
+  font-family: 'EB Garamond', Georgia, serif;
+}
+
+.font-sans-ui {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* Imperial Ornate Panels (EU4 & Victoria 3 Style) */
+.imperial-panel {
+  background: radial-gradient(circle at top, rgba(22, 30, 48, 0.98) 0%, rgba(10, 14, 24, 0.96) 100%);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.85),
+              inset 0 1px 0 rgba(255, 255, 255, 0.1),
+              inset 0 0 20px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(16px);
+}
+
+.imperial-header {
+  background: linear-gradient(90deg, rgba(26, 36, 58, 0.98) 0%, rgba(17, 24, 40, 0.95) 50%, rgba(26, 36, 58, 0.98) 100%);
   border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(246, 216, 96, 0.2);
 }
 
-.pax-btn {
-  background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
-  border: 1px solid rgba(212, 175, 55, 0.4);
-  color: #f8fafc;
-  padding: 6px 14px;
-  border-radius: 4px;
+.imperial-card {
+  background: linear-gradient(180deg, rgba(21, 29, 46, 0.75) 0%, rgba(13, 18, 30, 0.85) 100%);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 4px 12px rgba(0, 0, 0, 0.4);
+  transition: all 0.15s ease-in-out;
+}
+
+.imperial-card:hover {
+  border-color: rgba(212, 175, 55, 0.45);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 6px 16px rgba(0, 0, 0, 0.6), 0 0 10px rgba(212, 175, 55, 0.15);
+}
+
+/* Brass & Gold Interactive Buttons */
+.imperial-btn {
+  background: linear-gradient(180deg, #25334d 0%, #151e30 100%);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 2px 5px rgba(0, 0, 0, 0.5);
+  color: #f1f5f9;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-weight: 500;
-  font-size: 13px;
-  transition: all 0.15s ease-in-out;
-}
-
-.pax-btn:hover {
-  background: linear-gradient(180deg, #334155 0%, #1e293b 100%);
-  border-color: #d4af37;
-  box-shadow: 0 0 12px rgba(212, 175, 55, 0.35);
-  transform: translateY(-1px);
-}
-
-.pax-btn-gold {
-  background: linear-gradient(180deg, #d4af37 0%, #997819 100%);
-  border: 1px solid #f7df79;
-  color: #0b0f19;
-  font-weight: 700;
-  padding: 8px 16px;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: all 0.15s ease-in-out;
-}
-
-.pax-btn-gold:hover {
-  background: linear-gradient(180deg, #f3cf55 0%, #b8911c 100%);
-  box-shadow: 0 0 16px rgba(243, 207, 85, 0.6);
-  transform: translateY(-1px);
-}
-
-.pax-btn-danger {
-  background: linear-gradient(180deg, #991b1b 0%, #450a0a 100%);
-  border: 1px solid #ef4444;
-  color: #fff;
-}
-
-.pax-tab {
-  background: rgba(15, 23, 42, 0.7);
-  border: 1px solid rgba(212, 175, 55, 0.2);
-  color: #94a3b8;
-  padding: 8px 16px;
-  cursor: pointer;
-  font-size: 13px;
+  font-family: 'Cinzel', serif;
   font-weight: 600;
+  letter-spacing: 0.03em;
   transition: all 0.15s ease;
 }
 
-.pax-tab.active {
-  background: rgba(212, 175, 55, 0.2);
+.imperial-btn:hover {
+  background: linear-gradient(180deg, #324466 0%, #1c273e 100%);
   border-color: #d4af37;
-  color: #f3cf55;
+  color: #fef08a;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 0 12px rgba(212, 175, 55, 0.4);
+  transform: translateY(-1px);
+}
+
+.imperial-btn:active {
+  transform: translateY(1px);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.6);
+}
+
+.imperial-btn-gold {
+  background: linear-gradient(180deg, #d4af37 0%, #997819 100%);
+  border: 1px solid #fef08a;
+  color: #0b0f19;
+  font-family: 'Cinzel', serif;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 3px 8px rgba(0, 0, 0, 0.6);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.imperial-btn-gold:hover {
+  background: linear-gradient(180deg, #f3cf55 0%, #b8911c 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6), 0 0 16px rgba(243, 207, 85, 0.6);
+  transform: translateY(-1px);
+}
+
+.imperial-btn-gold:active {
+  transform: translateY(1px);
 }
 
 /* Custom Scrollbars */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 ::-webkit-scrollbar-track {
-  background: rgba(15, 23, 42, 0.6);
+  background: rgba(10, 14, 23, 0.7);
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(212, 175, 55, 0.4);
-  border-radius: 3px;
+  background: rgba(212, 175, 55, 0.35);
+  border-radius: 2px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(212, 175, 55, 0.8);
+  background: rgba(246, 216, 96, 0.7);
+}
+
+/* Regal Separator Filigree */
+.regal-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(212, 175, 55, 0.4) 30%, rgba(246, 216, 96, 0.7) 50%, rgba(212, 175, 55, 0.4) 70%, transparent 100%);
+}
+
+/* Gold text glow */
+.text-gold-glow {
+  text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+}
+
+/* Animations */
+@keyframes pulseGold {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.03); }
+}
+
+.animate-pulse-gold {
+  animation: pulseGold 2s infinite ease-in-out;
 }
