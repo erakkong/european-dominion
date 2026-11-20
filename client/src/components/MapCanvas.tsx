@@ -702,19 +702,18 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
         const nat = nations[item.tag];
         const rgb = nat?.rgb || [140, 150, 165];
 
-        // Soft pastel interior: 50% nation color + 50% soft paper cream (248, 246, 240)
-        const fillR = Math.round(rgb[0] * 0.50 + 124);
-        const fillG = Math.round(rgb[1] * 0.50 + 123);
-        const fillB = Math.round(rgb[2] * 0.50 + 120);
+        // Kräftigere, dunklere Landesfarben (satter, satter Grundton statt überstrahltem Hell-Pastell)
+        const fillR = Math.round(rgb[0] * 0.78 + 32);
+        const fillG = Math.round(rgb[1] * 0.78 + 32);
+        const fillB = Math.round(rgb[2] * 0.78 + 30);
 
         ctx.fillStyle = `rgb(${fillR}, ${fillG}, ${fillB})`;
         ctx.fill(item.fillPath);
 
-        // Darker shade of the nation's own color (KEIN Schatten, sondern einfach die Farbe der Nation in dunkler!)
-        // Reduziert die Helligkeit um ~35% ohne jede Farbtonverschiebung (reine Eigenfarbe)
-        const darkR = Math.max(0, Math.min(255, Math.round(rgb[0] * 0.65)));
-        const darkG = Math.max(0, Math.min(255, Math.round(rgb[1] * 0.65)));
-        const darkB = Math.max(0, Math.min(255, Math.round(rgb[2] * 0.65)));
+        // Deutlich dunklere Nuance der reinen Landesfarbe an den Grenzen
+        const darkR = Math.max(0, Math.min(255, Math.round(rgb[0] * 0.48)));
+        const darkG = Math.max(0, Math.min(255, Math.round(rgb[1] * 0.48)));
+        const darkB = Math.max(0, Math.min(255, Math.round(rgb[2] * 0.48)));
 
         // Clip strictly inside nation polygon so darkening is contained within the country
         ctx.save();
@@ -722,17 +721,17 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
         ctx.lineJoin = 'round';
         ctx.lineCap = 'round';
 
-        // Stufenloser Farbverlauf in der reinen Eigenfarbe des Landes (kein transparenter Schatten)
+        // Stufenloser Farbverlauf in der reinen Eigenfarbe des Landes (kein Schatten)
         // ONLY on sovereign land borders (item.landBorderPath)!
         // Coasts and islands are NEVER stroked with dark color!
-        const maxGradWidth = Math.max(8, Math.min(16, 12 / Math.pow(camera.zoom, 0.35)));
-        const numLayers = 10;
+        const maxGradWidth = Math.max(10, Math.min(22, 16 / Math.pow(camera.zoom, 0.35)));
+        const numLayers = 12;
         for (let step = numLayers; step >= 1; step--) {
           const t = step / numLayers;
           const width = t * maxGradWidth;
-          const darkFactor = Math.pow(1 - t, 1.4);
+          const darkFactor = Math.pow(1 - t, 1.35);
 
-          // Direkte Farbmischung zwischen Pastell-Zentrum und dunkler Landesfarbe
+          // Direkte Farbmischung zwischen sattem Landesinneren und tiefer dunkler Landesfarbe
           const rCur = Math.round(fillR + (darkR - fillR) * darkFactor);
           const gCur = Math.round(fillG + (darkG - fillG) * darkFactor);
           const bCur = Math.round(fillB + (darkB - fillB) * darkFactor);
