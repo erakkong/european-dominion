@@ -710,38 +710,37 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
         ctx.fillStyle = `rgb(${fillR}, ${fillG}, ${fillB})`;
         ctx.fill(item.fillPath);
 
-        // Rich, deep, saturated national border colors (Victoria 3 border tone)
-        const borderR = Math.max(0, Math.min(255, Math.round(rgb[0] * 0.72)));
-        const borderG = Math.max(0, Math.min(255, Math.round(rgb[1] * 0.72)));
-        const borderB = Math.max(0, Math.min(255, Math.round(rgb[2] * 0.72)));
-
-        const deepR = Math.max(0, Math.min(255, Math.round(rgb[0] * 0.50)));
-        const deepG = Math.max(0, Math.min(255, Math.round(rgb[1] * 0.50)));
-        const deepB = Math.max(0, Math.min(255, Math.round(rgb[2] * 0.50)));
+        // Darker shade of the nation's own color (KEIN Schatten, sondern einfach die Farbe der Nation in dunkler!)
+        // Reduziert die Helligkeit um ~35% ohne jede Farbtonverschiebung (reine Eigenfarbe)
+        const darkR = Math.max(0, Math.min(255, Math.round(rgb[0] * 0.65)));
+        const darkG = Math.max(0, Math.min(255, Math.round(rgb[1] * 0.65)));
+        const darkB = Math.max(0, Math.min(255, Math.round(rgb[2] * 0.65)));
 
         // Clip strictly inside nation polygon so darkening is contained within the country
         ctx.save();
         ctx.clip(item.fillPath);
+        ctx.lineJoin = 'round';
+        ctx.lineCap = 'round';
 
-        // 18-pass smooth continuous Victoria 3 border darkening gradient
+        // Stufenloser Farbverlauf in der reinen Eigenfarbe des Landes (kein transparenter Schatten)
         // ONLY on sovereign land borders (item.landBorderPath)!
         // Coasts and islands are NEVER stroked with dark color!
-        const maxGradWidth = Math.max(16, Math.min(32, 22 / Math.pow(camera.zoom, 0.4)));
-        const numLayers = 18;
+        const maxGradWidth = Math.max(8, Math.min(16, 12 / Math.pow(camera.zoom, 0.35)));
+        const numLayers = 10;
         for (let step = numLayers; step >= 1; step--) {
           const t = step / numLayers;
           const width = t * maxGradWidth;
-          const alpha = Math.pow(1 - t, 2.2) * 0.45 + 0.02;
+          const darkFactor = Math.pow(1 - t, 1.4);
 
-          ctx.strokeStyle = `rgba(${borderR}, ${borderG}, ${borderB}, ${alpha})`;
+          // Direkte Farbmischung zwischen Pastell-Zentrum und dunkler Landesfarbe
+          const rCur = Math.round(fillR + (darkR - fillR) * darkFactor);
+          const gCur = Math.round(fillG + (darkG - fillG) * darkFactor);
+          const bCur = Math.round(fillB + (darkB - fillB) * darkFactor);
+
+          ctx.strokeStyle = `rgb(${rCur}, ${gCur}, ${bCur})`;
           ctx.lineWidth = width * 2;
           ctx.stroke(item.landBorderPath);
         }
-
-        // Additional deep edge accent right at the sovereign land frontier
-        ctx.strokeStyle = `rgba(${deepR}, ${deepG}, ${deepB}, 0.75)`;
-        ctx.lineWidth = Math.max(1.5, 3.2 / camera.zoom);
-        ctx.stroke(item.landBorderPath);
 
         ctx.restore();
       }
@@ -795,10 +794,10 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
       ctx.restore();
     }
 
-    // 2c. CRISP DIVIDING BOUNDARY LINE (Victoria 3 fine dark outer border between land nations)
+    // 2c. CRISP DIVIDING BOUNDARY LINE (Dezente, feine Grenztrennlinie zwischen den Ländern)
     ctx.save();
-    ctx.strokeStyle = 'rgba(25, 36, 52, 0.85)';
-    ctx.lineWidth = Math.max(0.85, 1.4 / camera.zoom);
+    ctx.strokeStyle = 'rgba(40, 50, 65, 0.45)';
+    ctx.lineWidth = Math.max(0.5, 0.85 / camera.zoom);
     ctx.stroke(landBordersCrispPath);
     ctx.restore();
 
