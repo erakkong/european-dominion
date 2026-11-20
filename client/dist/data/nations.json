@@ -340,7 +340,7 @@
     ],
     "capital": 11040,
     "flag": "/assets/flags/kaz_m.png",
-    "provincesCount": 57,
+    "provincesCount": 22,
     "ruler": {
       "name": "Herrscher von Kasachen-Khanat",
       "dynasty": "Haus Kasachen-Khanat",
@@ -740,7 +740,7 @@
     ],
     "capital": 10594,
     "flag": "/assets/flags/khiv_m.png",
-    "provincesCount": 27,
+    "provincesCount": 10,
     "ruler": {
       "name": "Herrscher von Khanat Chiwa",
       "dynasty": "Haus Khanat Chiwa",
@@ -925,7 +925,7 @@
     ],
     "capital": 10647,
     "flag": "/assets/flags/kbu_m.png",
-    "provincesCount": 17,
+    "provincesCount": 6,
     "ruler": {
       "name": "Herrscher von Buxoro",
       "dynasty": "Haus Buxoro",

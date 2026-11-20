@@ -217,6 +217,43 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     };
   }, [provinces]);
 
+  // Pre-calculate Sovereign Nation Centroids and Bounding Box for Dynamic Map Labels
+  const nationLabels = useMemo(() => {
+    const nationProvs = new Map<string, Province[]>();
+    for (let i = 0; i < provinces.length; i++) {
+      const p = provinces[i];
+      if (p.isSea || !p.owner) continue;
+      if (!nationProvs.has(p.owner)) nationProvs.set(p.owner, []);
+      nationProvs.get(p.owner)!.push(p);
+    }
+
+    const labels: { tag: string; name: string; cx: number; cy: number; width: number; height: number }[] = [];
+    for (const [tag, provList] of nationProvs.entries()) {
+      const nat = nations[tag];
+      if (!nat || provList.length === 0) continue;
+      let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+      let sumX = 0, sumY = 0;
+      for (let k = 0; k < provList.length; k++) {
+        const p = provList[k];
+        if (p.bbox[0] < minX) minX = p.bbox[0];
+        if (p.bbox[2] > maxX) maxX = p.bbox[2];
+        if (p.bbox[1] < minY) minY = p.bbox[1];
+        if (p.bbox[3] > maxY) maxY = p.bbox[3];
+        sumX += p.cx;
+        sumY += p.cy;
+      }
+      labels.push({
+        tag,
+        name: nat.name,
+        cx: Math.round(sumX / provList.length),
+        cy: Math.round(sumY / provList.length),
+        width: maxX - minX,
+        height: maxY - minY
+      });
+    }
+    return labels;
+  }, [provinces, nations]);
+
   // Transform screen to world coordinates
   const screenToWorld = useCallback((screenX: number, screenY: number): [number, number] => {
     return [
@@ -229,16 +266,16 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
   const handleInteractionAt = useCallback((screenX: number, screenY: number, isRightClick = false) => {
     const [wx, wy] = screenToWorld(screenX, screenY);
 
-    // 1. Check Strait Badges Click
+    // 1. Check Strait Badges Click (Using exact geographic cx/cy)
     for (const strait of Object.values(straits)) {
-      if (strait.provinces && strait.provinces.length > 0) {
-        const p0 = provinces.find(p => p.id === strait.provinces[0]);
-        if (p0) {
-          const dist = Math.hypot(wx - p0.cx, wy - p0.cy);
-          if (dist < 35 / cameraRef.current.zoom) {
-            onSelectStrait(strait);
-            return;
-          }
+      const p0 = strait.provinces && strait.provinces.length > 0 ? provinceMap.get(strait.provinces[0]) : null;
+      const sx = strait.cx ?? (p0 ? p0.cx : null);
+      const sy = strait.cy ?? (p0 ? p0.cy : null);
+      if (sx !== null && sy !== null) {
+        const dist = Math.hypot(wx - sx, wy - sy);
+        if (dist < 35 / cameraRef.current.zoom) {
+          onSelectStrait(strait);
+          return;
         }
       }
     }
@@ -527,8 +564,8 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    // Clear background (Matches deep sea province color to remove all ocean gaps and island shadows)
-    ctx.fillStyle = '#0d1f33';
+    // Clear background (Luminous Victoria 3 sapphire oceanic tone)
+    ctx.fillStyle = '#16324f';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     ctx.save();
@@ -553,9 +590,9 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
         ctx.lineTo(p.points[k][0], p.points[k][1]);
       }
       ctx.closePath();
-      ctx.fillStyle = '#0d1f33';
+      ctx.fillStyle = '#193859';
       ctx.fill();
-      ctx.strokeStyle = 'rgba(9, 21, 34, 0.2)';
+      ctx.strokeStyle = 'rgba(45, 90, 135, 0.3)';
       ctx.lineWidth = 0.5;
       ctx.stroke();
     }
@@ -616,22 +653,33 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     }
 
     // 2b. DRAW INTERNAL PROVINCE BORDERS (Inlandsgrenzen)
-    // Only visible when zoomed in (> 0.65), drawn in a subtle, muted grey tone so they don't look like national borders
-    if (camera.zoom > 0.65) {
-      const zoomT = Math.min(1, (camera.zoom - 0.65) / 0.45);
-      const internalAlpha = zoomT * 0.42;
+    // Completely hidden when zoomed out (<= 0.85). Fades in softly only when zooming into provinces (> 0.85)
+    if (camera.zoom > 0.85) {
+      const zoomT = Math.min(1, (camera.zoom - 0.85) / 0.45);
+      const internalAlpha = zoomT * 0.4;
       ctx.save();
-      ctx.strokeStyle = `rgba(160, 174, 192, ${internalAlpha})`; // Soft elegant grey
+      ctx.strokeStyle = `rgba(160, 174, 192, ${internalAlpha})`; // Soft muted grey
       ctx.lineWidth = Math.max(0.5, 0.75 / camera.zoom);
       ctx.stroke(internalBordersPath);
       ctx.restore();
     }
 
-    // 2c. DRAW NATIONAL OUTER BORDERS & COASTS (Außengrenzen)
-    // Prominently visible at all zoom levels in crisp dark styling
+    // 2c. DRAW NATIONAL OUTER BORDERS & COASTS (Victoria 3 Multi-pass Border Vignette)
+    // Darkens along sovereign national borders giving depth, relief and clear boundary distinction
     ctx.save();
-    ctx.strokeStyle = '#080d15';
-    ctx.lineWidth = Math.max(0.85, 1.4 / camera.zoom);
+    // Pass 1: Outer soft ambient vignette / darkening
+    ctx.strokeStyle = 'rgba(0, 0, 0, 0.35)';
+    ctx.lineWidth = Math.max(4.5, 8.5 / camera.zoom);
+    ctx.stroke(nationalBordersPath);
+
+    // Pass 2: Mid-shadow border definition
+    ctx.strokeStyle = 'rgba(0, 0, 0, 0.55)';
+    ctx.lineWidth = Math.max(2.2, 4.2 / camera.zoom);
+    ctx.stroke(nationalBordersPath);
+
+    // Pass 3: Core crisp border line
+    ctx.strokeStyle = '#050a12';
+    ctx.lineWidth = Math.max(0.9, 1.4 / camera.zoom);
     ctx.stroke(nationalBordersPath);
     ctx.restore();
 
@@ -666,7 +714,35 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
       ctx.restore();
     }
 
-    // 3. REGION LABELS REMOVED (per user request: "entferne die regionsbezeichnungen")
+    // 3. DRAW LARGE DYNAMIC NATION LABELS (When zoomed out <= 0.95, scaled dynamically to country size)
+    if (camera.zoom <= 0.95) {
+      const zoomFactor = Math.min(1, (0.95 - camera.zoom) / 0.35);
+      ctx.save();
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+
+      for (let i = 0; i < nationLabels.length; i++) {
+        const nLab = nationLabels[i];
+        if (nLab.cx >= viewLeft && nLab.cx <= viewRight && nLab.cy >= viewTop && nLab.cy <= viewBottom) {
+          // Dynamic font size scaled to country dimension
+          const spanDim = Math.min(nLab.width * 0.12, nLab.height * 0.22);
+          const fontSize = Math.min(48, Math.max(11, spanDim));
+          if (fontSize < 10) continue;
+
+          ctx.font = `bold ${fontSize}px 'Cinzel', serif`;
+          const upperName = nLab.name.toUpperCase();
+
+          // Soft ambient dark drop-shadow
+          ctx.fillStyle = `rgba(5, 10, 18, ${0.85 * zoomFactor})`;
+          ctx.fillText(upperName, nLab.cx + 2, nLab.cy + 2);
+
+          // Golden/Cream Nation Title
+          ctx.fillStyle = `rgba(246, 238, 219, ${0.9 * zoomFactor})`;
+          ctx.fillText(upperName, nLab.cx, nLab.cy);
+        }
+      }
+      ctx.restore();
+    }
 
     // 4. DRAW CAPITAL STARS & MAJOR CITY NAMES (Zoom >= 0.7) - FAST O(1)
     if (camera.zoom >= 0.7) {
@@ -708,32 +784,42 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
       }
     }
 
-    // 5. DRAW STRATEGIC CHOKEPOINTS & STRAITS BADGES
+    // 5. DRAW STRATEGIC CHOKEPOINTS & STRAITS BADGES (Exact Geographic Placement)
     for (const strait of Object.values(straits)) {
-      if (strait.provinces && strait.provinces.length > 0) {
-        const p0 = provinceMap.get(strait.provinces[0]);
-        if (p0 && p0.cx >= viewLeft && p0.cx <= viewRight && p0.cy >= viewTop && p0.cy <= viewBottom) {
-          // Badge circle
-          ctx.beginPath();
-          ctx.arc(p0.cx, p0.cy, 12, 0, 2 * Math.PI);
-          ctx.fillStyle = strait.isBlockaded ? '#dc2626' : '#d97706';
-          ctx.fill();
-          ctx.strokeStyle = '#ffffff';
-          ctx.lineWidth = 2;
-          ctx.stroke();
+      const p0 = strait.provinces && strait.provinces.length > 0 ? provinceMap.get(strait.provinces[0]) : null;
+      const sx = strait.cx ?? (p0 ? p0.cx : null);
+      const sy = strait.cy ?? (p0 ? p0.cy : null);
+      if (sx !== null && sy !== null && sx >= viewLeft && sx <= viewRight && sy >= viewTop && sy <= viewBottom) {
+        // Badge circle
+        ctx.beginPath();
+        ctx.arc(sx, sy, 12, 0, 2 * Math.PI);
+        ctx.fillStyle = strait.isBlockaded ? '#dc2626' : '#d97706';
+        ctx.fill();
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 2;
+        ctx.stroke();
 
-          // Anchor / Port icon text
-          ctx.font = 'bold 11px sans-serif';
-          ctx.fillStyle = '#ffffff';
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText(strait.type === 'strait' ? '⚓' : '🌊', p0.cx, p0.cy);
+        // Anchor / River icon text
+        ctx.font = 'bold 11px sans-serif';
+        ctx.fillStyle = '#ffffff';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(strait.type === 'strait' ? '⚓' : '🌊', sx, sy);
 
-          // Name label
-          ctx.font = 'bold 11px "Inter", sans-serif';
-          ctx.fillStyle = '#fef08a';
-          ctx.fillText(strait.name, p0.cx, p0.cy + 18);
-        }
+        // Name label with dark background badge
+        ctx.font = 'bold 11px "Inter", sans-serif';
+        const sName = strait.name;
+        const sWidth = ctx.measureText(sName).width;
+        ctx.fillStyle = 'rgba(10, 15, 26, 0.85)';
+        ctx.beginPath();
+        ctx.roundRect(sx - sWidth / 2 - 4, sy + 10, sWidth + 8, 15, 3);
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(212, 175, 55, 0.4)';
+        ctx.lineWidth = 0.8;
+        ctx.stroke();
+
+        ctx.fillStyle = '#fef08a';
+        ctx.fillText(sName, sx, sy + 21);
       }
     }
 
@@ -770,7 +856,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
 
     animId = requestAnimationFrame(render);
     return () => cancelAnimationFrame(animId);
-  }, [provinces, nations, regions, straits, armies, camera, mapMode, hoveredProvince, selectedProvince, playerNation, regionLabels, capitalMarkers, provinceMap, nationalBordersPath, internalBordersPath]);
+  }, [provinces, nations, regions, straits, armies, camera, mapMode, hoveredProvince, selectedProvince, playerNation, regionLabels, capitalMarkers, provinceMap, nationalBordersPath, internalBordersPath, nationLabels]);
 
   return (
     <div className="relative w-full h-full overflow-hidden touch-none select-none" onContextMenu={e => e.preventDefault()}>

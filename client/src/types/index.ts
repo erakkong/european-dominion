@@ -123,6 +123,8 @@ export interface Strait {
   type: 'strait' | 'river';
   controllingNation: string;
   provinces: number[];
+  cx?: number;
+  cy?: number;
   tollRateGoldPerShip: number;
   isBlockaded: boolean;
   freePassageAgreements: string[];

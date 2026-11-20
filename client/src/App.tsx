@@ -359,8 +359,8 @@ export default function App() {
         onOpenAuth={() => setIsAuthModalOpen(true)}
       />
 
-      {/* Central Interactive Map Engine */}
-      <main className="w-full h-full pt-12 pb-10">
+      {/* Central Interactive Map Engine (Full Viewport AAA Canvas) */}
+      <main className="absolute inset-0 w-full h-full overflow-hidden">
         <MapCanvas
           provinces={provinces}
           nations={nations}

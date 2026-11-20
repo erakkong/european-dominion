@@ -4,9 +4,14 @@
   --primary-gold: #d4af37;
   --primary-gold-bright: #f6d860;
   --primary-gold-dark: #8f721e;
-  --panel-bg: rgba(10, 14, 23, 0.94);
-  --panel-border: rgba(212, 175, 55, 0.35);
-  --panel-border-glow: rgba(246, 216, 96, 0.25);
+  --gold-primary: #d4af37;
+  --gold-antique: #9a7b2c;
+  --gold-highlight: #f3d576;
+  --bg-obsidian: #0e131f;
+  --bg-obsidian-surface: #151c2c;
+  --panel-bg: rgba(14, 19, 31, 0.98);
+  --panel-border: rgba(154, 123, 44, 0.45);
+  --panel-border-glow: rgba(243, 213, 118, 0.25);
   --parchment-bg: #1c2438;
 }
 
@@ -22,6 +27,36 @@ html, body {
   touch-action: none;
   -webkit-touch-callout: none;
   overscroll-behavior: none;
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* AAA Imperial Strategy UI Components */
+.imperial-ribbon {
+  background: linear-gradient(180deg, #161e30 0%, #0d121e 100%);
+  border-bottom: 2px solid #9a7b2c;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.75), inset 0 1px 0 rgba(243, 213, 118, 0.25);
+  contain: layout style;
+}
+
+.imperial-recessed-slot {
+  background: #090e18;
+  border: 1px solid rgba(154, 123, 44, 0.35);
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.75), 0 1px 0 rgba(243, 213, 118, 0.1);
+}
+
+.brass-divider {
+  width: 1px;
+  height: 22px;
+  background: linear-gradient(180deg, transparent 0%, #9a7b2c 50%, transparent 100%);
+}
+
+.dispatch-strip {
+  background: linear-gradient(90deg, #181310 0%, #241c16 50%, #181310 100%);
+  border: 1px solid #9a7b2c;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(243, 213, 118, 0.2);
 }
 
 canvas {
