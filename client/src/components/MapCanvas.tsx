@@ -168,7 +168,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
   }, [nations, provinceMap]);
 
   // Pre-calculate National Outer Borders, Coastal Borders, Internal Borders, and Nation Paths
-  const { nationRenderData, internalBordersPath, nationalBordersCrispPath, coastalBordersPath } = useMemo(() => {
+  const { nationRenderData, internalBordersPath, landBordersCrispPath, coastalBordersPath } = useMemo(() => {
     const edgeMap = new Map<bigint, { p1: [number, number]; p2: [number, number]; o1: string; o2: string | null }>();
 
     for (let i = 0; i < provinces.length; i++) {
@@ -197,9 +197,9 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     }
 
     const fillPaths = new Map<string, Path2D>();
-    const borderPaths = new Map<string, Path2D>();
+    const landBorderPaths = new Map<string, Path2D>();
     const internalPath = new Path2D();
-    const crispOuterPath = new Path2D();
+    const landCrispPath = new Path2D();
     const coastalPath = new Path2D();
 
     for (let i = 0; i < provinces.length; i++) {
@@ -219,33 +219,32 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     }
 
     for (const e of edgeMap.values()) {
-      if (e.o2 === null || e.o1 !== e.o2) {
-        // Outer border for e.o1
-        let b1 = borderPaths.get(e.o1);
+      if (e.o2 === null) {
+        // Coastline edge: strictly separating land from ocean (NO inner dark shadow!)
+        coastalPath.moveTo(e.p1[0], e.p1[1]);
+        coastalPath.lineTo(e.p2[0], e.p2[1]);
+      } else if (e.o1 !== e.o2) {
+        // Sovereign land border between two DIFFERENT nations (where Victoria 3 inner gradient goes!)
+        let b1 = landBorderPaths.get(e.o1);
         if (!b1) {
           b1 = new Path2D();
-          borderPaths.set(e.o1, b1);
+          landBorderPaths.set(e.o1, b1);
         }
         b1.moveTo(e.p1[0], e.p1[1]);
         b1.lineTo(e.p2[0], e.p2[1]);
 
-        if (e.o2 !== null) {
-          let b2 = borderPaths.get(e.o2);
-          if (!b2) {
-            b2 = new Path2D();
-            borderPaths.set(e.o2, b2);
-          }
-          b2.moveTo(e.p1[0], e.p1[1]);
-          b2.lineTo(e.p2[0], e.p2[1]);
-        } else {
-          // Coastline edge
-          coastalPath.moveTo(e.p1[0], e.p1[1]);
-          coastalPath.lineTo(e.p2[0], e.p2[1]);
+        let b2 = landBorderPaths.get(e.o2);
+        if (!b2) {
+          b2 = new Path2D();
+          landBorderPaths.set(e.o2, b2);
         }
+        b2.moveTo(e.p1[0], e.p1[1]);
+        b2.lineTo(e.p2[0], e.p2[1]);
 
-        crispOuterPath.moveTo(e.p1[0], e.p1[1]);
-        crispOuterPath.lineTo(e.p2[0], e.p2[1]);
+        landCrispPath.moveTo(e.p1[0], e.p1[1]);
+        landCrispPath.lineTo(e.p2[0], e.p2[1]);
       } else {
+        // Internal provincial border within the same sovereign nation
         internalPath.moveTo(e.p1[0], e.p1[1]);
         internalPath.lineTo(e.p2[0], e.p2[1]);
       }
@@ -263,12 +262,12 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     const dataList: {
       tag: string;
       fillPath: Path2D;
-      borderPath: Path2D;
+      landBorderPath: Path2D;
       bbox: [number, number, number, number];
     }[] = [];
 
     for (const [tag, fPath] of fillPaths.entries()) {
-      const bPath = borderPaths.get(tag) || new Path2D();
+      const bPath = landBorderPaths.get(tag) || new Path2D();
       const pList = nationProvsMap.get(tag) || [];
       let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
       for (let k = 0; k < pList.length; k++) {
@@ -281,7 +280,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
       dataList.push({
         tag,
         fillPath: fPath,
-        borderPath: bPath,
+        landBorderPath: bPath,
         bbox: [minX, minY, maxX, maxY]
       });
     }
@@ -289,7 +288,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     return {
       nationRenderData: dataList,
       internalBordersPath: internalPath,
-      nationalBordersCrispPath: crispOuterPath,
+      landBordersCrispPath: landCrispPath,
       coastalBordersPath: coastalPath
     };
   }, [provinces]);
@@ -642,7 +641,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     canvas.height = window.innerHeight;
 
     // Clear background (Luminous Victoria 3 pastel parchment ocean)
-    ctx.fillStyle = '#cbd8e2';
+    ctx.fillStyle = '#d4e1e8';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     ctx.save();
@@ -667,23 +666,34 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
         ctx.lineTo(p.points[k][0], p.points[k][1]);
       }
       ctx.closePath();
-      ctx.fillStyle = '#c0d1dc';
+      ctx.fillStyle = '#cbe0ea';
       ctx.fill();
-      ctx.strokeStyle = 'rgba(145, 175, 195, 0.45)';
-      ctx.lineWidth = 0.5;
+
+      // Faint dashed cartographic nautical division lines
+      ctx.save();
+      ctx.setLineDash([4, 6]);
+      ctx.strokeStyle = 'rgba(135, 168, 188, 0.40)';
+      ctx.lineWidth = 0.75;
       ctx.stroke();
+      ctx.restore();
     }
 
-    // 1b. COASTAL SHALLOWS WATER GLOW (Gentle light cyan shallows rim along coasts)
+    // 1b. COASTAL SHALLOWS WATER GLOW (Victoria 3 soft luminous cyan/turquoise shelf along coasts & islands)
     ctx.save();
-    ctx.strokeStyle = 'rgba(165, 202, 222, 0.55)';
-    ctx.lineWidth = Math.max(3, 7 / camera.zoom);
+    ctx.strokeStyle = 'rgba(172, 212, 230, 0.40)';
+    ctx.lineWidth = Math.max(12, 24 / camera.zoom);
+    ctx.stroke(coastalBordersPath);
+    ctx.strokeStyle = 'rgba(188, 226, 242, 0.65)';
+    ctx.lineWidth = Math.max(5, 10 / camera.zoom);
     ctx.stroke(coastalBordersPath);
     ctx.restore();
 
     // 2. DRAW NATIONS & PROVINCES
     if (mapMode === 'political') {
-      // Authentic Victoria 3 Political Map: Soft pastel interior + deep saturated inner border darkening
+      // Authentic Victoria 3 Political Map:
+      // - Soft pastel watercolor interior
+      // - Smooth continuous gradient darkening ONLY along sovereign land borders
+      // - Coasts and islands remain 100% clean, crisp pastel with zero dark shadows
       for (let i = 0; i < nationRenderData.length; i++) {
         const item = nationRenderData[i];
         const [bx1, by1, bx2, by2] = item.bbox;
@@ -692,41 +702,46 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
         const nat = nations[item.tag];
         const rgb = nat?.rgb || [140, 150, 165];
 
-        // Soft pastel interior: 45% nation color + 55% parchment cream (244, 241, 234)
-        const fillR = Math.round(rgb[0] * 0.45 + 134);
-        const fillG = Math.round(rgb[1] * 0.45 + 132);
-        const fillB = Math.round(rgb[2] * 0.45 + 128);
+        // Soft pastel interior: 50% nation color + 50% soft paper cream (248, 246, 240)
+        const fillR = Math.round(rgb[0] * 0.50 + 124);
+        const fillG = Math.round(rgb[1] * 0.50 + 123);
+        const fillB = Math.round(rgb[2] * 0.50 + 120);
 
         ctx.fillStyle = `rgb(${fillR}, ${fillG}, ${fillB})`;
         ctx.fill(item.fillPath);
 
-        // Rich, darker, saturated border gradient colors
-        const rimR = Math.round(rgb[0] * 0.85);
-        const rimG = Math.round(rgb[1] * 0.85);
-        const rimB = Math.round(rgb[2] * 0.85);
+        // Rich, deep, saturated national border colors (Victoria 3 border tone)
+        const borderR = Math.max(0, Math.min(255, Math.round(rgb[0] * 0.72)));
+        const borderG = Math.max(0, Math.min(255, Math.round(rgb[1] * 0.72)));
+        const borderB = Math.max(0, Math.min(255, Math.round(rgb[2] * 0.72)));
 
-        const deepR = Math.round(rgb[0] * 0.55);
-        const deepG = Math.round(rgb[1] * 0.55);
-        const deepB = Math.round(rgb[2] * 0.55);
+        const deepR = Math.max(0, Math.min(255, Math.round(rgb[0] * 0.50)));
+        const deepG = Math.max(0, Math.min(255, Math.round(rgb[1] * 0.50)));
+        const deepB = Math.max(0, Math.min(255, Math.round(rgb[2] * 0.50)));
 
         // Clip strictly inside nation polygon so darkening is contained within the country
         ctx.save();
         ctx.clip(item.fillPath);
 
-        // Pass 1: Wide ambient inner gradient band (~22px)
-        ctx.strokeStyle = `rgba(${rimR}, ${rimG}, ${rimB}, 0.38)`;
-        ctx.lineWidth = Math.max(9, 22 / camera.zoom);
-        ctx.stroke(item.borderPath);
+        // 18-pass smooth continuous Victoria 3 border darkening gradient
+        // ONLY on sovereign land borders (item.landBorderPath)!
+        // Coasts and islands are NEVER stroked with dark color!
+        const maxGradWidth = Math.max(16, Math.min(32, 22 / Math.pow(camera.zoom, 0.4)));
+        const numLayers = 18;
+        for (let step = numLayers; step >= 1; step--) {
+          const t = step / numLayers;
+          const width = t * maxGradWidth;
+          const alpha = Math.pow(1 - t, 2.2) * 0.45 + 0.02;
 
-        // Pass 2: Mid-intensity saturated inner rim (~11px)
-        ctx.strokeStyle = `rgba(${rimR}, ${rimG}, ${rimB}, 0.68)`;
-        ctx.lineWidth = Math.max(4.5, 11 / camera.zoom);
-        ctx.stroke(item.borderPath);
+          ctx.strokeStyle = `rgba(${borderR}, ${borderG}, ${borderB}, ${alpha})`;
+          ctx.lineWidth = width * 2;
+          ctx.stroke(item.landBorderPath);
+        }
 
-        // Pass 3: Deep intense border rim edge (~4px)
-        ctx.strokeStyle = `rgba(${deepR}, ${deepG}, ${deepB}, 0.95)`;
-        ctx.lineWidth = Math.max(1.8, 4.5 / camera.zoom);
-        ctx.stroke(item.borderPath);
+        // Additional deep edge accent right at the sovereign land frontier
+        ctx.strokeStyle = `rgba(${deepR}, ${deepG}, ${deepB}, 0.75)`;
+        ctx.lineWidth = Math.max(1.5, 3.2 / camera.zoom);
+        ctx.stroke(item.landBorderPath);
 
         ctx.restore();
       }
@@ -780,11 +795,18 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
       ctx.restore();
     }
 
-    // 2c. CRISP DIVIDING BOUNDARY LINE (Victoria 3 fine 1.2px dark outer border)
+    // 2c. CRISP DIVIDING BOUNDARY LINE (Victoria 3 fine dark outer border between land nations)
     ctx.save();
-    ctx.strokeStyle = 'rgba(25, 36, 52, 0.75)';
-    ctx.lineWidth = Math.max(0.85, 1.3 / camera.zoom);
-    ctx.stroke(nationalBordersCrispPath);
+    ctx.strokeStyle = 'rgba(25, 36, 52, 0.85)';
+    ctx.lineWidth = Math.max(0.85, 1.4 / camera.zoom);
+    ctx.stroke(landBordersCrispPath);
+    ctx.restore();
+
+    // 2c-2. DELICATE COASTAL HAIRLINE (Crisp, clean meeting of land and sea with zero dark shadow)
+    ctx.save();
+    ctx.strokeStyle = 'rgba(65, 88, 105, 0.42)';
+    ctx.lineWidth = Math.max(0.65, 1.0 / camera.zoom);
+    ctx.stroke(coastalBordersPath);
     ctx.restore();
 
     // 2d. HIGHLIGHT HOVERED & SELECTED PROVINCE
@@ -960,7 +982,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
 
     animId = requestAnimationFrame(render);
     return () => cancelAnimationFrame(animId);
-  }, [provinces, nations, regions, straits, armies, camera, mapMode, hoveredProvince, selectedProvince, playerNation, regionLabels, capitalMarkers, provinceMap, nationRenderData, internalBordersPath, nationalBordersCrispPath, coastalBordersPath, nationLabels]);
+  }, [provinces, nations, regions, straits, armies, camera, mapMode, hoveredProvince, selectedProvince, playerNation, regionLabels, capitalMarkers, provinceMap, nationRenderData, internalBordersPath, landBordersCrispPath, coastalBordersPath, nationLabels]);
 
   return (
     <div className="relative w-full h-full overflow-hidden touch-none select-none" onContextMenu={e => e.preventDefault()}>
