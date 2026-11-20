@@ -640,8 +640,8 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    // Clear background (Luminous Victoria 3 pastel parchment ocean)
-    ctx.fillStyle = '#d4e1e8';
+    // Clear background (Dunkleres, kräftigeres Ozeanblau wie gewünscht)
+    ctx.fillStyle = '#3a6b8f';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     ctx.save();
@@ -654,7 +654,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     const viewRight = (canvas.width - camera.x) / camera.zoom;
     const viewBottom = (canvas.height - camera.y) / camera.zoom;
 
-    // 1. DRAW SEA PROVINCES FIRST (Light, soft cartographic water)
+    // 1. DRAW SEA PROVINCES FIRST (Dunkleres, sattes maritimes Blau)
     for (const p of provinces) {
       if (!p.isSea) continue;
       const [bx1, by1, bx2, by2] = p.bbox;
@@ -666,34 +666,44 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
         ctx.lineTo(p.points[k][0], p.points[k][1]);
       }
       ctx.closePath();
-      ctx.fillStyle = '#cbe0ea';
+      ctx.fillStyle = '#346386';
       ctx.fill();
 
-      // Faint dashed cartographic nautical division lines
+      // Faint dashed cartographic nautical division lines on darker sea
       ctx.save();
       ctx.setLineDash([4, 6]);
-      ctx.strokeStyle = 'rgba(135, 168, 188, 0.40)';
+      ctx.strokeStyle = 'rgba(165, 210, 240, 0.25)';
       ctx.lineWidth = 0.75;
       ctx.stroke();
       ctx.restore();
     }
 
-    // 1b. COASTAL SHALLOWS WATER GLOW (Victoria 3 soft luminous cyan/turquoise shelf along coasts & islands)
+    // 1b. COASTAL SHALLOWS WATER GLOW (Weicher, stufenloser Schelf-Übergang an den Küsten ins dunklere Ozeanblau)
     ctx.save();
-    ctx.strokeStyle = 'rgba(172, 212, 230, 0.40)';
-    ctx.lineWidth = Math.max(12, 24 / camera.zoom);
+    // Äußerer weiter Schelfausläufer
+    ctx.strokeStyle = 'rgba(75, 135, 175, 0.35)';
+    ctx.lineWidth = Math.max(18, 36 / camera.zoom);
     ctx.stroke(coastalBordersPath);
-    ctx.strokeStyle = 'rgba(188, 226, 242, 0.65)';
-    ctx.lineWidth = Math.max(5, 10 / camera.zoom);
+    // Mittlere Übergangszone
+    ctx.strokeStyle = 'rgba(95, 165, 208, 0.45)';
+    ctx.lineWidth = Math.max(10, 20 / camera.zoom);
+    ctx.stroke(coastalBordersPath);
+    // Türkise Flachwasserzone
+    ctx.strokeStyle = 'rgba(135, 205, 238, 0.60)';
+    ctx.lineWidth = Math.max(4.5, 9 / camera.zoom);
+    ctx.stroke(coastalBordersPath);
+    // Zarter Uferglanz
+    ctx.strokeStyle = 'rgba(175, 230, 255, 0.75)';
+    ctx.lineWidth = Math.max(1.5, 3 / camera.zoom);
     ctx.stroke(coastalBordersPath);
     ctx.restore();
 
     // 2. DRAW NATIONS & PROVINCES
     if (mapMode === 'political') {
-      // Authentic Victoria 3 Political Map:
-      // - Soft pastel watercolor interior
-      // - Smooth continuous gradient darkening ONLY along sovereign land borders
-      // - Coasts and islands remain 100% clean, crisp pastel with zero dark shadows
+      // Authentic Political Map:
+      // - Sattere, kräftige Landesfarben
+      // - Taper-Fade Farbübergang an den Landesgrenzen (kein Schatten!)
+      // - Küsten und Inseln bleiben sauber ohne Innenabdunklung
       for (let i = 0; i < nationRenderData.length; i++) {
         const item = nationRenderData[i];
         const [bx1, by1, bx2, by2] = item.bbox;
@@ -702,7 +712,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
         const nat = nations[item.tag];
         const rgb = nat?.rgb || [140, 150, 165];
 
-        // Kräftigere, dunklere Landesfarben (satter, satter Grundton statt überstrahltem Hell-Pastell)
+        // Kräftigere, dunklere Landesfarben (satter Grundton)
         const fillR = Math.round(rgb[0] * 0.78 + 32);
         const fillG = Math.round(rgb[1] * 0.78 + 32);
         const fillB = Math.round(rgb[2] * 0.78 + 30);
@@ -721,20 +731,19 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
         ctx.lineJoin = 'round';
         ctx.lineCap = 'round';
 
-        // Stufenloser Farbverlauf in der reinen Eigenfarbe des Landes (kein Schatten)
-        // ONLY on sovereign land borders (item.landBorderPath)!
-        // Coasts and islands are NEVER stroked with dark color!
-        const maxGradWidth = Math.max(10, Math.min(22, 16 / Math.pow(camera.zoom, 0.35)));
-        const numLayers = 12;
+        // Taper Fade: Stufenloser, nahtloser Farbübergang in die tiefere Eigenfarbe
+        // Kein Schatten, keine Transparenz, kein Schwarz/Grau - reine Farbabstufung der Nation
+        const maxGradWidth = Math.max(12, Math.min(24, 18 / Math.pow(camera.zoom, 0.35)));
+        const numLayers = 20;
         for (let step = numLayers; step >= 1; step--) {
           const t = step / numLayers;
           const width = t * maxGradWidth;
-          const darkFactor = Math.pow(1 - t, 1.35);
+          const fadeFactor = Math.pow(1 - t, 1.5);
 
-          // Direkte Farbmischung zwischen sattem Landesinneren und tiefer dunkler Landesfarbe
-          const rCur = Math.round(fillR + (darkR - fillR) * darkFactor);
-          const gCur = Math.round(fillG + (darkG - fillG) * darkFactor);
-          const bCur = Math.round(fillB + (darkB - fillB) * darkFactor);
+          // Nahtloser Taper-Fade-Übergang von der satten Grundfarbe in die dunklere Nuance
+          const rCur = Math.round(fillR + (darkR - fillR) * fadeFactor);
+          const gCur = Math.round(fillG + (darkG - fillG) * fadeFactor);
+          const bCur = Math.round(fillB + (darkB - fillB) * fadeFactor);
 
           ctx.strokeStyle = `rgb(${rCur}, ${gCur}, ${bCur})`;
           ctx.lineWidth = width * 2;
@@ -782,12 +791,13 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     }
 
     // 2b. DRAW INTERNAL PROVINCE BORDERS (Inlandsgrenzen)
-    // Only visible when zoomed in (> 0.85) in delicate muted slate-grey
-    if (camera.zoom > 0.85) {
-      const zoomT = Math.min(1, (camera.zoom - 0.85) / 0.45);
-      const internalAlpha = zoomT * 0.35;
+    // Beim Rauszoomen VOLLSTÄNDIG UNSICHTBAR! (zoom <= 1.35)
+    // Nur bei starkem Hineinzoomen (> 1.35) dezent einblenden
+    if (camera.zoom > 1.35) {
+      const zoomT = Math.min(1, (camera.zoom - 1.35) / 0.45);
+      const internalAlpha = zoomT * 0.28;
       ctx.save();
-      ctx.strokeStyle = `rgba(110, 125, 145, ${internalAlpha})`;
+      ctx.strokeStyle = `rgba(100, 120, 140, ${internalAlpha})`;
       ctx.lineWidth = Math.max(0.5, 0.75 / camera.zoom);
       ctx.stroke(internalBordersPath);
       ctx.restore();
@@ -795,14 +805,14 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
 
     // 2c. CRISP DIVIDING BOUNDARY LINE (Dezente, feine Grenztrennlinie zwischen den Ländern)
     ctx.save();
-    ctx.strokeStyle = 'rgba(40, 50, 65, 0.45)';
+    ctx.strokeStyle = 'rgba(30, 45, 60, 0.50)';
     ctx.lineWidth = Math.max(0.5, 0.85 / camera.zoom);
     ctx.stroke(landBordersCrispPath);
     ctx.restore();
 
-    // 2c-2. DELICATE COASTAL HAIRLINE (Crisp, clean meeting of land and sea with zero dark shadow)
+    // 2c-2. DELICATE COASTAL HAIRLINE (Gestochen scharfe Trennlinie zwischen Land und Meer)
     ctx.save();
-    ctx.strokeStyle = 'rgba(65, 88, 105, 0.42)';
+    ctx.strokeStyle = 'rgba(20, 40, 60, 0.65)';
     ctx.lineWidth = Math.max(0.65, 1.0 / camera.zoom);
     ctx.stroke(coastalBordersPath);
     ctx.restore();
