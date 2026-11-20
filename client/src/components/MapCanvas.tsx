@@ -62,6 +62,37 @@ const RESOURCE_COLORS: Record<string, string> = {
   spices: '#ea580c'
 };
 
+// Authentic Victoria 3 Sea Regions & Strategic Shipping Lanes
+const SEA_REGIONS = [
+  { name: 'Nordatlantik', cx: 700, cy: 1400 },
+  { name: 'Keltische See', cx: 1120, cy: 1880 },
+  { name: 'Nordsee', cx: 1720, cy: 1350 },
+  { name: 'Norwegische See', cx: 1950, cy: 650 },
+  { name: 'Barentssee', cx: 3400, cy: 400 },
+  { name: 'Ostsee', cx: 2450, cy: 1180 },
+  { name: 'Mittelmeer', cx: 2350, cy: 2950 },
+  { name: 'Schwarzes Meer', cx: 3500, cy: 2280 },
+  { name: 'Kaspisches Meer', cx: 4380, cy: 2320 }
+];
+
+const SHIPPING_LANES: [number, number][][] = [
+  // Atlantic - Biscay - Gibraltar - Mediterranean - Levant
+  [
+    [950, 1150], [1080, 1620], [1180, 2180], [1400, 2600],
+    [1420, 2810], [1950, 2900], [2500, 3100], [3300, 3150], [3450, 2950]
+  ],
+  // North Sea - Skagerrak - Baltic Sea
+  [
+    [1080, 1620], [1450, 1640], [1720, 1450], [1980, 1280],
+    [2150, 1160], [2450, 1150], [2850, 1080]
+  ],
+  // Mediterranean - Aegean - Black Sea
+  [
+    [2500, 3100], [2850, 2900], [3150, 2650], [3280, 2420],
+    [3460, 2260], [3700, 2150]
+  ]
+];
+
 export const MapCanvas: React.FC<MapCanvasProps> = ({
   provinces,
   nations,
@@ -303,7 +334,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
       nationProvs.get(p.owner)!.push(p);
     }
 
-    const labels: { tag: string; name: string; cx: number; cy: number; width: number; height: number }[] = [];
+    const labels: { tag: string; name: string; cx: number; cy: number; width: number; height: number; area: number; provCount: number }[] = [];
     for (const [tag, provList] of nationProvs.entries()) {
       const nat = nations[tag];
       if (!nat || provList.length === 0) continue;
@@ -318,15 +349,21 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
         sumX += p.cx;
         sumY += p.cy;
       }
+      const w = maxX - minX;
+      const h = maxY - minY;
       labels.push({
         tag,
         name: nat.name,
         cx: Math.round(sumX / provList.length),
         cy: Math.round(sumY / provList.length),
-        width: maxX - minX,
-        height: maxY - minY
+        width: w,
+        height: h,
+        area: w * h,
+        provCount: provList.length
       });
     }
+    // Sort descending by territorial footprint so empires claim map label real-estate first
+    labels.sort((a, b) => b.area - a.area);
     return labels;
   }, [provinces, nations]);
 
@@ -698,6 +735,44 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     ctx.stroke(coastalBordersPath);
     ctx.restore();
 
+    // 1c. MARITIME SHIPPING ROUTES (Gepunktete Handels- und Seerouten wie in Victoria 3)
+    ctx.save();
+    ctx.setLineDash([5, 7]);
+    ctx.strokeStyle = 'rgba(175, 220, 250, 0.40)';
+    ctx.lineWidth = Math.max(0.9, 1.4 / camera.zoom);
+    for (let l = 0; l < SHIPPING_LANES.length; l++) {
+      const lane = SHIPPING_LANES[l];
+      ctx.beginPath();
+      ctx.moveTo(lane[0][0], lane[0][1]);
+      for (let k = 1; k < lane.length; k++) {
+        ctx.lineTo(lane[k][0], lane[k][1]);
+      }
+      ctx.stroke();
+
+      // Maritime Waypoint Pips
+      for (let k = 0; k < lane.length; k++) {
+        ctx.beginPath();
+        ctx.arc(lane[k][0], lane[k][1], Math.max(1.5, 2.5 / camera.zoom), 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(215, 240, 255, 0.65)';
+        ctx.fill();
+      }
+    }
+    ctx.restore();
+
+    // 1d. SEA REGION LABELS (Subtile maritime Beschriftungen im Victoria 3 Stil)
+    ctx.save();
+    ctx.font = `italic ${Math.max(11, Math.min(20, 16 / camera.zoom))}px 'Cinzel', serif`;
+    ctx.fillStyle = 'rgba(190, 225, 250, 0.48)';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    for (let s = 0; s < SEA_REGIONS.length; s++) {
+      const sea = SEA_REGIONS[s];
+      if (sea.cx >= viewLeft && sea.cx <= viewRight && sea.cy >= viewTop && sea.cy <= viewBottom) {
+        ctx.fillText(sea.name, sea.cx, sea.cy);
+      }
+    }
+    ctx.restore();
+
     // 2. DRAW NATIONS & PROVINCES
     if (mapMode === 'political') {
       // Authentic Political Map:
@@ -848,112 +923,147 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
       ctx.restore();
     }
 
-    // 3. DRAW LARGE DYNAMIC NATION LABELS (When zoomed out <= 0.95, scaled dynamically to country size)
-    if (camera.zoom <= 0.95) {
-      const zoomFactor = Math.min(1, (0.95 - camera.zoom) / 0.35);
+    // 3. DRAW DYNAMIC NATION LABELS (Scaled dynamically to territory with zero collisions)
+    if (camera.zoom <= 1.25) {
       ctx.save();
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
 
+      const placedBoxes: { x1: number; y1: number; x2: number; y2: number }[] = [];
+
       for (let i = 0; i < nationLabels.length; i++) {
         const nLab = nationLabels[i];
         if (nLab.cx >= viewLeft && nLab.cx <= viewRight && nLab.cy >= viewTop && nLab.cy <= viewBottom) {
-          const spanDim = Math.min(nLab.width * 0.12, nLab.height * 0.22);
-          const fontSize = Math.min(48, Math.max(11, spanDim));
-          if (fontSize < 10) continue;
+          const spanDim = Math.min(nLab.width * 0.11, nLab.height * 0.22);
 
+          // Filter out tiny micro-states when zoomed out to prevent central Europe clutter:
+          const minSpan = camera.zoom <= 0.65 ? 18 : (camera.zoom <= 0.95 ? 13 : 9);
+          if (spanDim < minSpan && nLab.provCount < 3) continue;
+
+          const fontSize = Math.min(52, Math.max(10, spanDim));
           ctx.font = `bold ${fontSize}px 'Cinzel', serif`;
           const upperName = nLab.name.toUpperCase();
+          const tw = ctx.measureText(upperName).width;
+          const th = fontSize;
 
-          // Soft white/cream specular halo for crisp contrast against pastel terrain:
-          ctx.strokeStyle = `rgba(255, 255, 255, ${0.85 * zoomFactor})`;
-          ctx.lineWidth = Math.max(2.5, fontSize * 0.12);
+          // Strict collision avoidance box with margin
+          const pad = 12;
+          const box = {
+            x1: nLab.cx - tw / 2 - pad,
+            y1: nLab.cy - th / 2 - pad,
+            x2: nLab.cx + tw / 2 + pad,
+            y2: nLab.cy + th / 2 + pad
+          };
+
+          let collides = false;
+          for (let b = 0; b < placedBoxes.length; b++) {
+            const pb = placedBoxes[b];
+            if (box.x1 < pb.x2 && box.x2 > pb.x1 && box.y1 < pb.y2 && box.y2 > pb.y1) {
+              collides = true;
+              break;
+            }
+          }
+          if (collides) continue;
+
+          placedBoxes.push(box);
+
+          // Authentic Victoria 3 label rendering:
+          // Subtle warm halo
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.45)';
+          ctx.lineWidth = Math.max(1.5, fontSize * 0.08);
           ctx.strokeText(upperName, nLab.cx, nLab.cy);
 
-          // Deep Victoria 3 charcoal/slate typography:
-          ctx.fillStyle = `rgba(26, 38, 54, ${0.92 * zoomFactor})`;
+          // Deep Victoria 3 charcoal/slate typography
+          ctx.fillStyle = 'rgba(24, 34, 48, 0.90)';
           ctx.fillText(upperName, nLab.cx, nLab.cy);
         }
       }
       ctx.restore();
     }
 
-    // 4. DRAW CAPITAL STARS & MAJOR CITY NAMES (Zoom >= 0.7) - FAST O(1)
-    if (camera.zoom >= 0.7) {
+    // 4. DRAW CAPITAL STARS & MAJOR CITY NAMES (Only when zoomed in >= 1.45 to prevent continental clutter)
+    if (camera.zoom >= 1.45) {
+      const capAlpha = Math.min(1, (camera.zoom - 1.45) / 0.35);
+      ctx.save();
       for (let i = 0; i < capitalMarkers.length; i++) {
         const cap = capitalMarkers[i];
         if (cap.cx >= viewLeft && cap.cx <= viewRight && cap.cy >= viewTop && cap.cy <= viewBottom) {
           // Draw Star Marker Circle
           ctx.beginPath();
-          ctx.arc(cap.cx, cap.cy, 6, 0, 2 * Math.PI);
-          ctx.fillStyle = '#f59e0b';
+          ctx.arc(cap.cx, cap.cy, 5, 0, 2 * Math.PI);
+          ctx.fillStyle = `rgba(245, 158, 11, ${capAlpha})`;
           ctx.fill();
-          ctx.strokeStyle = '#ffffff';
+          ctx.strokeStyle = `rgba(255, 255, 255, ${capAlpha})`;
           ctx.lineWidth = 1.5;
           ctx.stroke();
 
           // Inner white star core
           ctx.beginPath();
-          ctx.arc(cap.cx, cap.cy, 2, 0, 2 * Math.PI);
-          ctx.fillStyle = '#ffffff';
+          ctx.arc(cap.cx, cap.cy, 1.8, 0, 2 * Math.PI);
+          ctx.fillStyle = `rgba(255, 255, 255, ${capAlpha})`;
           ctx.fill();
 
-          // Label with dark background badge for crisp legibility on land
-          ctx.font = `600 ${Math.max(9, Math.min(13, 11))}px 'Inter', sans-serif`;
+          // Label with dark background badge
+          ctx.font = `600 11px 'Inter', sans-serif`;
           const text = cap.capName;
           const textWidth = ctx.measureText(text).width;
           const pad = 4;
-          const labelY = cap.cy - 12;
+          const labelY = cap.cy - 10;
 
-          ctx.fillStyle = 'rgba(10, 15, 26, 0.75)';
+          ctx.fillStyle = `rgba(10, 15, 26, ${0.75 * capAlpha})`;
           ctx.beginPath();
           ctx.roundRect(cap.cx - textWidth / 2 - pad, labelY - 11, textWidth + pad * 2, 14, 3);
           ctx.fill();
 
-          ctx.fillStyle = '#fef3c7';
+          ctx.fillStyle = `rgba(254, 243, 199, ${capAlpha})`;
           ctx.textAlign = 'center';
           ctx.textBaseline = 'alphabetic';
           ctx.fillText(text, cap.cx, labelY);
         }
       }
+      ctx.restore();
     }
 
     // 5. DRAW STRATEGIC CHOKEPOINTS & STRAITS BADGES (Exact Geographic Placement)
+    const isDetailedStrait = camera.zoom >= 0.75;
     for (const strait of Object.values(straits)) {
       const p0 = strait.provinces && strait.provinces.length > 0 ? provinceMap.get(strait.provinces[0]) : null;
       const sx = strait.cx ?? (p0 ? p0.cx : null);
       const sy = strait.cy ?? (p0 ? p0.cy : null);
       if (sx !== null && sy !== null && sx >= viewLeft && sx <= viewRight && sy >= viewTop && sy <= viewBottom) {
+        const badgeRadius = isDetailedStrait ? 12 : 7;
         // Badge circle
         ctx.beginPath();
-        ctx.arc(sx, sy, 12, 0, 2 * Math.PI);
+        ctx.arc(sx, sy, badgeRadius, 0, 2 * Math.PI);
         ctx.fillStyle = strait.isBlockaded ? '#dc2626' : '#d97706';
         ctx.fill();
         ctx.strokeStyle = '#ffffff';
-        ctx.lineWidth = 2;
+        ctx.lineWidth = isDetailedStrait ? 2 : 1;
         ctx.stroke();
 
-        // Anchor / River icon text
-        ctx.font = 'bold 11px sans-serif';
-        ctx.fillStyle = '#ffffff';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(strait.type === 'strait' ? '⚓' : '🌊', sx, sy);
+        if (isDetailedStrait) {
+          // Anchor / River icon text
+          ctx.font = 'bold 11px sans-serif';
+          ctx.fillStyle = '#ffffff';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(strait.type === 'strait' ? '⚓' : '🌊', sx, sy);
 
-        // Name label with dark background badge
-        ctx.font = 'bold 11px "Inter", sans-serif';
-        const sName = strait.name;
-        const sWidth = ctx.measureText(sName).width;
-        ctx.fillStyle = 'rgba(10, 15, 26, 0.85)';
-        ctx.beginPath();
-        ctx.roundRect(sx - sWidth / 2 - 4, sy + 10, sWidth + 8, 15, 3);
-        ctx.fill();
-        ctx.strokeStyle = 'rgba(212, 175, 55, 0.4)';
-        ctx.lineWidth = 0.8;
-        ctx.stroke();
+          // Name label with dark background badge
+          ctx.font = 'bold 11px "Inter", sans-serif';
+          const sName = strait.name;
+          const sWidth = ctx.measureText(sName).width;
+          ctx.fillStyle = 'rgba(10, 15, 26, 0.85)';
+          ctx.beginPath();
+          ctx.roundRect(sx - sWidth / 2 - 4, sy + 10, sWidth + 8, 15, 3);
+          ctx.fill();
+          ctx.strokeStyle = 'rgba(212, 175, 55, 0.4)';
+          ctx.lineWidth = 0.8;
+          ctx.stroke();
 
-        ctx.fillStyle = '#fef08a';
-        ctx.fillText(sName, sx, sy + 21);
+          ctx.fillStyle = '#fef08a';
+          ctx.fillText(sName, sx, sy + 21);
+        }
       }
     }
 
